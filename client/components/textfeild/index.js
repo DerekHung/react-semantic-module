@@ -14,7 +14,7 @@ function highlightString( keyword, targetString ){
 
 class TextFeild extends Component {
 	constructor(props){
-		super(props); 
+		super(props);
 		this.state = {
 			data: props.value,
 			errorMessage: props.errorMessage || '',
@@ -23,6 +23,7 @@ class TextFeild extends Component {
 		}
 		this._onChange = this._onChange.bind(this);
 		this._onBlur = this._onBlur.bind(this);
+		this._onKeyDown = this._onKeyDown.bind(this);
 		this.ACStyle = {};
 		this.keyDownHandlers = {
 			ArrowDown(event) {
@@ -43,7 +44,7 @@ class TextFeild extends Component {
 						highlightedIndex: index,
 					})
 				}
-				
+
 			},
 			ArrowUp(event) {
 				event.preventDefault()
@@ -57,7 +58,7 @@ class TextFeild extends Component {
 					highlightedIndex: index,
 				})
 			},
-			
+
 			Enter(event) {
 				if (this.state.ACData.length === 0) {
 					// menu is closed so there is no selection to accept -> do nothing
@@ -86,7 +87,7 @@ class TextFeild extends Component {
 			target.style.height = Math.max(target.scrollHeight,target.clientHeight) + 'px';
 			this.initHeight = Math.max(target.scrollHeight,target.clientHeight);
 		}
-		
+
 		let MainElement = this.refs.textFeildMain.getBoundingClientRect();
 		this.ACStyle.width = MainElement.width;
 		//ACStyle.maxHeight = window.innerHeight - MainElement.top - MainElement.height - 10;
@@ -109,13 +110,13 @@ class TextFeild extends Component {
 				})
 			}
 		}
-		if( this.state.highlightedIndex !== null ) this.setState({ highlightedIndex: null}); 
+		if( this.state.highlightedIndex !== null ) this.setState({ highlightedIndex: null});
 		let that = this;
 		setTimeout(function(){
 			that.props.onBlur(that.props.name, that.state.data);
 		},200);
-		
-		
+
+
 	}
 	_onChange(e){
 		let event = e;
@@ -138,27 +139,36 @@ class TextFeild extends Component {
 				errorMessage: '',
 				highlightedIndex: null,
 			},function(){
-				this.props.onChange(this.props.name, this.state.data);	
+				this.props.onChange(this.props.name, this.state.data);
 			})
-			
 		}
-		
-		
+
+
 	}
-	
+
+	_onKeyDown(e) {
+		if (this.props.onKeyDown) {
+			const { keyName, action, ignoreShift } = this.props.onKeyDown;
+			if (e.key === keyName && (ignoreShift ? !e.shiftKey: true)) {
+				const text = this.refs.textarea.value
+				action(text);
+			}
+		}
+	}
+
 	handleKeyDown (event) {
 		if (this.keyDownHandlers[event.key] && this.props.ACData){
 			this.keyDownHandlers[event.key].call(this, event)
 		}
 		if( this.props.onKeyDown ) this.props.onKeyDown(event);
 	}
-	
+
 	ACMouseOver(index) {
 		this.setState({
 			highlightedIndex:index
 		})
 	}
-	
+
 	select(value,index) {
 		this.setState({
 			data: value,
@@ -167,7 +177,7 @@ class TextFeild extends Component {
 		})
 		this.props.onSelected(value,index+1);
 	}
-	
+
 	componentWillReceiveProps(nextProps) {
 		if( this.state.data !== nextProps.value && this.props.value !== nextProps.value) {
 			this.setState({ data: nextProps.value });
@@ -179,11 +189,11 @@ class TextFeild extends Component {
 			this.setState({ errorMessage: nextProps.errorMessage });
 		}
 	}
-	
+
 	handleError(){
 		if(this.state.errorMessage.length > 0 && this.props.onError) {
 			this.props.onError(this.props.name, this.state.errorMessage);
-		}	
+		}
 	}
 
 	render() {
@@ -192,7 +202,8 @@ class TextFeild extends Component {
 			onChange: this._onChange,
 			value: this.state.data,
 			placeholder: this.props.placeHolder,
-			disabled: this.props.disabled
+			disabled: this.props.disabled,
+			onKeyDown: this._onKeyDown
 		}
 		let status = '';
 		let that = this;
@@ -201,29 +212,29 @@ class TextFeild extends Component {
 		return (
 			<div className={this.props.className} styleName="inputRoot">
 				<div styleName={status + 'input'}  ref="textFeildMain">
-					{ this.props.allowMultiLine ? 
-						<textarea {...option} 
+					{ this.props.allowMultiLine ?
+						<textarea {...option}
 							ref="textarea"/>
 						:
-						<input {...option} onKeyDown={this.handleKeyDown.bind(this)}/>      
+						<input {...option} onKeyDown={this.handleKeyDown.bind(this)}/>
 					}
 					{ this.props.maxWords && <span styleName="maxWord"><span styleName="front">{this.state.data.length}</span>/{this.props.maxWords}</span>}
 					<div styleName="errorMessage">{ this.state.errorMessage }</div>
 				</div>
-				{ this.state.ACData && this.state.ACData.length > 0  && 
+				{ this.state.ACData && this.state.ACData.length > 0  &&
 					<div style={this.ACStyle} styleName="AClist">
 						{ this.state.ACData.map(function(item,index){
-							let style = index === this.state.highlightedIndex ? { background: '#def6ff' }: null; 
+							let style = index === this.state.highlightedIndex ? { background: '#def6ff' }: null;
 							let transformString = highlightString(this.state.data ,item.value);
 							return (
-								<li key={index} 
-									onClick={this.select.bind(this, item.value, index)} 
-									onMouseOver={this.ACMouseOver.bind(this,index)} 
+								<li key={index}
+									onClick={this.select.bind(this, item.value, index)}
+									onMouseOver={this.ACMouseOver.bind(this,index)}
 									style={style}
 									dangerouslySetInnerHTML={{ __html: transformString }} ></li>
 							);
 						},this) }
-					</div>	
+					</div>
 				}
 			</div>
 		);
