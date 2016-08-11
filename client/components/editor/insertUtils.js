@@ -7,7 +7,7 @@ import {
 	BlockMapBuilder
 } from 'draft-js';
 
-import Immutable from 'Immutable';
+import Immutable from 'immutable';
 const {
   List,
   Repeat,
