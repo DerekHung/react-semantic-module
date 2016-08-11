@@ -20,10 +20,25 @@ const MIMEMap = {
 	'application/vnd.openxmlformats-officedocument.presentationml.template': 'DOCUMENT',
 	'audio/x-wav': 'AUDIO',
 	'audio/x-ms-wma': 'AUDIO',
-
+	'audio/mp3': 'AUDIO',
+	'audio/m4a': 'AUDIO',
+	'video/3gpp': 'VIDEO',
+	'video/mpeg': 'VIDEO',
+	'video/x-msvideo': 'VIDEO',
+	'video/x-ms-wmv': 'VIDEO',
+	'video/vnd.uvvu.mp4': 'VIDEO',
+	'video/x-flv': 'VIDEO',
+	'video/webm': 'VIDEO',
 };
 export { MIMEMap };
 
+export function getAtomicType(MIMEType) {
+	if( typeof(MIMEMap[MIMEType])!=='undefined' ) {
+		return MIMEMap[MIMEType];
+	}else {
+		console.log('this type is not support');
+	}
+}
 export function getSignature (file){
 	let jsonDataForSig = {
 		apnum: "10400",
