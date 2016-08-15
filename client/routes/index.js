@@ -10,6 +10,7 @@ import DropListPage from 'client/containers/dropList';
 import Form from 'client/containers/form';
 import Switches from 'client/containers/switches';
 import EditorPage from 'client/containers/editor';
+import FileUploaderPage from 'client/containers/fileUploader';
 
 export default function(history) {
 	return (
@@ -22,6 +23,7 @@ export default function(history) {
 				<Route path="/form" component={Form} />
 				<Route path="/switches" component={Switches} />
 				<Route path="/editor" component={EditorPage} />
+				<Route path="/file" component={FileUploaderPage} />
 			</Route>
 		</Router>
 	);

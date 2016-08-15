@@ -7,6 +7,7 @@ import style from './style.css';
 import Validators from 'client/utils/validator';
 import TextField from 'client/components/textfeild';
 
+
 var config = {
 			'data': {
 				'username' : [ 'notEmpty', {maxLength: 10}, 'isName'],
@@ -227,6 +228,7 @@ class Form extends Component {
 					onRequestOpenAC={this.onRequestOpenAC.bind(this)}>
 				</TextField>
 				<i className="icon privacy"></i>
+				
 			</div>
 		);
 	}

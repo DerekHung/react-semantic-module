@@ -13,6 +13,8 @@ import TextField from './textfeild';
 import Validators from '../utils/validator';
 import Editor from './editor';
 
+import FileUploader from './fileUploader';
+
 export { 
 	LightBox,
 	Button,
@@ -23,5 +25,6 @@ export {
 	RadioGroup, 
 	TextField, 
 	Validators,
-	Editor 
+	Editor,
+	FileUploader 
 };

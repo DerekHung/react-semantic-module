@@ -31,7 +31,7 @@ import RadioGroup from '../index.js';
 describe('Radio', () => {
 	const component = renderer.create(
 		<RadioGroup group={group}/>
-	);
+	); 
 	
 	beforeEach(() => {
 		

@@ -4,6 +4,8 @@ import { Link } from 'react-router';
 import CSSModules from 'react-css-modules';
 import css from './style.css';
 
+
+
 class Header extends Component {
 	render() {
 		return (
@@ -12,7 +14,6 @@ class Header extends Component {
 				<h1>
 					<a href="/">BIG-C UI Module</a>
 				</h1>
-				
 			</header>
 		);
 	}

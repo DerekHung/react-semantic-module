@@ -35,17 +35,6 @@ import { getSignature,uploadToS3,getFileUrl,getURLData,MIMEMap } from '../../uti
 import InsertUtils from './insertUtils.js';
 
 import $ from 'jquery';
-/*
-const {hasCommandModifier} = KeyBindingUtil;
-
-function myKeyBindingFn(e: SyntheticKeyboardEvent): string {
-	console.log(e);
-	if (e.keyCode === 86 && hasCommandModifier(e)) {
-		return 'editor-paste';
-	}
-	return getDefaultKeyBinding(e);
-}
-*/
 
 const mentionPlugin = createMentionPlugin({
   theme: style,
