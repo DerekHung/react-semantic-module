@@ -33,7 +33,6 @@ class FileUploader extends Component {
         this.runGenerator = (gen) => {
             
             function go( result ) {
-                console.log(result);
                 if( result.done ) return;
                 console.log(result.value);
                 result.value.then((r) => {

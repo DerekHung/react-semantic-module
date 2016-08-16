@@ -1,13 +1,70 @@
-import React, { Component, PropTypes } from 'react';
-import CSSModules from 'react-css-modules';
-import css from './style.css';
-import { connect } from 'react-redux';
+### Usage
 
-import FileUploader from '../../components/fileUploader';
-import html from 'doc/fileUploader.md';
+FileUploader 提供以下功能：
+1. 自定義uploader樣式（包覆區塊皆為點擊觸發點）
+2. 上傳檔案格式過濾（ 格式定義於 utils/fileupload.js ）
+3. getSignature -> uploadToS3 -> getUrl(直到convert success) 一次跑完，並且每個階段完成時發出事件通知父層
+4. error handle （待補）
 
-const testMedia = {
-    IMAGE: {
+``` xml
+
+/* jsx component */
+<FileUploader   apnum="10400"
+                pid="10400"  
+                mediaInfo={testMedia}
+                onTriggerUpload={this.onTriggerUpload}
+                getFileInfo={this.getFileInfo}
+                getSignatureDone={this.getSignatureDone}
+                uploadToS3Done={this.uploadToS3Done}
+                urlTransformDone={this.urlTransformDone}>
+    /* 自定義component樣式 */
+    <button styleName="button">
+        上傳檔案
+    </button>
+    /**********************/
+</FileUploader>
+
+```
+
+### Properties
+
+|Name|required|Description|
+|----|---|-----------|
+|apnum|true|plus apnum|
+|pid|true|使用者id|
+|mediaInfo|true|API extra info by type|
+
+### Event
+
+``` javascript
+onTriggerUpload (e) => {
+    //點擊upload按鈕的事件
+    //e : touch event
+}
+
+getFileInfo (f, type) => {
+    //選擇檔案之後觸發的事件
+    //f => 選取的file
+    //type => file type ( VIDEO, IMAGE, AUDIO, DOCUMENT )
+}
+getSignatureDone (signature) => {
+    //取得註冊的資訊
+    //signature => include fileId data
+}
+uploadToS3Done () => {
+    //上傳到s3完成的事件
+}
+urlTransformDone (result) => {
+    //轉檔完成的事件
+    // result => getfileUrl API 回傳的結果
+}
+```
+### mediaInfo (自定義)
+example：
+
+``` javascript
+{
+IMAGE: {
         multiAction:[
                     {
                         "param": {
@@ -114,72 +171,4 @@ const testMedia = {
                     ]
     }
 }
-
-class FileUploaderPage extends Component {
-    constructor(props){
-        super(props);
-        this.state = {
-            fileId: null,
-            uploaded: 'none',
-            fileType: null
-        }
-        this.onTriggerUpload = (e) => {
-            this.setState({
-                fileId: null,
-                uploaded: 'none',
-                fileUrl: ''
-            })
-        }
-        this.getFileInfo = (f, type) => {
-            this.setState({ fileType: type, uploaded: 'uploading' })
-        }
-        this.getSignatureDone = (signature) => {
-            this.setState({fileId:signature.fileId});
-        }
-        this.uploadToS3Done = () => {
-            this.setState({ uploaded: 'success'});
-        }
-        this.urlTransformDone = (result) => {
-            this.setState({ fileUrl: result.url[0]});
-        }
-    }
-	render() {
-        let result;
-        if( this.state.fileType === 'IMAGE') { result = <img src={this.state.fileUrl} />}
-        else if( this.state.fileType === 'VIDEO') { result = <video src={this.state.fileUrl} /> }
-        else if( this.state.fileType === 'AUDIO') { result = <audio src={this.state.fileUrl} /> }
-        else if( this.state.fileType === 'DOCUMENT') { }
-        else { result = null; }
-		return (
-            <div>
-                <h3>File Uploader</h3>
-                <FileUploader apnum="10400"
-                            pid="10400"  
-                            mediaInfo={testMedia}
-                            onTriggerUpload={this.onTriggerUpload}
-                            getFileInfo={this.getFileInfo}
-                            getSignatureDone={this.getSignatureDone}
-                            uploadToS3Done={this.uploadToS3Done}
-                            urlTransformDone={this.urlTransformDone}>
-                    <button styleName="button">
-                        上傳檔案
-                    </button>
-                </FileUploader>
-                <h3>Get File Id & upload Status</h3>
-                <div className="content">
-					<p>Status: { this.state.uploaded } </p>
-                    <p>fileId: { this.state.fileId }</p>
-                </div>
-                <h3>result</h3>
-                <div className="content">
-					{ result }
-                </div>
-                <div className="content" dangerouslySetInnerHTML={{__html: html}}>
-					
-				</div>
-            </div>            
-		);
-	}
-}
-
-export default connect()(CSSModules(FileUploaderPage,css));
+```
