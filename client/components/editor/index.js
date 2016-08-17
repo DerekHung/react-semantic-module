@@ -119,7 +119,6 @@ class RichEditor extends Component {
 		this.toggleInlineStyle = (style) => this._toggleInlineStyle(style);
 		
 		this.handleFileInput = (e) => this._handleFileInput(e);
-		this.handleUploadImage = () => this._handleUploadImage();
 		
 		this.onLinkKeyDown = (e) => this._onLinkKeyDown(e);
 		this.insertBlockComponent = (type, data) => this._insertBlockComponent(type,data);
@@ -137,6 +136,58 @@ class RichEditor extends Component {
 		this.setLoadingState = (counter) => {
 			this.uploading = counter;
 			if( this.props.onUploadStatusChange ) this.props.onUploadStatusChange(this.uploading);
+		}
+
+		this.onTriggerUpload = (e) => {}; 
+		this.getFileInfo = (f, type) =>  this._handleFileInput(f, type);
+		this._handleFileInput = (f, type) => {
+
+			let props = {
+				loading: true,
+				fakeSrc: URL.createObjectURL(f)
+			}
+
+			if( type === 'AUDIO' ) props.name = f.name;
+			this.gen = this._insertAsyncBlockComponent(type, f, props);
+
+			this.gen.next();
+		}
+		this.getSignatureDone = (signature) => {
+			this.gen.next(signature.fileId);
+		}
+		this.uploadToS3Done = () => {
+			this.gen.next();
+		} 
+		this._insertAsyncBlockComponent = function* (type, file, props){
+			let that = this;
+
+			this.setLoadingState(this.uploading + 1);
+
+			let entityKey = this._insertBlockComponent(null, type, props);		
+			yield "loading";
+			let fileId = yield "get fileId";
+
+			let uploadDone = yield function (){
+				props.loading = false;
+				props.src = props.fakeSrc;
+				props.fileId = fileId;
+				
+				that._insertBlockComponent(entityKey, type, props);
+
+				that.setLoadingState(that.uploading - 1);
+			}();
+/*
+				}).fail(function(error){
+
+					props.error = true;
+
+					that._insertBlockComponent(entityKey, type, props);
+					
+					that.setLoadingState(that.uploading - 1);
+
+				})
+*/
+			
 		}
 	}
 	
@@ -264,37 +315,7 @@ class RichEditor extends Component {
 		return entityKey;
 	};
 
-	_insertAsyncBlockComponent(type, file, props){
-		let that = this;
-
-		this.setLoadingState(this.uploading + 1);
-
-		let entityKey = this._insertBlockComponent(null, type, props);		
-
-		getSignature(file).done(function(jsonDataForUpload){
-			console.log(jsonDataForUpload);
-			uploadToS3(jsonDataForUpload, file).done(function(){
-				
-				props.loading = false;
-				props.src = props.fakeSrc;
-				props.fileId = jsonDataForUpload.fileId;
-				
-				that._insertBlockComponent(entityKey, type, props);
-
-				that.setLoadingState(that.uploading - 1);
-
-			}).fail(function(error){
-
-				props.error = true;
-
-				that._insertBlockComponent(entityKey, type, props);
-				
-				that.setLoadingState(that.uploading - 1);
-
-			})
-		})
-		
-	}
+	
 
 	_handleHyperLink(url){
 		
@@ -407,39 +428,7 @@ class RichEditor extends Component {
 			
 		this.onChange(newState);
 	}
-	_handleFileInput(e) {
-		const docReg =  /(doc|docx|pdf|wps|xls|xlsx)/i;
-		let files = Array.prototype.slice.call(e.target.files, 0);
-		
-		
-		files.forEach(f => {
-			console.log(f);
-			console.log(f.type.match(docReg));
-			let props = {
-				loading: true,
-				fakeSrc: URL.createObjectURL(f)
-			}
-			if( f.type.indexOf('image') > -1 ){
-				this._insertAsyncBlockComponent("IMAGE", f, props);
-			}
-			else if ( f.type.indexOf('video') > -1 ){
-				this._insertAsyncBlockComponent("VIDEO", f, props);
-			}
-			else if ( f.type.match(docReg) ){
-				this._insertAsyncBlockComponent("DOCUMENT", f, props);
-			}
-			else if ( f.type.indexOf('audio') > -1 ){
-				props.name = f.name;
-				this._insertAsyncBlockComponent("AUDIO", f, props);	
-			}
-		});
-
-		this.cleanInput();
-	}
-
-	_handleUploadImage() {
-		this.refs.fileInput.click();
-	}
+	
 
 	_handlePaste(text){
 		const youtubeReg = /^(?:https?:\/\/)?(?:www\.)?(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))((\w|-){11})(?:\S+)?$/;
@@ -485,6 +474,13 @@ class RichEditor extends Component {
 	
 	render() {
 		const { editorState, selectedBlock, selectionRange } = this.state;
+		const fileUploadFunction = {
+			onTriggerUpload: this.onTriggerUpload, 
+			getFileInfo: this.getFileInfo, 
+			getSignatureDone: this.getSignatureDone, 
+			uploadToS3Done: this.uploadToS3Done, 
+			urlTransformDone: this.urlTransformDone
+		}
 		let sideToolbarOffsetTop = 0;
 
 		if (selectedBlock) {
@@ -507,6 +503,7 @@ class RichEditor extends Component {
 						style={{ top: sideToolbarOffsetTop }}
 						onToggle={this.toggleBlockType}
 						onUploadImage={this.handleUploadImage}
+						{...fileUploadFunction}
 						/>
 					: null
 				}

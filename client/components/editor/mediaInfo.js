@@ -1,12 +1,4 @@
-import React, { Component, PropTypes } from 'react';
-import CSSModules from 'react-css-modules';
-import css from './style.css';
-import { connect } from 'react-redux';
-
-import FileUploader from '../../components/fileUploader';
-import html from 'doc/fileUploader.md';
-
-const testMedia = {
+const mediaInfo = {
     IMAGE: {
         multiAction:[
                     {
@@ -115,74 +107,4 @@ const testMedia = {
     }
 }
 
-class FileUploaderPage extends Component {
-    constructor(props){
-        super(props);
-        this.state = {
-            fileId: null,
-            uploaded: 'none',
-            fileType: null
-        }
-        this.onTriggerUpload = (e) => {
-            this.setState({
-                fileId: null,
-                uploaded: 'none',
-                fileUrl: ''
-            })
-        }
-        this.getFileInfo = (f, type) => {
-            this.setState({ fileType: type, uploaded: 'uploading' })
-        }
-        this.getSignatureDone = (signature) => {
-            this.setState({fileId:signature.fileId});
-        }
-        this.uploadToS3Done = () => {
-            this.setState({ uploaded: 'success'});
-        }
-        this.urlTransformDone = (result) => {
-            this.setState({ fileUrl: result.url[0]});
-        }
-    }
-	render() {
-        let result;
-        if( this.state.fileUrl ) {
-            if( this.state.fileType === 'IMAGE') { result = <img src={this.state.fileUrl} />}
-            else if( this.state.fileType === 'VIDEO') { result = <video src={this.state.fileUrl} /> }
-            else if( this.state.fileType === 'AUDIO') { result = <audio src={this.state.fileUrl} /> }
-            else if( this.state.fileType === 'DOCUMENT') { }
-            else { result = null; }
-        }
-        
-		return (
-            <div>
-                <h3>File Uploader</h3>
-                <FileUploader apnum="10400"
-                            pid="10400"  
-                            mediaInfo={testMedia}
-                            onTriggerUpload={this.onTriggerUpload}
-                            getFileInfo={this.getFileInfo}
-                            getSignatureDone={this.getSignatureDone}
-                            uploadToS3Done={this.uploadToS3Done}
-                            urlTransformDone={this.urlTransformDone}>
-                    <button styleName="button">
-                        上傳檔案
-                    </button>
-                </FileUploader>
-                <h3>Get File Id & upload Status</h3>
-                <div className="content">
-					<p>Status: { this.state.uploaded } </p>
-                    <p>fileId: { this.state.fileId }</p>
-                </div>
-                <h3>result</h3>
-                <div className="content">
-					{ result }
-                </div>
-                <div className="content" dangerouslySetInnerHTML={{__html: html}}>
-					
-				</div>
-            </div>            
-		);
-	}
-}
-
-export default connect()(CSSModules(FileUploaderPage,css));
+export default mediaInfo;

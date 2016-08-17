@@ -3,6 +3,9 @@ import ToolbarIcon from './ToolbarIcon';
 import CSSModules from 'react-css-modules';
 import style from './style.css';
 
+import FileUploader from '../fileUploader';
+import mediaInfo from './mediaInfo.js';
+
 const BLOCK_TYPES = [
 	{ icon: 'icon h1', style: 'header-one' },
 	{ icon: 'icon h2', style: 'header-two' },
@@ -43,15 +46,25 @@ class SideToolbar extends Component {
 	}
 	render() {
 		const { isExpanded } = this.state;
-		const { editorState, onUploadImage, onToggle } = this.props;
+		const { editorState, onUploadImage, onToggle, onTriggerUpload, getFileInfo, getSignatureDone, uploadToS3Done, urlTransformDone } = this.props;
 		return (
 			<div style={this.props.style} styleName="side-toolbar">
-				<i className="icon picture"
-					aria-hidden="true"
-					onMouseDown={e => e.preventDefault() }
-					onClick={onUploadImage}
-					>
-				</i>
+				<FileUploader 
+							apnum="10400"
+                            pid="10400"  
+                            mediaInfo={mediaInfo}
+                            onTriggerUpload={onTriggerUpload}
+                            getFileInfo={getFileInfo}
+                            getSignatureDone={getSignatureDone}
+                            uploadToS3Done={uploadToS3Done}
+                            urlTransformDone={urlTransformDone}>
+					<i className="icon picture"
+						aria-hidden="true"
+						onMouseDown={e => e.preventDefault() }
+						onClick={onUploadImage}
+						>
+					</i>
+				</FileUploader>
 				<i className="icon bars"
 					aria-hidden="true"
 					onMouseEnter={() => this.setState({ isExpanded: true }) }

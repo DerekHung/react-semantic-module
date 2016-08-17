@@ -29,6 +29,7 @@ const MIMEMap = {
 	'video/x-msvideo': 'VIDEO',
 	'video/x-ms-wmv': 'VIDEO',
 	'video/vnd.uvvu.mp4': 'VIDEO',
+	'video/mp4':'VIDEO',
 	'video/x-flv': 'VIDEO',
 	'video/webm': 'VIDEO',
 };
