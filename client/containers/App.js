@@ -7,6 +7,8 @@ import CSSModules from 'react-css-modules';
 
 import style from './style.css';
 
+
+
 class App extends Component {
 	render() {
 		return (

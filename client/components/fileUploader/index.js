@@ -3,7 +3,7 @@ import CSSModules from 'react-css-modules';
 import css from './style.css';
 import { MIMEMap, getSignature, uploadToS3, getFileUrl, waitUrlSuccess } from '../../utils/fileUpload.js';
 
-require('babel-polyfill');
+if ( typeof(regeneratorRuntime) === 'undefined' ) require('babel-polyfill');
 
 class FileUploader extends Component {
     constructor(props) {

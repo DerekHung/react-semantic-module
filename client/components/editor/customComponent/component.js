@@ -132,12 +132,3 @@ class CustomComponent extends Component  {
 	}
 };
 export default CSSModules(CustomComponent,style,{allowMultiple:true});
-/*
-class ImageComponent extends Component {
-	render(){
-		console.log(this.props);
-		return <img src={this.props.src} contentEditable={false}/>;
-	}
-}
-
-export default ImageComponent;*/
