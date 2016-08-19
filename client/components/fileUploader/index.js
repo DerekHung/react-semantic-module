@@ -13,7 +13,7 @@ class FileUploader extends Component {
             if( this.props.onTriggerUpload ) this.props.onTriggerUpload(e);
             this.refs.fileInput.click()
         }
-        this.cleanInput = () => { this.refs.fileInput.value = null }
+        this.cleanInput = () => { if( this.refs.fileInput ) this.refs.fileInput.value = null; }
 
         this.handleFileInput = (e) => this._handleFileInput(e);
     
@@ -24,8 +24,10 @@ class FileUploader extends Component {
             let uploadS3 = yield uploadToS3(f, signature);
             if( this.props.uploadToS3Done ) this.props.uploadToS3Done();
 
-            let fileData = yield waitUrlSuccess(signature.fileId);
-            if( this.props.urlTransformDone ) this.props.urlTransformDone(fileData[0]);
+            if ( !this.props.dontWaitSuccess ) {
+                let fileData = yield waitUrlSuccess(signature.fileId);
+                if( this.props.urlTransformDone ) this.props.urlTransformDone(fileData[0]);
+            }
 
             this.cleanInput();
         }

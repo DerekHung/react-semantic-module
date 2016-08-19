@@ -37,6 +37,7 @@ export { MIMEMap };
 
 export function getAtomicType(MIMEType) {
 	if( typeof(MIMEMap[MIMEType])!=='undefined' ) {
+
 		return MIMEMap[MIMEType];
 	}else {
 		console.log('this type is not support');
@@ -50,9 +51,7 @@ export function getSignature (file, dataInfo){
 		contentType: file.type,
 		contentDisposition: file.name,
 		isP: 1,
-		extra: dataInfo.extra,
-		title: "Cover",
-		description: "Cover"
+		extra: dataInfo.extra
 	};
 	return new Promise(function(resolve, reject){
 		$.ajax({
@@ -90,18 +89,15 @@ export function uploadToS3(file, jsonDataForUpload){
 	});
 }
 export function getFileUrl(fileId) {
-	var config = [
-		{name: "原圖", tag: ""}
-	],params = {};
-	params.timestamp = "1669527003";
-	params.getFileArr = [];
-	config.map(function(obj, index){
-		var ioi = {};
-		ioi.fileId = fileId;
-		ioi.protocol = "http";
-		ioi.fileTag = obj.tag;
-		params.getFileArr.push(ioi);
-	})
+	var params = {};
+	params.timestamp = Math.floor(Date.now()/1000) + 1800;
+	console.log(params.timestamp);
+	params.getFileArr = [
+		{
+			fileId: fileId,
+			protocol: "http",
+		}	
+	];
 	return	$.ajax({
 			method: 'POST',
 			url: 'http://docapi-staging-api-1712535865.us-west-2.elb.amazonaws.com/docapi/v0/getFileUrl',
@@ -133,14 +129,14 @@ export function waitUrlSuccess(id) {
 	
 }
 
-export function getURLData(url){
-	let jsonData = {
-		pid: "10400",
-		apnum: "10400",
+export function getURLData(apnum, pid, url, tag){
+	let jsonData = {		
+		apnum: apnum,
+		pid: pid,
 		isP: 0,
 		urlList:[{
 			url: url,
-			tag: "fb"
+			tag: tag
 		}]
 	} 
 	return $.ajax({

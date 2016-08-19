@@ -50,14 +50,15 @@ class SideToolbar extends Component {
 		return (
 			<div style={this.props.style} styleName="side-toolbar">
 				<FileUploader 
-							apnum="10400"
-                            pid="10400"  
+							apnum={ this.props.apnum }
+                            pid={ this.props.pid }
                             mediaInfo={mediaInfo}
                             onTriggerUpload={onTriggerUpload}
                             getFileInfo={getFileInfo}
                             getSignatureDone={getSignatureDone}
                             uploadToS3Done={uploadToS3Done}
-                            urlTransformDone={urlTransformDone}>
+                            urlTransformDone={urlTransformDone}
+							dontWaitSuccess={true}>
 					<i className="icon picture"
 						aria-hidden="true"
 						onMouseDown={e => e.preventDefault() }

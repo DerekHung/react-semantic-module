@@ -17,18 +17,16 @@ import {
 import $ from 'jquery';
 
 import testData from './test.json';
-console.log(testData);
 
 let metion = [];
 if(typeof(window) !== 'undefined'){
 	$.each(testData.response, function(index,value){
-		let item = {id:index, link: value.pid, name: value.userName, avatar: 'https://pbs.twimg.com/profile_images/517863945/mattsailing_400x400.jpg'};
+		let item = {id:index, link: value.pid, name: value.userNcdame, avatar: 'https://pbs.twimg.com/profile_images/517863945/mattsailing_400x400.jpg'};
 		metion.push(item);
 	})
 }
 
 
-console.log(metion);
 import { fromJS } from 'immutable';
 
 
@@ -98,7 +96,9 @@ class EditorPage extends Component {
 					<LightBox option={option}
 						  onClose={this.toggle.bind(this,'close')}>
 						<div styleName="editorBlock">
-							<Editor onChange={this.onChange} 
+							<Editor apnum="10400"
+									pid="10400"
+									onChange={this.onChange} 
 									mentions={mentions}
 									onUploadStatusChange={this.onUploadStatusChange.bind(this)}/>
 						</div>

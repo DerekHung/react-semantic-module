@@ -93,6 +93,16 @@ class CustomComponent extends Component  {
 					</div>
 				}
 				</div>;
+			case 'DOCUMENT':
+				return <div styleName="block">
+				{ props.loading? <div styleName="loading-preset document"><div styleName="play-icon document"></div><div styleName="loader"></div></div> : 
+					<div>
+						<div styleName="close" onClick={this.handleClick.bind(this)}></div>
+						
+						<div styleName="loading-preset"><div styleName="play-icon document"></div><div styleName="mid-title">{props.name}</div></div>
+					</div>
+				}
+				</div>;
 			case 'HYPERLINK':
 				return <a href={props.url } target="_blank">
 				<div styleName="block">

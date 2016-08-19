@@ -70,11 +70,11 @@ const Link = (props) => {
 };
 
 const decorator = new CompositeDecorator([
-						{
-							strategy: findLinkEntities,
-							component: Link,
-						},
-					]);
+					{
+						strategy: findLinkEntities,
+						component: Link,
+					},
+				]);
 
 class RichEditor extends Component {
 	constructor(props) { 
@@ -92,13 +92,16 @@ class RichEditor extends Component {
 				decorator
 			)
 		} else {
+			console.log("create");
 			editorState = EditorState.createEmpty(decorator)
 		}
+		
+
 		
 		this.uploading = 0;
 
 		this.state = {
-			editorState,
+			editorState: editorState,
 			inlineToolbar: { show: false },
 			suggestions: this.props.mentions
 		};
@@ -112,6 +115,10 @@ class RichEditor extends Component {
 		/* Editor component public method */ 
 		this.focus = () => this.refs.editor.focus();
 		this.blur = () => this.refs.editor.blur();
+		this.log = () => {
+			const content = this.state.editorState.getCurrentContent();
+            console.log(convertToRaw(content));
+		}
 
 		this.updateSelection = () => this._updateSelection();
 		this.handleKeyCommand = (command) => this._handleKeyCommand(command);
@@ -141,13 +148,13 @@ class RichEditor extends Component {
 		this.onTriggerUpload = (e) => {}; 
 		this.getFileInfo = (f, type) =>  this._handleFileInput(f, type);
 		this._handleFileInput = (f, type) => {
-
+			console.log(f);
 			let props = {
 				loading: true,
 				fakeSrc: URL.createObjectURL(f)
 			}
 
-			if( type === 'AUDIO' ) props.name = f.name;
+			if( type === 'AUDIO' || type === 'DOCUMENT' ) props.name = f.name;
 			this.gen = this._insertAsyncBlockComponent(type, f, props);
 
 			this.gen.next();
@@ -159,6 +166,7 @@ class RichEditor extends Component {
 			this.gen.next();
 		} 
 		this._insertAsyncBlockComponent = function* (type, file, props){
+
 			let that = this;
 
 			this.setLoadingState(this.uploading + 1);
@@ -287,6 +295,8 @@ class RichEditor extends Component {
 				that.setState({
 					inlineToolbar: { show: false }
 				})
+				setTimeout(() => that.refs.editor.focus(), 0);
+				
 			});
 	}
 
@@ -338,13 +348,13 @@ class RichEditor extends Component {
 					
 				}else if( res[0].convertStatus === 'success'){
 					callback(res);
-				}else if( res[0].convertStatus === 'noResponse' ) {
-					that._linkFail(props);
+				}else {
+					that._linkFail(props, entityKey, type, url);
 				}
 			})
 		};
 
-		getURLData(props.url).done(function(res){
+		getURLData(this.props.apnum, this.props.pid, props.url, 'HYPERLINK').done(function(res){
 				//console.log(res);
 			getJSONLoop(res[0].fileId, function(urlResult){
 
@@ -365,13 +375,13 @@ class RichEditor extends Component {
 
 				}).fail(function(res){
 					//props.loading = false;
-					that._linkFail(props);
+					that._linkFail(props, entityKey, type, url);
 				})
 			})
 		})
 	}
 
-	_linkFail(props) {
+	_linkFail(props, entityKey, type, url) {
 		let that = this;
 
 		props.linkError = true;
@@ -536,8 +546,7 @@ class RichEditor extends Component {
 						/>
 				}
 					<input type="file" ref="fileInput" style={{ display: 'none' }}
-						 onChange={this.handleFileInput}/>
-						 
+						 onChange={this.handleFileInput}/>	 
 			</div>
 		);
 	}
