@@ -21,7 +21,7 @@ class CustomComponent extends Component  {
 	}
 
 	handleClick(e){
-		this.props.blockProps.onRequestRemove(this.props.block.getKey());
+		this.props.blockProps.onRequestRemove(this.props.block.getKey(), this.state.props.id);
 	}
 
 	componentDidMount() {
@@ -76,7 +76,7 @@ class CustomComponent extends Component  {
 					</div>;
 			case 'VIDEO':
 				return <div styleName="block">
-				{ props.loading? <div styleName="loading-preset"><div styleName="play-icon video"></div><div styleName="loader"></div></div> : 
+				{ props.loading? <div styleName="loading-preset"><div styleName="close" onClick={this.handleClick.bind(this)}></div><div styleName="play-icon video"></div><div styleName="loader"></div></div> : 
 					<div>
 						<div styleName="close" onClick={this.handleClick.bind(this)}></div>
 						<video controls src={props.src} />
@@ -104,9 +104,9 @@ class CustomComponent extends Component  {
 				}
 				</div>;
 			case 'HYPERLINK':
-				return <a href={props.url } target="_blank">
-				<div styleName="block">
+				return <div styleName="block">
 					<div styleName="close" onClick={this.handleClick.bind(this)}></div>
+					<a href={props.url } target="_blank">
 					<span styleName="link">{props.url}</span>
 					{ props.loading ?  
 						<div styleName="linkLoading"><div styleName="loading"></div></div> 
@@ -120,8 +120,9 @@ class CustomComponent extends Component  {
 							</div>
 						</div>
 					}
-				</div>
-				</a>;
+					</a>
+				</div>;
+				
 			case 'YOUTUBE':
 				return <div styleName="block">
 					<div styleName="close" onClick={this.handleClick.bind(this)}></div>

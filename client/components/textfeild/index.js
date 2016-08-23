@@ -60,6 +60,7 @@ class TextFeild extends Component {
 			},
 
 			Enter(event) {
+				console.log(event);
 				if (this.state.ACData.length === 0) {
 					// menu is closed so there is no selection to accept -> do nothing
 					return

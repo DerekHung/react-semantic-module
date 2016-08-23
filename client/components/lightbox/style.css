@@ -7,7 +7,7 @@
     background: #fff;
     margin: auto; 
     text-align: center;
-    z-index: 2001;
+    z-index: 3001;
     padding: 40px 48px;
     position: relative;
     min-width: 396px;
@@ -54,7 +54,7 @@
     height: 100%;
     top: 0;
     left: 0;
-    z-index:2000;
+    z-index:3000;
     overflow: auto;
     padding: 30px 0;
 }

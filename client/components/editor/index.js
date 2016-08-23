@@ -56,7 +56,6 @@ function findLinkEntities(contentBlock, callback) {
 }
 
 const Link = (props) => {
-	console.log(props);
 	const {url} = Entity.get(props.entityKey).getData();
 	const styleLink = {
 		color: '#3b5998',
@@ -92,13 +91,13 @@ class RichEditor extends Component {
 				decorator
 			)
 		} else {
-			console.log("create");
 			editorState = EditorState.createEmpty(decorator)
 		}
 		
 
 		
-		this.uploading = 0;
+		this.uploadingArr = {};
+		this.gen = {};
 
 		this.state = {
 			editorState: editorState,
@@ -117,15 +116,12 @@ class RichEditor extends Component {
 		this.blur = () => this.refs.editor.blur();
 		this.log = () => {
 			const content = this.state.editorState.getCurrentContent();
-            console.log(convertToRaw(content));
 		}
 
 		this.updateSelection = () => this._updateSelection();
 		this.handleKeyCommand = (command) => this._handleKeyCommand(command);
 		this.toggleBlockType = (type) => this._toggleBlockType(type);
 		this.toggleInlineStyle = (style) => this._toggleInlineStyle(style);
-		
-		this.handleFileInput = (e) => this._handleFileInput(e);
 		
 		this.onLinkKeyDown = (e) => this._onLinkKeyDown(e);
 		this.insertBlockComponent = (type, data) => this._insertBlockComponent(type,data);
@@ -140,50 +136,63 @@ class RichEditor extends Component {
 		this.cleanInput = () => { this.refs.fileInput.value = null; }
 		this.handlePaste = (text) => this._handlePaste(text);
 		this.onSearchChange = ({value}) => this._onSearchChange({value});
-		this.setLoadingState = (counter) => {
-			this.uploading = counter;
-			if( this.props.onUploadStatusChange ) this.props.onUploadStatusChange(this.uploading);
+
+
+		this.setLoadingState = (file, flag) => {
+			//console.log(file);
+			if( flag === 'add') {
+				this.uploadingArr[file.id] = file;
+			}else if (flag === 'remove' && this.uploadingArr[file.id]) {
+				delete this.uploadingArr[file.id];
+			}
+			if( this.props.onUploadStatusChange ) this.props.onUploadStatusChange(this.uploadingArr);
 		}
 
 		this.onTriggerUpload = (e) => {}; 
-		this.getFileInfo = (f, type) =>  this._handleFileInput(f, type);
-		this._handleFileInput = (f, type) => {
-			console.log(f);
+		this.getFileInfo = (file) =>  this._handleFileInput(file);
+		this._handleFileInput = (file) => {
+
+			file = Object.assign({}, file);
+
 			let props = {
 				loading: true,
-				fakeSrc: URL.createObjectURL(f)
+				fakeSrc: URL.createObjectURL(file.originFile)
 			}
 
-			if( type === 'AUDIO' || type === 'DOCUMENT' ) props.name = f.name;
-			this.gen = this._insertAsyncBlockComponent(type, f, props);
+			if( file.type === 'AUDIO' || file.type === 'DOCUMENT' ) props.name = file.name;
+			this.gen[file.id] = this._insertAsyncBlockComponent(file, props);
 
-			this.gen.next();
+			this.gen[file.id].next();
 		}
-		this.getSignatureDone = (signature) => {
-			this.gen.next(signature.fileId);
+		this.getSignatureDone = (file) => {
+			//console.log(file);
+			this.gen[file.id].next(file.signature.fileId);
 		}
-		this.uploadToS3Done = () => {
-			this.gen.next();
+		this.uploadToS3Done = (file) => {
+			console.log("uploadDone");
+			console.log(file);
+			this.gen[file.id].next(file);
 		} 
-		this._insertAsyncBlockComponent = function* (type, file, props){
+		this._insertAsyncBlockComponent = function* (file, props){
 
 			let that = this;
+			props.id = file.id;
+			let entityKey = this._insertBlockComponent(null, file.type, props);
+			this.setLoadingState(file, 'add');		
 
-			this.setLoadingState(this.uploading + 1);
-
-			let entityKey = this._insertBlockComponent(null, type, props);		
-			yield "loading";
 			let fileId = yield "get fileId";
+			
+			let fileFinal = yield "uploadDone";
+			//console.log(newFile);
+			props.loading = false;
+			props.src = props.fakeSrc;
+			props.fileId = fileId;
+			
+			that._insertBlockComponent(entityKey, fileFinal.type, props);
 
-			let uploadDone = yield function (){
-				props.loading = false;
-				props.src = props.fakeSrc;
-				props.fileId = fileId;
-				
-				that._insertBlockComponent(entityKey, type, props);
+			that.setLoadingState(fileFinal,'remove');
 
-				that.setLoadingState(that.uploading - 1);
-			}();
+			console.log(Object.assign({}, this.gen));
 /*
 				}).fail(function(error){
 
@@ -208,8 +217,8 @@ class RichEditor extends Component {
 				component: CustomComponent,
 				editable: false,
 				props:{
-					onRequestRemove: function(blockKey){
-						 that._removeBlock(blockKey);
+					onRequestRemove: function(blockKey, id){
+						 that._removeBlock(blockKey, id);
 					}
 				}
 			}
@@ -302,11 +311,9 @@ class RichEditor extends Component {
 
 	_insertTextBlock(){
 		let blockArray = this.state.editorState.getCurrentContent().getBlocksAsArray();
-		console.log(blockArray);
 	}
 
 	_insertBlockComponent(entityKey, type, props, mutablity) {
-		console.log("insert");
 		const currentSelection = this.state.editorState.getSelection();
 		let newState = null;
 
@@ -359,8 +366,6 @@ class RichEditor extends Component {
 			getJSONLoop(res[0].fileId, function(urlResult){
 
 				$.getJSON(urlResult[0].url[0],function(result){
-					
-					console.log(result);
 
 					props.loading = false;
 					props.title = result.title; 
@@ -412,14 +417,15 @@ class RichEditor extends Component {
 		});
 	}
 
-	_removeBlock(blockKey) {
+	_removeBlock(blockKey, id) {
 		const editorState = this.state.editorState;
 		const content = editorState.getCurrentContent();
 
 		let block = content.getBlockForKey(blockKey);
 		let blockAfter = content.getKeyAfter(blockKey);
 		let blockBefore = content.getKeyBefore(blockKey);
-
+		let entityKey = block.getEntityAt(0);
+		
 		let targetRange = new SelectionState({
 			anchorKey: blockKey,
 			anchorOffset: 0,
@@ -435,7 +441,12 @@ class RichEditor extends Component {
 		);
 
 		let newState = EditorState.push(editorState, resetBlock, 'remove-range');
-			
+
+		if( this.uploadingArr[id] ) {
+			delete this.uploadingArr[id];
+			if( this.props.onUploadStatusChange ) this.props.onUploadStatusChange(this.uploadingArr);
+		}
+
 		this.onChange(newState);
 	}
 	
@@ -509,6 +520,8 @@ class RichEditor extends Component {
 			<div styleName="editor" className={ editorStyles.editor } id="richEditor" >
 				{selectedBlock
 					? <SideToolbar
+						apnum={this.props.apnum}
+						pid={this.props.pid}
 						editorState={editorState}
 						style={{ top: sideToolbarOffsetTop }}
 						onToggle={this.toggleBlockType}
@@ -532,7 +545,7 @@ class RichEditor extends Component {
 						editorState={editorState}
 						handleKeyCommand={this.handleKeyCommand}
 						onChange={this.onChange}
-						placeholder="Write something..."
+						placeholder={this.props.placeholder}
 						spellCheck={true}
 						readOnly={this.props.readOnly}
 						ref="editor"

@@ -2,13 +2,17 @@ import React, { Component, PropTypes } from 'react';
 import CSSModules from 'react-css-modules';
 import css from './style.css';
 import { MIMEMap, getSignature, uploadToS3, getFileUrl, waitUrlSuccess } from '../../utils/fileUpload.js';
+import IDMaker from '../../utils/IDMaker.js';
 
 if ( typeof(regeneratorRuntime) === 'undefined' ) require('babel-polyfill');
 
 class FileUploader extends Component {
     constructor(props) {
         super(props);
-        
+
+        this.counter = 0;
+        this.fileList={};
+
         this.handleClick = (e) => { 
             if( this.props.onTriggerUpload ) this.props.onTriggerUpload(e);
             this.refs.fileInput.click()
@@ -16,29 +20,38 @@ class FileUploader extends Component {
         this.cleanInput = () => { if( this.refs.fileInput ) this.refs.fileInput.value = null; }
 
         this.handleFileInput = (e) => this._handleFileInput(e);
-    
-        this.generatorProcess = function* (f, signatureData){
-            let signature = yield getSignature(f, signatureData);
-            if( this.props.getSignatureDone ) this.props.getSignatureDone(signature);
+        
+        this.logObject = (object) => { return Object.assign({}, object); }
 
-            let uploadS3 = yield uploadToS3(f, signature);
-            if( this.props.uploadToS3Done ) this.props.uploadToS3Done();
+        this.generatorProcess = function* (ID, signatureData){
 
-            if ( !this.props.dontWaitSuccess ) {
-                let fileData = yield waitUrlSuccess(signature.fileId);
-                if( this.props.urlTransformDone ) this.props.urlTransformDone(fileData[0]);
+            if( this.fileList[ID] ) {
+
+                let signature = yield getSignature(this.fileList[ID].originFile, signatureData);
+                this.fileList[ID].signature = signature;
+                this.fileList[ID].status = 'uploading';
+                if( this.props.getSignatureDone ) this.props.getSignatureDone(this.logObject(this.fileList[ID]));
+
+                let uploadS3 = yield uploadToS3(this.fileList[ID].originFile, signature);
+                this.fileList[ID].status = 'uploadDone';
+                if( this.props.uploadToS3Done ) this.props.uploadToS3Done(this.logObject(this.fileList[ID]));
+
+                if ( !this.props.dontWaitSuccess ) {
+                    this.fileList[ID].status = 'transforming';
+                    this.fileList[ID].transformedFile = yield waitUrlSuccess(signature.fileId);
+                    this.fileList[ID].status = 'transformDone';
+                    if( this.props.urlTransformDone ) this.props.urlTransformDone(this.logObject(this.fileList[ID]));
+                }
+
+                this.cleanInput();
             }
-
-            this.cleanInput();
         }
 
         this.runGenerator = (gen) => {
             
             function go( result ) {
                 if( result.done ) return;
-                console.log(result.value);
                 result.value.then((r) => {
-                    console.log(r);
                     go( gen.next(r));
                 });
             }
@@ -46,7 +59,6 @@ class FileUploader extends Component {
         }
     }
     _handleFileInput(e) {
-        console.log(this.props);
         let files = Array.prototype.slice.call(e.target.files, 0);
         let signatureData = {
             apnum: this.props.apnum,
@@ -56,9 +68,21 @@ class FileUploader extends Component {
 
         files.forEach(f => {
             if( typeof(MIMEMap[f.type]) !== 'undefined' ) {
-                if ( that.props.getFileInfo ) that.props.getFileInfo( f, MIMEMap[f.type]);
+
+                let ID = IDMaker(3, this.counter);
+                this.counter++;
+
+                that.fileList[ID] = {
+                    id: ID,
+                    type: MIMEMap[f.type],
+                    originFile: f,
+                    status: 'initial',
+                    transformedFile: null
+                }
+
+                if ( that.props.getFileInfo ) that.props.getFileInfo( that.fileList[ID] );
                 signatureData.extra = that.props.mediaInfo[MIMEMap[f.type]];
-                let gen = that.generatorProcess(f, signatureData);
+                let gen = that.generatorProcess(ID, signatureData);
                 that.runGenerator(gen);
             }
         });

@@ -130,17 +130,22 @@ class FileUploaderPage extends Component {
                 fileUrl: ''
             })
         }
-        this.getFileInfo = (f, type) => {
-            this.setState({ fileType: type, uploaded: 'uploading' })
+        this.getFileInfo = (file) => {
+            console.log(file);
+            this.setState({ fileType: file.type, uploaded: file.status })
         }
-        this.getSignatureDone = (signature) => {
-            this.setState({fileId:signature.fileId});
+        this.getSignatureDone = (file) => {
+            console.log(file);
+            file.test = "123154";
+            this.setState({fileId:file.signature.fileId});
         }
-        this.uploadToS3Done = () => {
-            this.setState({ uploaded: 'success'});
+        this.uploadToS3Done = (file) => {
+            console.log(file);
+            this.setState({ uploaded: file.status});
         }
-        this.urlTransformDone = (result) => {
-            this.setState({ fileUrl: result.url[0]});
+        this.urlTransformDone = (file) => {
+            console.log(file);
+            this.setState({ fileUrl: file.transformedFile[0].url[0]});
         }
     }
 	render() {

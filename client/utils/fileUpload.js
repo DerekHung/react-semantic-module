@@ -44,14 +44,15 @@ export function getAtomicType(MIMEType) {
 	}
 }
 export function getSignature (file, dataInfo){
-	console.log(dataInfo);
 	let jsonDataForSig = {
 		apnum: dataInfo.apnum,
 		pid: dataInfo.pid,
 		contentType: file.type,
 		contentDisposition: file.name,
 		isP: 1,
-		extra: dataInfo.extra
+		extra: dataInfo.extra,
+		title:'fileUploader',
+		description: 'fileUploader'
 	};
 	return new Promise(function(resolve, reject){
 		$.ajax({
@@ -68,7 +69,6 @@ export function getSignature (file, dataInfo){
 	
 }
 export function uploadToS3(file, jsonDataForUpload){
-	console.log(file.type);
 	let formData = new FormData();
 	formData.append('key', jsonDataForUpload.objectKey);
 	formData.append('content-type', file.type);
@@ -91,7 +91,6 @@ export function uploadToS3(file, jsonDataForUpload){
 export function getFileUrl(fileId) {
 	var params = {};
 	params.timestamp = Math.floor(Date.now()/1000) + 1800;
-	console.log(params.timestamp);
 	params.getFileArr = [
 		{
 			fileId: fileId,
@@ -111,7 +110,6 @@ export function waitUrlSuccess(id) {
 	return new Promise(function(resolve, reject){
 		let time = 0;
 		let loop = () => getFileUrl(id).done(function(res){
-			console.log(res);
 			if(res[0].convertStatus === 'pending' || res[0].convertStatus === 'uploading') {
 				setTimeout(() => {
 					time = time + 500;

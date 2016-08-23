@@ -71,9 +71,10 @@ class EditorPage extends Component {
 	componentDidMount() {
 		
 	}
-	onUploadStatusChange(counter){
+	onUploadStatusChange(object){
+		console.log(Object.keys(object).length);
 		this.setState({
-			uploadingCount: counter
+			uploadingCount: Object.keys(object).length
 		})
 	}
 	/*_onRequestSearch(value) {
@@ -98,6 +99,7 @@ class EditorPage extends Component {
 						<div styleName="editorBlock">
 							<Editor apnum="10400"
 									pid="10400"
+									placeholder="welcome"
 									onChange={this.onChange} 
 									mentions={mentions}
 									onUploadStatusChange={this.onUploadStatusChange.bind(this)}/>

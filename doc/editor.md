@@ -61,6 +61,9 @@ Editor Element 會延展寬高到100％，因此要控制寬高請在外面多�
 
 |Name|Description|
 |----|--------------|
+|apnum|使用fileupload的時候需要|
+|pid|使用fileupload的時候需要|
+|placeholder|輸入框的placeholder|
 |content|傳入與rawstate相同結構的json object 即可產生有預設內容的Editor|
 |readOnly|true則不能編輯（純顯示）|
 
