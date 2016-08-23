@@ -47,6 +47,7 @@ class EditorPage extends Component {
 		this.onChange = (rawState) => this._onChange(rawState);
 		this.toggle = () => this._toggle();
 		this.onRequestSearch = (value) => this._onRequestSearch(value);
+		this.open = () => this.setState({ open: true});
 	}
 	_onChange (contentState) {
 		this.contentState = contentState;
@@ -54,20 +55,30 @@ class EditorPage extends Component {
 	}
 	_toggle(){
 		let html;
-		if( this.state.uploadingCount === 0 ){
+		let fileStatus = this.refs.editor.getFileUploadObject();
+		let uploadDone = true;
+		for( var key in fileStatus ) {
+			if( fileStatus[key].fileData.status !== 'uploadDone') {
+				uploadDone = false;
+			}
+		}
+		if( this.state.uploadingCount === 0 && uploadDone ){
 			if( this.contentState ) {
-				//html = stateToHTML(this.contentState);
+				html = stateToHTML(this.contentState);
 			}
 			this.setState({ 
 				open: !this.state.open,
 				rawStateString: JSON.stringify(this.rawState),
 				rawState: this.rawState,
 				HTMLString: html,
-				HTMLtoState: convertToRaw(stateFromHTML(html))
+				//HTMLtoState: convertToRaw(stateFromHTML(html))
 			});
+			console.log(this.refs.editor.getFileUploadObject());
 		}
 		
+		
 	}
+	
 	componentDidMount() {
 		
 	}
@@ -91,7 +102,7 @@ class EditorPage extends Component {
 		return (
 			<div>
 				<h3>Rich Editor</h3>
-				<button styleName="viewButton" onClick={this.toggle}>發表文章</button>
+				<button styleName="viewButton" onClick={this.open}>發表文章</button>
 				
 				{ this.state.open && 
 					<LightBox option={option}
@@ -102,7 +113,8 @@ class EditorPage extends Component {
 									placeholder="welcome"
 									onChange={this.onChange} 
 									mentions={mentions}
-									onUploadStatusChange={this.onUploadStatusChange.bind(this)}/>
+									onUploadStatusChange={this.onUploadStatusChange.bind(this)}
+									ref="editor"/>
 						</div>
 						{ this.state.uploadingCount > 0 && <div styleName="uploading">有{this.state.uploadingCount}個檔案上傳中...</div>}
 					</LightBox>	

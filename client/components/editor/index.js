@@ -97,7 +97,7 @@ class RichEditor extends Component {
 
 		
 		this.uploadingArr = {};
-		this.gen = {};
+		this.fileSystemObject = {};
 
 		this.state = {
 			editorState: editorState,
@@ -117,6 +117,7 @@ class RichEditor extends Component {
 		this.log = () => {
 			const content = this.state.editorState.getCurrentContent();
 		}
+		this.getFileUploadObject = () => { return Object.assign({}, this.fileSystemObject) ; }
 
 		this.updateSelection = () => this._updateSelection();
 		this.handleKeyCommand = (command) => this._handleKeyCommand(command);
@@ -137,17 +138,6 @@ class RichEditor extends Component {
 		this.handlePaste = (text) => this._handlePaste(text);
 		this.onSearchChange = ({value}) => this._onSearchChange({value});
 
-
-		this.setLoadingState = (file, flag) => {
-			//console.log(file);
-			if( flag === 'add') {
-				this.uploadingArr[file.id] = file;
-			}else if (flag === 'remove' && this.uploadingArr[file.id]) {
-				delete this.uploadingArr[file.id];
-			}
-			if( this.props.onUploadStatusChange ) this.props.onUploadStatusChange(this.uploadingArr);
-		}
-
 		this.onTriggerUpload = (e) => {}; 
 		this.getFileInfo = (file) =>  this._handleFileInput(file);
 		this._handleFileInput = (file) => {
@@ -156,43 +146,53 @@ class RichEditor extends Component {
 
 			let props = {
 				loading: true,
-				fakeSrc: URL.createObjectURL(file.originFile)
+				fakeSrc: URL.createObjectURL(file.originFile),
+				id: file.id
 			}
 
 			if( file.type === 'AUDIO' || file.type === 'DOCUMENT' ) props.name = file.name;
-			this.gen[file.id] = this._insertAsyncBlockComponent(file, props);
 
-			this.gen[file.id].next();
+			this.fileSystemObject[file.id] = {
+				fileData: file,
+				fileProps: props,
+				fileId: null,
+				generator: this._insertAsyncBlockComponent(file.id)
+			};
+			
+
+			this.fileSystemObject[file.id].generator.next();
 		}
 		this.getSignatureDone = (file) => {
-			//console.log(file);
-			this.gen[file.id].next(file.signature.fileId);
+			
+			if( typeof(this.fileSystemObject[file.id])!=='undefined' ){
+				this.fileSystemObject[file.id].fileData = file;
+				this.fileSystemObject[file.id].generator.next(file.signature.fileId);
+			}
 		}
 		this.uploadToS3Done = (file) => {
-			console.log("uploadDone");
-			console.log(file);
-			this.gen[file.id].next(file);
+
+			if( typeof(this.fileSystemObject[file.id])!=='undefined' ){
+				this.fileSystemObject[file.id].fileData = file;
+				this.fileSystemObject[file.id].generator.next(file);
+			}
+			
 		} 
-		this._insertAsyncBlockComponent = function* (file, props){
-
-			let that = this;
-			props.id = file.id;
-			let entityKey = this._insertBlockComponent(null, file.type, props);
-			this.setLoadingState(file, 'add');		
-
-			let fileId = yield "get fileId";
+		this._insertAsyncBlockComponent = function* (id){
 			
-			let fileFinal = yield "uploadDone";
-			//console.log(newFile);
-			props.loading = false;
-			props.src = props.fakeSrc;
-			props.fileId = fileId;
+			const { fileData, fileProps } = this.fileSystemObject[id];
+
+			let entityKey = this._insertBlockComponent(null, fileData.type, fileProps);		
+
+			this.fileSystemObject[id].fileId = yield "get fileId";
 			
-			that._insertBlockComponent(entityKey, fileFinal.type, props);
+			yield "uploadDone";
 
-			that.setLoadingState(fileFinal,'remove');
+			fileProps.loading = false;
+			fileProps.src = fileProps.fakeSrc;
+			fileProps.fileId = this.fileSystemObject[id].fileId;
+			
+			this._insertBlockComponent(entityKey, fileData.type, fileProps);
 
-			console.log(Object.assign({}, this.gen));
 /*
 				}).fail(function(error){
 
@@ -442,9 +442,8 @@ class RichEditor extends Component {
 
 		let newState = EditorState.push(editorState, resetBlock, 'remove-range');
 
-		if( this.uploadingArr[id] ) {
-			delete this.uploadingArr[id];
-			if( this.props.onUploadStatusChange ) this.props.onUploadStatusChange(this.uploadingArr);
+		if( this.fileSystemObject[id] ) {
+			delete this.fileSystemObject[id];
 		}
 
 		this.onChange(newState);

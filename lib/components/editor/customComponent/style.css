@@ -57,6 +57,12 @@
     -ms-user-select:none; 
     user-select:none;-o-user-select:none;
 }
+.mid-title {
+    position: relative;
+    width: 100%;
+    text-align: center;
+    top: 60%;
+}
 .mid-block {
     width: 300px;
     position: relative;
@@ -77,6 +83,9 @@
 }
 .play-icon.audio{
     background: url('./icon_trumpet.png');
+}
+.play-icon.document{
+    background: url('./icon_file.png');
 }
 .play-icon.error {
     background: url('./icon_error.png');
