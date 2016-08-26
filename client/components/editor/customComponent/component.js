@@ -67,7 +67,7 @@ class CustomComponent extends Component  {
 			case 'IMAGE': 
 				return <div styleName="block" style={{ 'textAlign': 'center'}}>
 					{ props.loading ? 
-						<div styleName="mask-block loading"><img styleName="article-image" src={props.fakeSrc} /><div styleName="loading"></div><div styleName="mask"></div></div> : 
+						<div styleName="mask-block loading"><div styleName="close" onClick={this.handleClick.bind(this)}></div><img styleName="article-image" src={props.fakeSrc} /><div styleName="loading"></div><div styleName="mask"></div></div> : 
 						<div >
 							<div styleName="close" onClick={this.handleClick.bind(this)}></div>
 							<img styleName="article-image"src={props.fakeSrc} />
@@ -85,7 +85,7 @@ class CustomComponent extends Component  {
 				</div>;
 			case 'AUDIO':
 				return <div styleName="block">
-				{ props.loading? <div styleName="loading-preset audio"><div styleName="play-icon audio"></div><div styleName="loader"></div></div> : 
+				{ props.loading? <div styleName="loading-preset audio"><div styleName="close" onClick={this.handleClick.bind(this)}></div><div styleName="play-icon audio"></div><div styleName="loader"></div></div> : 
 					<div styleName="mid-block">
 						<div styleName="close" onClick={this.handleClick.bind(this)}></div>
 						<div styleName="title">{props.name}</div>
@@ -95,7 +95,7 @@ class CustomComponent extends Component  {
 				</div>;
 			case 'DOCUMENT':
 				return <div styleName="block">
-				{ props.loading? <div styleName="loading-preset document"><div styleName="play-icon document"></div><div styleName="loader"></div></div> : 
+				{ props.loading? <div styleName="loading-preset document"><div styleName="close" onClick={this.handleClick.bind(this)}></div><div styleName="play-icon document"></div><div styleName="loader"></div></div> : 
 					<div>
 						<div styleName="close" onClick={this.handleClick.bind(this)}></div>
 						
