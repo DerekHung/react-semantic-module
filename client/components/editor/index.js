@@ -163,7 +163,7 @@ class RichEditor extends Component {
 			this.fileSystemObject[file.id].generator.next();
 		}
 		this.getSignatureDone = (file) => {
-			
+
 			if( typeof(this.fileSystemObject[file.id])!=='undefined' ){
 				this.fileSystemObject[file.id].fileData = file;
 				this.fileSystemObject[file.id].generator.next(file.signature.fileId);
@@ -183,6 +183,7 @@ class RichEditor extends Component {
 
 			let entityKey = this._insertBlockComponent(null, fileData.type, fileProps);		
 
+			this.fileSystemObject[id].entityKey = entityKey;
 			this.fileSystemObject[id].fileId = yield "get fileId";
 			
 			yield "uploadDone";
@@ -264,7 +265,24 @@ class RichEditor extends Component {
 		
 
 	_handleKeyCommand(command) {
+
 		const { editorState } = this.state;
+		if( command === 'backspace') {
+			let selection = editorState.getSelection();
+			let content = editorState.getCurrentContent();
+			let startKey = selection.getStartKey();
+			let blockBefore = content.getBlockBefore(startKey);
+
+			if (blockBefore && blockBefore.getType() === 'atomic') {
+				for( let key in this.fileSystemObject ) {
+					
+					if( this.fileSystemObject[key].entityKey === blockBefore.getEntityAt(0)){
+						delete this.fileSystemObject[key];
+						break;
+					}
+				}
+			}
+		}
 		const newState = RichUtils.handleKeyCommand(editorState, command);
 		if (newState) {
 			this.onChange(newState);
@@ -550,6 +568,7 @@ class RichEditor extends Component {
 						ref="editor"
 						handlePastedText={this.handlePaste}
 						plugins={plugins}
+						handleReturn={this.handleReturn}
 						/>
 				{ this.props.mentions && 
 					<MentionSuggestions
