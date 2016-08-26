@@ -492,9 +492,16 @@ class RichEditor extends Component {
 
 	_onSearchChange({value}) {
 		//this.props.onRequestSearch(value);
-		this.setState({
-			suggestions: defaultSuggestionsFilter(value, this.props.mentions),
-		});
+		console.log(value.length);
+		if (value.length < 2) {
+			return true;
+		}else {
+			this.setState({
+				suggestions: defaultSuggestionsFilter(value, this.props.mentions),
+			});
+		}
+
+		
 	}
 
 	componentWillReceiveProps(nextProps) {

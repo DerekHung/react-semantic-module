@@ -21,7 +21,7 @@ import testData from './test.json';
 let metion = [];
 if(typeof(window) !== 'undefined'){
 	$.each(testData.response, function(index,value){
-		let item = {id:index, link: value.pid, name: value.userNcdame, avatar: 'https://pbs.twimg.com/profile_images/517863945/mattsailing_400x400.jpg'};
+		let item = {id:index, link: value.pid, name: value.userName, avatar: 'https://pbs.twimg.com/profile_images/517863945/mattsailing_400x400.jpg'};
 		metion.push(item);
 	})
 }
