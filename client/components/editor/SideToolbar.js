@@ -4,7 +4,6 @@ import CSSModules from 'react-css-modules';
 import style from './style.css';
 
 import FileUploader from '../fileUploader';
-import mediaInfo from './mediaInfo.js';
 
 const BLOCK_TYPES = [
 	{ icon: 'icon h1', style: 'header-one' },
@@ -52,7 +51,7 @@ class SideToolbar extends Component {
 				<FileUploader 
 							apnum={ this.props.apnum }
                             pid={ this.props.pid }
-                            mediaInfo={mediaInfo}
+                            mediaInfo={this.props.mediaInfo}
                             onTriggerUpload={onTriggerUpload}
                             getFileInfo={getFileInfo}
                             getSignatureDone={getSignatureDone}

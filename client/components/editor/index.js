@@ -30,17 +30,13 @@ import {
 import SideToolbar from './SideToolbar';
 import InlineToolbar from './InlineToolbar';
 import CustomComponent from './customComponent/component.js';
-import { getSignature,uploadToS3,getFileUrl,getURLData,MIMEMap } from '../../utils/fileUpload.js';
+import { getSignature, uploadToS3, getFileUrl, getURLData, MIMEMap } from '../../utils/fileUpload.js';
 
 import InsertUtils from './insertUtils.js';
 
 import $ from 'jquery';
 
-const mentionPlugin = createMentionPlugin({
-  theme: style,
-});
-const { MentionSuggestions } = mentionPlugin;
-const plugins = [mentionPlugin];
+
 
 function findLinkEntities(contentBlock, callback) {
 	contentBlock.findEntityRanges(
@@ -56,6 +52,7 @@ function findLinkEntities(contentBlock, callback) {
 }
 
 const Link = (props) => {
+	console.log(props);
 	const {url} = Entity.get(props.entityKey).getData();
 	const styleLink = {
 		color: '#3b5998',
@@ -68,17 +65,32 @@ const Link = (props) => {
 	);
 };
 
-const decorator = new CompositeDecorator([
-					{
-						strategy: findLinkEntities,
-						component: Link,
-					},
-				]);
+/*const decorator = new CompositeDecorator([
+	{
+		strategy: findLinkEntities,
+		component: Link,
+	},
+]);
+*/
+const LinkPlugin = (config = {}) => {
+  return {
+    decorator: [{
+      strategy: findLinkEntities,
+      component: Link,
+    }]
+  }
+}
+
+const mentionPlugin = createMentionPlugin({
+	theme: style,
+});
+const { MentionSuggestions } = mentionPlugin;
+const plugins = [LinkPlugin];
 
 class RichEditor extends Component {
-	constructor(props) { 
+	constructor(props) {
 		super(props);
-	
+
 		let editorState = null;
 
 		if (props.editorState) {
@@ -87,15 +99,14 @@ class RichEditor extends Component {
 			const blocks = convertFromRaw(props.content);
 			this.propsContent = props.content;
 			editorState = EditorState.createWithContent(
-				blocks,
-				decorator
+				blocks
 			)
 		} else {
-			editorState = EditorState.createEmpty(decorator)
+			editorState = EditorState.createEmpty()
 		}
-		
 
-		
+
+
 		this.uploadingArr = {};
 		this.fileSystemObject = {};
 
@@ -104,42 +115,42 @@ class RichEditor extends Component {
 			inlineToolbar: { show: false },
 			suggestions: this.props.mentions
 		};
-		/* Editor onChange event (core render method) */ 
+		/* Editor onChange event (core render method) */
 		this.onChange = (editorState, callback) => {
 			this.setState({ editorState });
-			if( props.onChange ) props.onChange(editorState.getCurrentContent());
+			if (props.onChange) props.onChange(editorState.getCurrentContent());
 			setTimeout(this.updateSelection, 0);
-			if( typeof(callback) === 'function' ) callback();
+			if (typeof (callback) === 'function') callback();
 		}
-		/* Editor component public method */ 
+		/* Editor component public method */
 		this.focus = () => this.refs.editor.focus();
 		this.blur = () => this.refs.editor.blur();
 		this.log = () => {
 			const content = this.state.editorState.getCurrentContent();
 		}
-		this.getFileUploadObject = () => { return Object.assign({}, this.fileSystemObject) ; }
+		this.getFileUploadObject = () => { return Object.assign({}, this.fileSystemObject); }
 
 		this.updateSelection = () => this._updateSelection();
 		this.handleKeyCommand = (command) => this._handleKeyCommand(command);
 		this.toggleBlockType = (type) => this._toggleBlockType(type);
 		this.toggleInlineStyle = (style) => this._toggleInlineStyle(style);
-		
+
 		this.onLinkKeyDown = (e) => this._onLinkKeyDown(e);
-		this.insertBlockComponent = (type, data) => this._insertBlockComponent(type,data);
+		this.insertBlockComponent = (type, data) => this._insertBlockComponent(type, data);
 		this.insertImage = (file) => this._insertImage(file);
 		this.blockRenderer = (block) => this._blockRenderer(block);
 		this.blockStyler = (block) => {
 			if (block.getType() === 'unstyled') {
-				return 'paragraph'; 
+				return 'paragraph';
 			}
 			return null;
 		}
 		this.cleanInput = () => { this.refs.fileInput.value = null; }
 		this.handlePaste = (text) => this._handlePaste(text);
-		this.onSearchChange = ({value}) => this._onSearchChange({value});
+		this.onSearchChange = ({value}) => this._onSearchChange({ value });
 
-		this.onTriggerUpload = (e) => {}; 
-		this.getFileInfo = (file) =>  this._handleFileInput(file);
+		this.onTriggerUpload = (e) => { };
+		this.getFileInfo = (file) => this._handleFileInput(file);
 		this._handleFileInput = (file) => {
 
 			file = Object.assign({}, file);
@@ -150,7 +161,7 @@ class RichEditor extends Component {
 				id: file.id
 			}
 
-			if( file.type === 'AUDIO' || file.type === 'DOCUMENT' ) props.name = file.name;
+			if (file.type === 'AUDIO' || file.type === 'DOCUMENT') props.name = file.name;
 
 			this.fileSystemObject[file.id] = {
 				fileData: file,
@@ -158,77 +169,77 @@ class RichEditor extends Component {
 				fileId: null,
 				generator: this._insertAsyncBlockComponent(file.id)
 			};
-			
+
 
 			this.fileSystemObject[file.id].generator.next();
 		}
 		this.getSignatureDone = (file) => {
 
-			if( typeof(this.fileSystemObject[file.id])!=='undefined' ){
+			if (typeof (this.fileSystemObject[file.id]) !== 'undefined') {
 				this.fileSystemObject[file.id].fileData = file;
 				this.fileSystemObject[file.id].generator.next(file.signature.fileId);
 			}
 		}
 		this.uploadToS3Done = (file) => {
 
-			if( typeof(this.fileSystemObject[file.id])!=='undefined' ){
+			if (typeof (this.fileSystemObject[file.id]) !== 'undefined') {
 				this.fileSystemObject[file.id].fileData = file;
 				this.fileSystemObject[file.id].generator.next(file);
 			}
-			
-		} 
-		this._insertAsyncBlockComponent = function* (id){
-			
+
+		}
+		this._insertAsyncBlockComponent = function* (id) {
+
 			const { fileData, fileProps } = this.fileSystemObject[id];
 
-			let entityKey = this._insertBlockComponent(null, fileData.type, fileProps);		
+			let entityKey = this._insertBlockComponent(null, fileData.type, fileProps);
 
 			this.fileSystemObject[id].entityKey = entityKey;
 			this.fileSystemObject[id].fileId = yield "get fileId";
-			
+
 			yield "uploadDone";
 
 			fileProps.loading = false;
 			fileProps.src = fileProps.fakeSrc;
 			fileProps.fileId = this.fileSystemObject[id].fileId;
-			
+
 			this._insertBlockComponent(entityKey, fileData.type, fileProps);
 
-/*
-				}).fail(function(error){
-
-					props.error = true;
-
-					that._insertBlockComponent(entityKey, type, props);
-					
-					that.setLoadingState(that.uploading - 1);
-
-				})
-*/
+			/*
+							}).fail(function(error){
 			
+								props.error = true;
+			
+								that._insertBlockComponent(entityKey, type, props);
+								
+								that.setLoadingState(that.uploading - 1);
+			
+							})
+			*/
+
 		}
 	}
-	
+
 	/* Draft js block render function*/
 	_blockRenderer(block) {
 		let type = block.getType();
 		let that = this;
-		if(type === 'atomic') {
+		if (type === 'atomic') {
 			return {
 				component: CustomComponent,
 				editable: false,
-				props:{
-					onRequestRemove: function(blockKey, id){
-						 that._removeBlock(blockKey, id);
+				props: {
+					onRequestRemove: function (blockKey, id) {
+						that._removeBlock(blockKey, id);
 					}
 				}
 			}
 		}
 	}
 
-	/* handle inlineToolbar position and if show */ 
+	/* handle inlineToolbar position and if show */
 	_updateSelection() {
-		if( typeof(window) !== 'undefined') {
+		if (typeof (window) !== 'undefined') {
 			const selectionRange = getSelectionRange(window);
 			let popoverControlVisible = false,
 				popoverControlTop = null,
@@ -243,7 +254,7 @@ class RichEditor extends Component {
 					popoverControlLeft = getSelectionCoords(selectionRange).offsetLeft;
 					this.tempTop = popoverControlTop;
 					this.tempLeft = popoverControlLeft;
-				}else if( selectionRange.startContainer.id === 'toolbar-icon') {
+				} else if (selectionRange.startContainer.id === 'toolbar-icon') {
 					popoverControlVisible = true;
 					popoverControlTop = this.tempTop;
 					popoverControlLeft = this.tempLeft;
@@ -262,21 +273,21 @@ class RichEditor extends Component {
 			})
 		}
 	}
-		
+
 
 	_handleKeyCommand(command) {
 
 		const { editorState } = this.state;
-		if( command === 'backspace') {
+		if (command === 'backspace') {
 			let selection = editorState.getSelection();
 			let content = editorState.getCurrentContent();
 			let startKey = selection.getStartKey();
 			let blockBefore = content.getBlockBefore(startKey);
 
 			if (blockBefore && blockBefore.getType() === 'atomic') {
-				for( let key in this.fileSystemObject ) {
-					
-					if( this.fileSystemObject[key].entityKey === blockBefore.getEntityAt(0)){
+				for (let key in this.fileSystemObject) {
+
+					if (this.fileSystemObject[key].entityKey === blockBefore.getEntityAt(0)) {
 						delete this.fileSystemObject[key];
 						break;
 					}
@@ -308,26 +319,26 @@ class RichEditor extends Component {
 			)
 		);
 	}
-	
+
 	_onLinkKeyDown(value) {
-		
-		const entityKey = Entity.create('LINK', 'MUTABLE', {url: value});
+
+		const entityKey = Entity.create('LINK', 'MUTABLE', { url: value });
 		let that = this;
-		
+
 		this.onChange(RichUtils.toggleLink(
-              this.state.editorState,
-              this.state.editorState.getSelection(),
-              entityKey
-            ),function(){
-				that.setState({
-					inlineToolbar: { show: false }
-				})
-				setTimeout(() => that.refs.editor.focus(), 0);
-				
-			});
+			this.state.editorState,
+			this.state.editorState.getSelection(),
+			entityKey
+		), function () {
+			that.setState({
+				inlineToolbar: { show: false }
+			})
+			setTimeout(() => that.refs.editor.focus(), 0);
+
+		});
 	}
 
-	_insertTextBlock(){
+	_insertTextBlock() {
 		let blockArray = this.state.editorState.getCurrentContent().getBlocksAsArray();
 	}
 
@@ -335,14 +346,14 @@ class RichEditor extends Component {
 		const currentSelection = this.state.editorState.getSelection();
 		let newState = null;
 
-		if( entityKey ){
+		if (entityKey) {
 			let selection = currentSelection.set('hasFocus', false);
 			Entity.replaceData(entityKey, props);
-			newState = EditorState.forceSelection(this.state.editorState,selection);
-		}else {
+			newState = EditorState.forceSelection(this.state.editorState, selection);
+		} else {
 			entityKey = Entity.create(type, mutablity, props);
-			newState = AtomicBlockUtils.insertAtomicBlock( this.state.editorState,entityKey,' ');
-			
+			newState = AtomicBlockUtils.insertAtomicBlock(this.state.editorState, entityKey, ' ');
+
 		}
 
 		this.onChange(newState);
@@ -350,53 +361,53 @@ class RichEditor extends Component {
 		return entityKey;
 	};
 
-	
 
-	_handleHyperLink(url){
-		
+
+	_handleHyperLink(url) {
+
 		let that = this;
 		let type = 'HYPERLINK';
 		let props = {
 			loading: true,
 			url: url
-		}		
+		}
 		let entityKey = this._insertBlockComponent(null, type, props, 'IMMUTABLE');
 
-		let getJSONLoop = function(id, callback){
+		let getJSONLoop = function (id, callback) {
 			let time = 0;
-			getFileUrl(id).done(function(res){
-				if(res[0].convertStatus === 'pending' || res[0].convertStatus === 'uploading') {
+			getFileUrl(id).done(function (res) {
+				if (res[0].convertStatus === 'pending' || res[0].convertStatus === 'uploading') {
 					setTimeout(() => {
 						time = time + 500;
 						getJSONLoop(id, callback);
-					},500);
-					
-				}else if( res[0].convertStatus === 'success'){
+					}, 500);
+
+				} else if (res[0].convertStatus === 'success') {
 					callback(res);
-				}else {
+				} else {
 					that._linkFail(props, entityKey, type, url);
 				}
 			})
 		};
 
-		getURLData(this.props.apnum, this.props.pid, props.url, 'HYPERLINK').done(function(res){
-				//console.log(res);
-			getJSONLoop(res[0].fileId, function(urlResult){
+		getURLData(this.props.apnum, this.props.pid, props.url, 'HYPERLINK').done(function (res) {
+			//console.log(res);
+			getJSONLoop(res[0].fileId, function (urlResult) {
 
-				$.getJSON(urlResult[0].url[0],function(result){
+				$.getJSON(urlResult[0].url[0], function (result) {
 
 					props.loading = false;
-					props.title = result.title; 
+					props.title = result.title;
 					props.description = result.description;
 					props.img = result.imgUrls[0];
 					props.fileId = res[0].fileId;
-					props.url = url; 
+					props.url = url;
 					//timeoutTest(result.imgUrls[0].fileId);
 
 					that._insertBlockComponent(entityKey, type, props, 'IMMUTABLE');
 
 
-				}).fail(function(res){
+				}).fail(function (res) {
 					//props.loading = false;
 					that._linkFail(props, entityKey, type, url);
 				})
@@ -415,7 +426,7 @@ class RichEditor extends Component {
 		let startKey = that.state.editorState.getSelection().getAnchorKey();
 		that.setState({
 			editorState: InsertUtils.InsertText(that.state.editorState, url)
-		},function(){
+		}, function () {
 
 			let endKey = that.state.editorState.getCurrentContent().getSelectionAfter().getFocusKey();
 			let targetRange = new SelectionState({
@@ -425,11 +436,11 @@ class RichEditor extends Component {
 				focusOffset: url.length
 			});
 
-			const entityKey = Entity.create('LINK', 'MUTABLE', {url: url});
+			const entityKey = Entity.create('LINK', 'MUTABLE', { url: url });
 			const linkState = RichUtils.toggleLink(
-					that.state.editorState,
-					targetRange,
-					entityKey);
+				that.state.editorState,
+				targetRange,
+				entityKey);
 			const newState = EditorState.forceSelection(linkState, that.state.editorState.getCurrentContent().getSelectionAfter());
 			that.onChange(newState);
 		});
@@ -443,7 +454,7 @@ class RichEditor extends Component {
 		let blockAfter = content.getKeyAfter(blockKey);
 		let blockBefore = content.getKeyBefore(blockKey);
 		let entityKey = block.getEntityAt(0);
-		
+
 		let targetRange = new SelectionState({
 			anchorKey: blockKey,
 			anchorOffset: 0,
@@ -460,30 +471,30 @@ class RichEditor extends Component {
 
 		let newState = EditorState.push(editorState, resetBlock, 'remove-range');
 
-		if( this.fileSystemObject[id] ) {
+		if (this.fileSystemObject[id]) {
 			delete this.fileSystemObject[id];
 		}
 
 		this.onChange(newState);
 	}
-	
 
-	_handlePaste(text){
+
+	_handlePaste(text) {
 		const youtubeReg = /^(?:https?:\/\/)?(?:www\.)?(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))((\w|-){11})(?:\S+)?$/;
 		const URLReg = /^(http|https):\/\//i;
 
 		let youtubeTest = text.match(youtubeReg);
 		let URLTest = text.match(URLReg);
 
-		if( youtubeTest ){
+		if (youtubeTest) {
 
 			setTimeout(() => {
-				this._insertBlockComponent( null, "YOUTUBE", {src: youtubeTest[0], file: youtubeTest[1], url: text});
-			},500)
+				this._insertBlockComponent(null, "YOUTUBE", { src: youtubeTest[0], file: youtubeTest[1], url: text });
+			}, 500)
 
 			return true;
 		}
-		else if( URLTest ) {			
+		else if (URLTest) {
 
 			this._handleHyperLink(text);
 			return true;
@@ -495,35 +506,34 @@ class RichEditor extends Component {
 		console.log(value.length);
 		if (value.length < 2) {
 			return true;
-		}else {
+		} else {
 			this.setState({
 				suggestions: defaultSuggestionsFilter(value, this.props.mentions),
 			});
 		}
 
-		
+
 	}
 
 	componentWillReceiveProps(nextProps) {
-		if( nextProps.content !== this.propsContent ) {
+		if (nextProps.content !== this.propsContent) {
 			const blocks = convertFromRaw(nextProps.content);
 			const editorState = EditorState.createWithContent(
-				blocks,
-				decorator
+				blocks
 			)
 			this.setState({ editorState });
 			this.propsContent = nextProps.content;
 		}
 	}
-	
-	
+
+
 	render() {
 		const { editorState, selectedBlock, selectionRange } = this.state;
 		const fileUploadFunction = {
-			onTriggerUpload: this.onTriggerUpload, 
-			getFileInfo: this.getFileInfo, 
-			getSignatureDone: this.getSignatureDone, 
-			uploadToS3Done: this.uploadToS3Done, 
+			onTriggerUpload: this.onTriggerUpload,
+			getFileInfo: this.getFileInfo,
+			getSignatureDone: this.getSignatureDone,
+			uploadToS3Done: this.uploadToS3Done,
 			urlTransformDone: this.urlTransformDone
 		}
 		let sideToolbarOffsetTop = 0;
@@ -536,11 +546,11 @@ class RichEditor extends Component {
 			sideToolbarOffsetTop = (blockBounds.bottom - editorBounds.top)
 				- 31; // height of side toolbar
 		}
-		
+
 		let contentState = editorState.getCurrentContent();
 
 		return (
-			
+
 			<div styleName="editor" className={ editorStyles.editor } id="richEditor" >
 				{selectedBlock
 					? <SideToolbar
@@ -550,6 +560,7 @@ class RichEditor extends Component {
 						style={{ top: sideToolbarOffsetTop }}
 						onToggle={this.toggleBlockType}
 						onUploadImage={this.handleUploadImage}
+						mediaInfo={this.props.mediaInfo}
 						{...fileUploadFunction}
 						/>
 					: null
@@ -563,28 +574,28 @@ class RichEditor extends Component {
 						/>
 					: null
 				}
-					<Editor
-						blockRendererFn={this.blockRenderer}
-						blockStyleFn={this.blockStyler}
-						editorState={editorState}
-						handleKeyCommand={this.handleKeyCommand}
-						onChange={this.onChange}
-						placeholder={this.props.placeholder}
-						spellCheck={true}
-						readOnly={this.props.readOnly}
-						ref="editor"
-						handlePastedText={this.handlePaste}
-						plugins={plugins}
-						handleReturn={this.handleReturn}
-						/>
-				{ this.props.mentions && 
+				<Editor
+					blockRendererFn={this.blockRenderer}
+					blockStyleFn={this.blockStyler}
+					editorState={editorState}
+					handleKeyCommand={this.handleKeyCommand}
+					onChange={this.onChange}
+					placeholder={this.props.placeholder}
+					spellCheck={true}
+					readOnly={this.props.readOnly}
+					ref="editor"
+					handlePastedText={this.handlePaste}
+					plugins={plugins}
+					handleReturn={this.handleReturn}
+					/>
+				{ this.props.mentions &&
 					<MentionSuggestions
 						onSearchChange={ this.onSearchChange }
 						suggestions={ this.state.suggestions }
 						/>
 				}
-					<input type="file" ref="fileInput" style={{ display: 'none' }}
-						 onChange={this.handleFileInput}/>	 
+				<input type="file" ref="fileInput" style={{ display: 'none' }}
+					onChange={this.handleFileInput}/>
 			</div>
 		);
 	}

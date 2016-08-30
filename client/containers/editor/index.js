@@ -29,7 +29,7 @@ if(typeof(window) !== 'undefined'){
 
 import { fromJS } from 'immutable';
 
-
+import mediaInfo from './mediaInfo.js'
 
 
 const mentions = fromJS(metion);
@@ -114,7 +114,8 @@ class EditorPage extends Component {
 									onChange={this.onChange} 
 									mentions={mentions}
 									onUploadStatusChange={this.onUploadStatusChange.bind(this)}
-									ref="editor"/>
+									ref="editor"
+									mediaInfo={mediaInfo}/>
 						</div>
 						{ this.state.uploadingCount > 0 && <div styleName="uploading">有{this.state.uploadingCount}個檔案上傳中...</div>}
 					</LightBox>	
