@@ -3,6 +3,7 @@ import CSSModules from 'react-css-modules';
 import style from './style.css';
 import Editor from 'draft-js-plugins-editor';
 import createMentionPlugin, { defaultSuggestionsFilter } from 'draft-js-mention-plugin';
+import creatLinkPlugin from './decorator/link.js';
 import editorStyles from 'draft-js-mention-plugin/lib/plugin.css';
 
 import {
@@ -37,55 +38,10 @@ import InsertUtils from './insertUtils.js';
 import $ from 'jquery';
 
 
+const mentionPlugin = createMentionPlugin({theme: style});
+const LinkPlugin = creatLinkPlugin();
+const plugins = [mentionPlugin,LinkPlugin];
 
-function findLinkEntities(contentBlock, callback) {
-	contentBlock.findEntityRanges(
-		(character) => {
-			const entityKey = character.getEntity();
-			return (
-				entityKey !== null &&
-				Entity.get(entityKey).getType() === 'LINK'
-			);
-		},
-		callback
-	);
-}
-
-const Link = (props) => {
-	console.log(props);
-	const {url} = Entity.get(props.entityKey).getData();
-	const styleLink = {
-		color: '#3b5998',
-		textDecoration: 'underline',
-	}
-	return (
-		<a href={url} style={styleLink} target="_blank">
-			{props.children}
-		</a>
-	);
-};
-
-/*const decorator = new CompositeDecorator([
-	{
-		strategy: findLinkEntities,
-		component: Link,
-	},
-]);
-*/
-const LinkPlugin = (config = {}) => {
-  return {
-    decorator: [{
-      strategy: findLinkEntities,
-      component: Link,
-    }]
-  }
-}
-
-const mentionPlugin = createMentionPlugin({
-	theme: style,
-});
-const { MentionSuggestions } = mentionPlugin;
-const plugins = [LinkPlugin];
 
 class RichEditor extends Component {
 	constructor(props) {
@@ -529,6 +485,7 @@ class RichEditor extends Component {
 
 	render() {
 		const { editorState, selectedBlock, selectionRange } = this.state;
+		const { MentionSuggestions } = mentionPlugin;
 		const fileUploadFunction = {
 			onTriggerUpload: this.onTriggerUpload,
 			getFileInfo: this.getFileInfo,
