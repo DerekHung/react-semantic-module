@@ -21,8 +21,28 @@ onUploadStatusChange(status) {
 		content={rawState}
 		mentions={mentions}
 		readOnly={false}
-		onUploadStatusChange={this.onUploadStatusChange}
 		/>
+
+```
+
+### Method
+
+``` xml
+
+let object = this.refs.editor.getFileUploadObject();
+
+object = {
+	ID0: {
+		entityKey: number,
+		fileData: object, // 詳情參照fileUploader file system
+		fileId: string,
+		fileProps: object, //private use 
+		generator: Generator //private use
+	},
+	ID1: {},
+	ID2: {},
+	...
+}
 
 ```
 
