@@ -91,7 +91,7 @@ class RadioGroup extends Component {
 
 	render() {
 		
-		const { checkBox,name,group,checkedIndex,checkedValue,custom,customChoose,customValue } = this.props;
+		const { checkBox,name,group,custom,customChoose,customValue } = this.props;
 		let that = this;
 		let type = checkBox ? 'checkbox' : 'radio'; 
 		
@@ -108,7 +108,7 @@ class RadioGroup extends Component {
 							value={data.value} 
 							label={data.label}
 							onChange={that.handleChange.bind(that,index)}
-							defaultChecked={checkedIndex-1 === index || checkedValue === data.label ? 'checked' : null } />
+							defaultChecked={ data.checked ? 'checked' : null } />
 						
 						<label htmlFor={name + 'radio' + index} onClick={that.handleClick.bind(that)}><div styleName="check"></div>{data.label}</label>
 						
