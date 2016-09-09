@@ -1,6 +1,6 @@
 {
   "name": "c_wap_module",
-  "version": "0.9.8",
+  "version": "0.9.9",
   "description": "module for c platform",
   "license": "MIT",
   "repository": {
@@ -33,7 +33,7 @@
     "draft-js-export-html": "git+https://github.com/DerekHung/draft-js-export-html.git",
     "draft-js-import-element": "git+https://github.com/DerekHung/draft-js-import-element.git",
     "draft-js-import-html": "^0.1.10",
-    "draft-js-mention-plugin": "^2.0.0-beta.2",
+    "draft-js-mention-plugin": "git+https://github.com/DerekHung/draft-mention.git",
     "draft-js-plugins-editor": "^2.0.0-beta1",
     "immutable": "^3.8.1",
     "jquery": "^3.0.0",
