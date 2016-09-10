@@ -5,18 +5,21 @@ import CSSModules from 'react-css-modules';
 import style from './style.css';
 import LightBox from 'client/components/lightbox';
 //import html from 'doc/switches.md';
-import {stateToHTML} from 'draft-js-export-html';
-import {stateFromHTML} from 'draft-js-import-html';
+import {convertToHTML, convertFromHTML} from 'draft-convert';
 //import { RadioGroup } from 'c_wap_module';
 import Editor from 'client/components/editor';
 import html from 'doc/editor.md';
 import {
 	convertToRaw,
+	Entity
 } from 'draft-js';
 
 import $ from 'jquery';
 
 import testData from './test.json';
+import { fromJS } from 'immutable';
+
+import mediaInfo from './mediaInfo.js'
 
 let metion = [];
 if(typeof(window) !== 'undefined'){
@@ -26,10 +29,79 @@ if(typeof(window) !== 'undefined'){
 	})
 }
 
+let convertPattern = {
+	/* convert to HTML pattern */ 
+	styleToHTML:{},
+	blockToHTML:{
+		'atomic':{
+			start: '<figure>',
+			end: '</figure>',
+			empty: '<br>'
+		},
+		'blockquote':{
+			start: '<blockquote>',
+			end: '</blockquote>'
+		}
+	},
+	entityToHTML: (entity, originalText) => {
+		console.log(entity);
+		switch( entity.type ){
+			case 'IMAGE':
+			return `<img fileId="${entity.data.fileId}"/>`;
+			case 'DOCUMENT':
+			return `<div tagType="DOCUMENT" fileId="${entity.data.fileId}"></div>`;
+			case 'HYPERLINK':
+			return `<div tagType="HYPERLINK" fileId="${entity.data.fileId}" url="${entity.data.url}"></div>`;
+			case 'YOUTUBE':
+			return `<div tagType="YOUTUBE" file="${entity.data.file}" url="${entity.data.url}" src="${entity.data.src}"></div>`;
+			case 'VIDEO':
+			return `<video fileId="${entity.data.fileId}"/>`;
+			case 'AUDIO':
+			return `<audio fileId="${entity.data.fileId}"/>`;
+			case 'mention':
+			return `<div tagType="MEMBER" pid="${entity.data.mention.get('id')}">${entity.data.mention.get('name')}</div>`;
+			case 'LINK':
+			return `<a href="${entity.data.url}" target="_blank"></a>`;
+			default:
+			return originalText;
+		}
+	},
+	/* convert from HTML pattern (如果沒用到就不必加)*/ 
+	htmlToStyle: (nodeName, node, currentStyle) => {return currentStyle;},
+	htmlToEntity: (nodeName, node) => {
+		console.log(nodeName);
+		console.log(node);
+		switch(nodeName){
+			case 'img':
+			console.log(node.getAttribute('fileid'));
+			return Entity.create('IMAGE','IMMUTABLE',{fileId: node.getAttribute('fileid')})
+			case 'div':
+			let data = {};
+			if( node.getAttribute('tagType') === 'YOUTUBE' ) {
+					data.file = node.getAttribute('file');
+					data.url = node.getAttribute('url');
+					data.src = node.getAttribute('src');
+			}
+			return Entity.create(node.getAttribute('tagType'), 'IMMUTABLE', data);
+		}
+		
+	},
+	htmlToBlock: (nodeName, node) => {
+        if (nodeName === 'blockquote') {
+            return {
+                type: 'blockquote',
+                data: {}
+            };
+        }else if( nodeName === 'figure') {
+			return {
+				type: 'atomic',
+				data: {}
+			}
+		}
+    }
+}
 
-import { fromJS } from 'immutable';
 
-import mediaInfo from './mediaInfo.js'
 
 
 const mentions = fromJS(metion);
@@ -54,7 +126,7 @@ class EditorPage extends Component {
 		this.rawState= convertToRaw(contentState);
 	}
 	_toggle(){
-		let html;
+		let html, htmlState;
 		let fileStatus = this.refs.editor.getFileUploadObject();
 		let uploadDone = true;
 		for( var key in fileStatus ) {
@@ -64,14 +136,15 @@ class EditorPage extends Component {
 		}
 		if( this.state.uploadingCount === 0 && uploadDone ){
 			if( this.contentState ) {
-				html = stateToHTML(this.contentState);
+				html = convertToHTML(convertPattern)(this.contentState);
+				htmlState = convertFromHTML(convertPattern)(html);
 			}
 			this.setState({ 
 				open: !this.state.open,
 				rawStateString: JSON.stringify(this.rawState),
 				rawState: this.rawState,
 				HTMLString: html,
-				//HTMLtoState: convertToRaw(stateFromHTML(html))
+				HTMLtoState: convertToRaw(htmlState)
 			});
 			console.log(this.refs.editor.getFileUploadObject());
 		}
@@ -99,6 +172,7 @@ class EditorPage extends Component {
 			},
 			 closeIcon: true,
 		}
+		console.log(this.state.HTMLtoState);
 		return (
 			<div>
 				<h3>Rich Editor</h3>
@@ -137,7 +211,11 @@ class EditorPage extends Component {
 							<p>{ this.state.HTMLString }</p>
 						</div>
 						<h3> Convert from HTML </h3>
-
+						<div className="content">
+							<Editor content={this.state.HTMLtoState}
+									mentions={mentions}
+									readOnly={true}/>
+						</div>
 					</div>
 				}
 				<div className="content" dangerouslySetInnerHTML={{__html: html}}>
