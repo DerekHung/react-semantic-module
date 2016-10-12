@@ -41,7 +41,7 @@ class CustomComponent extends Component  {
 		const props = this.state.props;
 		const type = this.state.type;
 		let that = this;
-		
+
 		if( !props.fakeSrc ) props.fakeSrc = props.src;
 		
 		if( props.error ) {

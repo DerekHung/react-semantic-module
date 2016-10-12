@@ -44,7 +44,7 @@ let convertPattern = {
 		}
 	},
 	entityToHTML: (entity, originalText) => {
-		console.log(entity);
+		//console.log(entity);
 		switch( entity.type ){
 			case 'IMAGE':
 			return `<img fileId="${entity.data.fileId}"/>`;
@@ -69,20 +69,30 @@ let convertPattern = {
 	/* convert from HTML pattern (如果沒用到就不必加)*/ 
 	htmlToStyle: (nodeName, node, currentStyle) => {return currentStyle;},
 	htmlToEntity: (nodeName, node) => {
-		console.log(nodeName);
 		console.log(node);
+		let data = {};
+		if( typeof (node.attributes) !== 'undefined') {
+			Array.prototype.slice.call(node.attributes).forEach(function(item){
+				let name = item.name;
+				if( name === 'fileid') name = 'fileId';
+				else if( name === 'tagtype') name = 'tagType';
+
+				data[name] = item.value;
+			})
+		}
+		
 		switch(nodeName){
 			case 'img':
-			console.log(node.getAttribute('fileid'));
-			return Entity.create('IMAGE','IMMUTABLE',{fileId: node.getAttribute('fileid')})
+			return Entity.create('IMAGE','IMMUTABLE',data);
+			case 'video':
+			return Entity.create('VIDEO','IMMUTABLE',data);
+			case 'audio':
+			return Entity.create('AUDIO','IMMUTABLE',data);
+			case 'a':
+			return Entity.create('LINK','MUTABLE',data);
 			case 'div':
-			let data = {};
-			if( node.getAttribute('tagType') === 'YOUTUBE' ) {
-					data.file = node.getAttribute('file');
-					data.url = node.getAttribute('url');
-					data.src = node.getAttribute('src');
-			}
-			return Entity.create(node.getAttribute('tagType'), 'IMMUTABLE', data);
+			if ( node.getAttribute('tagtype') === 'MEMBER' ) return Entity.create(node.getAttribute('tagType'), 'SEGMENTED', data);
+			else return Entity.create(node.getAttribute('tagtype'), 'IMMUTABLE', data);
 		}
 		
 	},
@@ -124,6 +134,8 @@ class EditorPage extends Component {
 	_onChange (contentState) {
 		this.contentState = contentState;
 		this.rawState= convertToRaw(contentState);
+		//console.log(contentState);
+		//console.log(this.rawState);
 	}
 	_toggle(){
 		let html, htmlState;
@@ -146,7 +158,8 @@ class EditorPage extends Component {
 				HTMLString: html,
 				HTMLtoState: convertToRaw(htmlState)
 			});
-			console.log(this.refs.editor.getFileUploadObject());
+			//console.log(this.refs.editor.getFileUploadObject());
+
 		}
 		
 		
@@ -201,11 +214,6 @@ class EditorPage extends Component {
 							<p>{ this.state.rawStateString }</p>
 						</div>
 						<h3> Convert from JSON </h3>
-						<div className="content">
-							<Editor content={this.state.rawState}
-									mentions={mentions}
-									readOnly={true}/>
-						</div>
 						<h3> SHOW HTML RESULT </h3>
 						<div className="content">
 							<p>{ this.state.HTMLString }</p>

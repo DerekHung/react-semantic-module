@@ -9,12 +9,13 @@
   },
   "scripts": {
     "start": "node --harmony ./bin/www",
-    "dev": "node --harmony ./bin/www --env=dev",
+    "dev": "node --harmony ./bin/www -r --env=dev",
     "build": "webpack -p -d --config ./webpack.prod.config.js --progress --colors",
     "babel": "babel client/components --out-dir lib/components --copy-files && babel client/utils --out-dir lib/utils --copy-files",
     "test": "jest",
     "mocha": "webpack-dev-server --port 3001 --hot --colors --config webpack-mocha.config.js",
-    "jest": "node --harmony_proxies node_modules/.bin/jest"
+    "jest": "node --harmony_proxies node_modules/.bin/jest",
+    "vendor": "webpack -p -d --config ./ddl.config.js --progress --colors"
   },
   "jest": {
     "automock": false,
@@ -33,10 +34,14 @@
     "draft-js": "^0.7.0",
     "draft-js-mention-plugin": "git+https://github.com/DerekHung/draft-mention.git",
     "draft-js-plugins-editor": "^2.0.0-beta1",
+    "expose": "^0.1.4",
     "immutable": "^3.8.1",
     "jquery": "^3.0.0",
     "json-loader": "^0.5.4",
     "lodash": "^3.10.1",
+    "react": "^15.3.2",
+    "react-addons-perf": "^15.3.2",
+    "react-dom": "^15.3.2",
     "underscore": "^1.8.3",
     "url-loader": "^0.5.7",
     "validator": "^5.1.0"
@@ -100,11 +105,9 @@
     "postcss-modules-local-by-default": "^1.0.1",
     "postcss-modules-scope": "^1.0.0",
     "postcss-modules-values": "^1.1.1",
-    "react": "^15.0.2",
     "react-addons-css-transition-group": "^15.0.2",
     "react-addons-test-utils": "^15.2.1",
     "react-css-modules": "^3.7.0",
-    "react-dom": "^15.0.2",
     "react-redux": "^4.0.4",
     "react-router": "^2.0.0",
     "react-test-renderer": "^15.3.0",

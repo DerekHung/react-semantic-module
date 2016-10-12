@@ -37,6 +37,10 @@ module.exports = function checkMode(app){
 				new webpack.HotModuleReplacementPlugin(),
 				new webpack.NoErrorsPlugin(),
 				new webpack.IgnorePlugin(new RegExp("asyncBeApi")),
+				new webpack.DllReferencePlugin({
+					context: __dirname,
+					manifest: require('./manifest.json'),
+				}),
 			],
 			module: {
 				loaders: [
@@ -73,7 +77,7 @@ module.exports = function checkMode(app){
 				{
 					test: /\.json$/,
 					loader: 'json'
-				}
+				},
 				]
 			},
 			markdownattrsLoaderCustomConfig: {
