@@ -17,7 +17,6 @@ const vendors = [
     'react-proxy',
     'validator',
     'draft-js-plugins-editor',
-    'draft-js-mention-plugin',
     'draft-convert',
     'core-js',
     'react-redux',

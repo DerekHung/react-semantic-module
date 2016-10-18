@@ -91,15 +91,20 @@ export function uploadToS3(file, jsonDataForUpload){
 		}).done(() => resolve());
 	});
 }
-export function getFileUrl(fileId) {
+export function getFileUrl(fileId, snapTag) {
 	var params = {};
 	params.timestamp = Math.floor(Date.now()/1000) + 1800;
 	params.getFileArr = [
 		{
 			fileId: fileId,
-			protocol: "http",
-		}	
+			protocol: "common"
+		}
 	];
+	if( snapTag !== '') params.getFileArr.push({
+		fileId: fileId,
+		protocol: "common",
+		fileTag: snapTag
+	})
 	return	$.ajax({
 			method: 'POST',
 			url: 'http://docapi-staging-api-1712535865.us-west-2.elb.amazonaws.com/docapi/v0/getFileUrl',
@@ -109,10 +114,10 @@ export function getFileUrl(fileId) {
 		})
 }
 
-export function waitUrlSuccess(id) {
+export function waitUrlSuccess(id, snapTag) {
 	return new Promise(function(resolve, reject){
 		let time = 0;
-		let loop = () => getFileUrl(id).done(function(res){
+		let loop = () => getFileUrl(id, snapTag).done(function(res){
 			if(res[0].convertStatus === 'pending' || res[0].convertStatus === 'uploading') {
 				setTimeout(() => {
 					time = time + 500;

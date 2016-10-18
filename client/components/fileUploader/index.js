@@ -23,13 +23,14 @@ class FileUploader extends Component {
         
         this.logObject = (object) => { return Object.assign({}, object); }
 
-        this.generatorProcess = function* (ID, signatureData){
+        this.generatorProcess = function* (ID, signatureData, snap){
 
             if( this.fileList[ID] ) {
 
                 let signature = yield getSignature(this.fileList[ID].originFile, signatureData);
                 this.fileList[ID].signature = signature;
                 this.fileList[ID].status = 'uploading';
+                this.fileList[ID].snapTag = snap;
                 if( this.props.getSignatureDone ) this.props.getSignatureDone(this.logObject(this.fileList[ID]));
 
                 let uploadS3 = yield uploadToS3(this.fileList[ID].originFile, signature);
@@ -38,7 +39,7 @@ class FileUploader extends Component {
 
                 if ( !this.props.dontWaitSuccess ) {
                     this.fileList[ID].status = 'transforming';
-                    this.fileList[ID].transformedFile = yield waitUrlSuccess(signature.fileId);
+                    this.fileList[ID].transformedFile = yield waitUrlSuccess(signature.fileId, this.fileList[ID].snapTag);
                     this.fileList[ID].status = 'transformDone';
                     if( this.props.urlTransformDone ) this.props.urlTransformDone(this.logObject(this.fileList[ID]));
                 }
@@ -64,6 +65,7 @@ class FileUploader extends Component {
             apnum: this.props.apnum,
             pid: this.props.pid
         }
+        let snap ='';
         let that = this;
 
         files.forEach(f => {
@@ -81,8 +83,9 @@ class FileUploader extends Component {
                 }
 
                 if ( that.props.getFileInfo ) that.props.getFileInfo( that.fileList[ID] );
-                signatureData.extra = that.props.mediaInfo[MIMEMap[f.type]];
-                let gen = that.generatorProcess(ID, signatureData);
+                signatureData.extra = that.props.mediaInfo[MIMEMap[f.type]].uploadInfo;
+                snap = that.props.mediaInfo[MIMEMap[f.type]].snapTag;
+                let gen = that.generatorProcess(ID, signatureData, snap);
                 that.runGenerator(gen);
             }
         });
