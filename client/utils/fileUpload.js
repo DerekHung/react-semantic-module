@@ -118,16 +118,16 @@ export function waitUrlSuccess(id, snapTag) {
 	return new Promise(function(resolve, reject){
 		let time = 0;
 		let loop = () => getFileUrl(id, snapTag).done(function(res){
-			if(res[0].convertStatus === 'pending' || res[0].convertStatus === 'uploading') {
+			if( res[0].convertStatus === 'success'){
+				resolve(res);
+			}else if( res[0].convertStatus === 'noResponse' ) {
+				reject();
+			}else{
 				setTimeout(() => {
 					time = time + 500;
 					loop();
 				},500);
 				
-			}else if( res[0].convertStatus === 'success'){
-				resolve(res);
-			}else if( res[0].convertStatus === 'noResponse' ) {
-				reject();
 			}
 		});
 		loop(); 

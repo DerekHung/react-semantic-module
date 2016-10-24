@@ -222,8 +222,14 @@ class EditorPage extends Component {
 						<h3> Convert from HTML </h3>
 						<div className="content">
 							<Editor content={this.state.HTMLtoState}
+									apnum="10400"
+									pid="10400"
+									placeholder="welcome"
+									onChange={this.onChange} 
 									mentions={mentions}
-									readOnly={true}/>
+									onUploadStatusChange={this.onUploadStatusChange.bind(this)}
+									ref="editor"
+									mediaInfo={mediaInfo}/>
 						</div>
 					</div>
 				}

@@ -33,7 +33,7 @@ module.exports = function(app){
 	app.use(express.static(path.join(__dirname, '../public')));
 	app.set('views', path.join(__dirname, 'views'));
 	app.set('view engine', 'ejs');
-	app.set('port', 3000);
+	app.set('port', 3005);
 
 	// api route
 	app.use(function(req, res, next){
