@@ -138,7 +138,7 @@ class EditorPage extends Component {
 			HTMLString: null,
 			rawState: null,
 			uploadingCount: 0,
-			originState :convertToRaw(convertFromHTML(convertPattern)(testDataString))
+			//originState :convertToRaw(convertFromHTML(convertPattern)(testDataString))
 		}
 		this.onChange = (rawState) => this._onChange(rawState);
 		this.toggle = () => this._toggle();
@@ -212,7 +212,7 @@ class EditorPage extends Component {
 					<LightBox option={option}
 						  onClose={this.toggle.bind(this,'close')}>
 						<div styleName="editorBlock">
-							<Editor 
+							<Editor content={this.state.originState}
 									apnum="10400"
 									pid="10400"
 									placeholder="welcome"
