@@ -120,6 +120,9 @@ class TextFeild extends Component {
 
 	}
 	_onChange(e){
+		for(let item of this.props.filterArray) {
+			if (item === e.target.value.slice(-1)) return;
+		}
 		let event = e;
 		if( this.props.allowMultiLine ) {
 			e.target.style.height = Math.max(e.target.scrollHeight,e.target.clientHeight,this.initHeight) + 'px';
@@ -248,6 +251,7 @@ TextFeild.defaultProps = {
 	errorMessage: '',
 	data: '',
 	onRequestOpenAC: {},
+	filterArray: [],
 	onBlur: function(){}
 }
 
