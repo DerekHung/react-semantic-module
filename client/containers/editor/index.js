@@ -21,7 +21,7 @@ import testData from './test.json';
 import { fromJS } from 'immutable';
 
 import mediaInfo from './mediaInfo.js'
-import testDataString from './testData.js';
+//import testDataString from './testData.js';
 
 let metion = [];
 if(typeof(window) !== 'undefined'){
@@ -213,7 +213,7 @@ class EditorPage extends Component {
 					<LightBox option={option}
 						  onClose={this.toggle.bind(this,'close')}>
 						<div styleName="editorBlock">
-							<Editor content={this.state.originState}
+							<Editor 
 									apnum="10400"
 									pid="10400"
 									placeholder="welcome"
