@@ -139,7 +139,7 @@ class EditorPage extends Component {
 			HTMLString: null,
 			rawState: null,
 			uploadingCount: 0,
-			originState :convertToRaw(convertFromHTML(convertPattern)(testDataString))
+			//originState :convertToRaw(convertFromHTML(convertPattern)(testDataString))
 		}
 		this.onChange = (rawState) => this._onChange(rawState);
 		this.toggle = () => this._toggle();
