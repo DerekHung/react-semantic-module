@@ -2,7 +2,20 @@ import React from 'react';
 import CSSModules from 'react-css-modules';
 import style from './style.css';
 
+const LoadingBlock =  CSSModules((parent) => {
 
+    const removeBlock = () => {
+        parent.props.blockProps.onRequestRemove(parent.props.block.getKey(), parent.state.props.id);
+    }
+
+    return (
+    <div styleName="loading-preset">
+        <div styleName="close" onClick={removeBlock}></div>
+        <div styleName="play-icon video"></div>
+        <div styleName="loader"></div>
+    </div>
+    )
+},style, { allowMultiple: true });
 
 const ErrorBlock =  CSSModules((parent) => {
     const removeBlock = () => {
@@ -20,6 +33,18 @@ const ErrorBlock =  CSSModules((parent) => {
     )
 },style, { allowMultiple: true });
 
+const ProcessingBlock =  CSSModules((parent) => {
+
+    return (
+    <div styleName="block">
+        <div styleName="loading-preset">
+            <div styleName="play-icon process"></div>
+            <p styleName="errorText">檔案仍在處理中</p>
+        </div>
+    </div>
+    )
+},style, { allowMultiple: true });
+
 const ImgBlock = CSSModules(({parent, props}) => {
 
     const removeBlock = () => {
@@ -29,10 +54,10 @@ const ImgBlock = CSSModules(({parent, props}) => {
     return (
     <div styleName="block" style={{ 'textAlign': 'center'}}>
         { props.loading ? 
-            <div styleName="mask-block loading"><div styleName="close" onClick={removeBlock}></div><img styleName="article-image" src={props.fakeSrc} /><div styleName="loading"></div><div styleName="mask"></div></div> : 
+            <div styleName="mask-block loading"><div styleName="close" onClick={removeBlock}></div><img styleName="article-image" src={props.src} /><div styleName="loading"></div><div styleName="mask"></div></div> : 
             <div >
                 <div styleName="close" onClick={removeBlock}></div>
-                <img styleName="article-image"src={props.fakeSrc} />
+                <img styleName="article-image"src={props.src} />
             </div>
         }		
     </div>
@@ -50,7 +75,15 @@ const VideoBlock = CSSModules(({parent, props}) => {
     { props.loading? <div styleName="loading-preset"><div styleName="close" onClick={removeBlock}></div><div styleName="play-icon video"></div><div styleName="loader"></div></div> : 
         <div>
             <div styleName="close" onClick={removeBlock}></div>
-            <video controls src={props.src} />
+            { props.poster ?
+                <div styleName="loading-preset" style={{ background: 'url(' + props.poster + ') no-repeat center '}}>
+                    <div styleName="play-icon video"></div>
+                    <img src={props.poster}/>
+                </div>
+                :
+                <video controls src={props.src} />
+            }
+            
         </div>
     }
     </div>
@@ -86,9 +119,11 @@ const DocumentBlock = CSSModules(({parent, props}) => {
     <div styleName="block">
     { props.loading? <div styleName="loading-preset document"><div styleName="close" onClick={removeBlock}></div><div styleName="play-icon document"></div><div styleName="loader"></div></div> : 
         <div>
-            <div styleName="close" onClick={removeBlock}></div>
-            
-            <div styleName="loading-preset"><div styleName="play-icon document"></div><div styleName="mid-title">{props.name}</div></div>
+            <div styleName="close" onClick={removeBlock}></div> 
+            <div styleName="loading-preset"  style={{ background: 'url(' + props.src + ') no-repeat center'}}>
+                <div styleName="play-icon document"></div> 
+                <div styleName="mid-title">{props.name}</div>
+            </div>
         </div>
     }
     </div>
@@ -125,9 +160,6 @@ const HyperLinkBlock = CSSModules(({parent, props}) => {
         <div styleName="close" onClick={removeBlock}></div>
         <a href={props.url } target="_blank">
         <span styleName="link">{props.url}</span>
-        { props.loading ?  
-            <div styleName="linkLoading"><div styleName="loading"></div></div> 
-            : 
             <div styleName="linkBlock">
                 <img src={props.img.url} />
                 <div styleName="info">
@@ -136,7 +168,6 @@ const HyperLinkBlock = CSSModules(({parent, props}) => {
                     <span styleName="tag104">plus.104.com.tw</span>
                 </div>
             </div>
-        }
         </a>
     </div>
     )
@@ -152,4 +183,4 @@ const LinkBlock = CSSModules(({parent, props}) => {
 },style, { allowMultiple: true });
 
 
-export { ErrorBlock, ImgBlock, VideoBlock, AudioBlock, DocumentBlock, HyperLinkBlock, LinkBlock, YoutubeBlock };
+export { ErrorBlock, ImgBlock, VideoBlock, AudioBlock, DocumentBlock, HyperLinkBlock, LinkBlock, YoutubeBlock, LoadingBlock };

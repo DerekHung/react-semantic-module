@@ -91,20 +91,44 @@ export function uploadToS3(file, jsonDataForUpload){
 		}).done(() => resolve());
 	});
 }
-export function getFileUrl(fileId, snapTag) {
+export function getFileUrl(fileId, type, tagArr) {
 	var params = {};
 	params.timestamp = Math.floor(Date.now()/1000) + 1800;
-	params.getFileArr = [
-		{
-			fileId: fileId,
-			protocol: "common"
+	params.getFileArr = [];
+	//console.log(type);
+	for( let i in tagArr ) {
+		if ( tagArr[i] ) {
+			if( type === 'DOCUMENT' && tagArr[i] === 'activityPlay' ) {
+				params.getFileArr.push({
+					fileId: fileId,
+					protocol: "common",
+					fileTag: tagArr[i],
+					page: '-1'
+				})
+			}else {
+				params.getFileArr.push({
+					fileId: fileId,
+					protocol: "common",
+					fileTag: tagArr[i]
+				})
+			}
+			
+		}else {
+			params.getFileArr.push({
+				fileId: fileId,
+				protocol: "common"
+			})
 		}
-	];
-	if( snapTag !== '') params.getFileArr.push({
-		fileId: fileId,
-		protocol: "common",
-		fileTag: snapTag
-	})
+		
+	}
+	if( params.getFileArr.length === 0 && type === 'HYPERLINK') {
+		params.getFileArr.push({
+			fileId: fileId,
+			protocol: "common",
+			fileTag: "hyperlink"
+		})
+	}
+	//console.log(params.getFileArr);
 	return	$.ajax({
 			method: 'POST',
 			url: 'http://docapi-staging-api-1712535865.us-west-2.elb.amazonaws.com/docapi/v0/getFileUrl',
@@ -114,10 +138,10 @@ export function getFileUrl(fileId, snapTag) {
 		})
 }
 
-export function waitUrlSuccess(id, snapTag) {
+export function waitUrlSuccess(id, type, tagArr) {
 	return new Promise(function(resolve, reject){
 		let time = 0;
-		let loop = () => getFileUrl(id, snapTag).done(function(res){
+		let loop = () => getFileUrl(id, type, tagArr).done(function(res){
 			if( res[0].convertStatus === 'success'){
 				resolve(res);
 			}else if( res[0].convertStatus === 'noResponse' ) {

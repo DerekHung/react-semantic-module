@@ -14,6 +14,9 @@ const {
 } = Immutable;
 const InsertUtils = {
 	InsertText : function(editorState, text){
+
+		console.log("123456");
+
 		const contentState = editorState.getCurrentContent();
 		const selectionState = editorState.getSelection();
 

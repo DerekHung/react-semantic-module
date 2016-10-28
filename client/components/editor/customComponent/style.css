@@ -28,6 +28,7 @@
     background: #E7E7E7;
     width: 100%;
     height: 352px;
+    position: relative;
 }
 .loading-preset.audio {
     width: 300px;

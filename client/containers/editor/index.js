@@ -21,6 +21,7 @@ import testData from './test.json';
 import { fromJS } from 'immutable';
 
 import mediaInfo from './mediaInfo.js'
+import testDataString from './testData.js';
 
 let metion = [];
 if(typeof(window) !== 'undefined'){
@@ -45,7 +46,7 @@ let convertPattern = {
 		}
 	},
 	entityToHTML: (entity, originalText) => {
-		//console.log(entity);
+		console.log(entity);
 		switch( entity.type ){
 			case 'IMAGE':
 			return `<img fileId="${entity.data.fileId}"/>`;
@@ -60,9 +61,13 @@ let convertPattern = {
 			case 'AUDIO':
 			return `<audio fileId="${entity.data.fileId}"/>`;
 			case 'mention':
-			return `<div tagType="MEMBER" pid="${entity.data.mention.get('id')}">${entity.data.mention.get('name')}</div>`;
+			if( typeof( entity.data.mention.get ) === 'undefined' ) {
+				return `<div tagType="MEMBER" pid="${entity.data.mention.id}">${entity.data.mention.name}</div>`;
+			}else {
+				return `<div tagType="MEMBER" pid="${entity.data.mention.get('id')}">${entity.data.mention.get('name')}</div>`;	
+			}
 			case 'LINK':
-			return `<a href="${entity.data.url}" target="_blank"></a>`;
+			return `<a href="${entity.data.url}" target="_blank">${entity.data.url}</a>`;
 			default:
 			return originalText;
 		}
@@ -70,7 +75,6 @@ let convertPattern = {
 	/* convert from HTML pattern (如果沒用到就不必加)*/ 
 	htmlToStyle: (nodeName, node, currentStyle) => {return currentStyle;},
 	htmlToEntity: (nodeName, node) => {
-		console.log(node);
 		let data = {};
 		if( typeof (node.attributes) !== 'undefined') {
 			Array.prototype.slice.call(node.attributes).forEach(function(item){
@@ -81,7 +85,6 @@ let convertPattern = {
 				data[name] = item.value;
 			})
 		}
-		
 		switch(nodeName){
 			case 'img':
 			return Entity.create('IMAGE','IMMUTABLE',data);
@@ -92,7 +95,17 @@ let convertPattern = {
 			case 'a':
 			return Entity.create('LINK','MUTABLE',data);
 			case 'div':
-			if ( node.getAttribute('tagtype') === 'MEMBER' ) return Entity.create(node.getAttribute('tagType'), 'SEGMENTED', data);
+			if ( node.getAttribute('tagtype') === 'MEMBER' ){
+				let transData = {
+					mention: {
+						id: data.pid,
+						link: data.pid,
+						name: data.username,
+						avatar: ''
+					}
+				}
+				return Entity.create('mention', 'SEGMENTED', transData);
+			}
 			else return Entity.create(node.getAttribute('tagtype'), 'IMMUTABLE', data);
 		}
 		
@@ -125,10 +138,12 @@ class EditorPage extends Component {
 			rawStateString: null,
 			HTMLString: null,
 			rawState: null,
-			uploadingCount: 0
+			uploadingCount: 0,
+			originState :convertToRaw(convertFromHTML(convertPattern)(testDataString))
 		}
 		this.onChange = (rawState) => this._onChange(rawState);
 		this.toggle = () => this._toggle();
+		this.submit = () => this._submit();
 		this.onRequestSearch = (value) => this._onRequestSearch(value);
 		this.open = () => this.setState({ open: true});
 	}
@@ -139,21 +154,25 @@ class EditorPage extends Component {
 		//console.log(this.rawState);
 	}
 	_toggle(){
+		this.setState({ open: !this.state.open });
+	}
+	_submit(){
 		let html, htmlState;
 		let fileStatus = this.refs.editor.getFileUploadObject();
 		let uploadDone = true;
+
 		for( var key in fileStatus ) {
 			if( fileStatus[key].fileData.status !== 'uploadDone') {
 				uploadDone = false;
 			}
 		}
+
 		if( this.state.uploadingCount === 0 && uploadDone ){
 			if( this.contentState ) {
-				html = convertToHTML(convertPattern)(this.contentState);
+				html = convertToHTML(convertPattern)(this.contentState);		
 				htmlState = convertFromHTML(convertPattern)(html);
 			}
 			this.setState({ 
-				open: !this.state.open,
 				rawStateString: JSON.stringify(this.rawState),
 				rawState: this.rawState,
 				HTMLString: html,
@@ -161,11 +180,9 @@ class EditorPage extends Component {
 			});
 			//console.log(this.refs.editor.getFileUploadObject());
 
-		}
-		
-		
+		}	
 	}
-	
+
 	componentDidMount() {
 		
 	}
@@ -182,7 +199,7 @@ class EditorPage extends Component {
 		let option = {
 			submit: {
 				text: '完成',
-				action: this.toggle
+				action: this.submit
 			},
 			 closeIcon: true,
 		}
@@ -196,7 +213,8 @@ class EditorPage extends Component {
 					<LightBox option={option}
 						  onClose={this.toggle.bind(this,'close')}>
 						<div styleName="editorBlock">
-							<Editor apnum="10400"
+							<Editor content={this.state.originState}
+									apnum="10400"
 									pid="10400"
 									placeholder="welcome"
 									onChange={this.onChange} 
@@ -233,6 +251,7 @@ class EditorPage extends Component {
 						</div>
 					</div>
 				}
+
 				<div className="content" dangerouslySetInnerHTML={{__html: html}}>
 					
 				</div>

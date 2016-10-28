@@ -113,7 +113,7 @@ class RichEditor extends Component {
 
 			let props = {
 				loading: true,
-				fakeSrc: URL.createObjectURL(file.originFile),
+				src: URL.createObjectURL(file.originFile),
 				id: file.id
 			}
 
@@ -156,7 +156,6 @@ class RichEditor extends Component {
 			yield "uploadDone";
 
 			fileProps.loading = false;
-			fileProps.src = fileProps.fakeSrc;
 			fileProps.fileId = this.fileSystemObject[id].fileId;
 
 			this._insertBlockComponent(entityKey, fileData.type, fileProps);
@@ -331,7 +330,8 @@ class RichEditor extends Component {
 
 		let getJSONLoop = function (id, callback) {
 			let time = 0;
-			getFileUrl(id).done(function (res) {
+			getFileUrl(id, type).done(function (res) {
+				console.log(res);
 				if (res[0].convertStatus === 'pending' || res[0].convertStatus === 'uploading') {
 					setTimeout(() => {
 						time = time + 500;
@@ -339,6 +339,7 @@ class RichEditor extends Component {
 					}, 500);
 
 				} else if (res[0].convertStatus === 'success') {
+					
 					callback(res);
 				} else {
 					that._linkFail(props, entityKey, type, url);
@@ -375,8 +376,9 @@ class RichEditor extends Component {
 		let that = this;
 
 		props.linkError = true;
-		that._insertBlockComponent(entityKey, type, props, 'IMMUTABLE');
 		props.loading = false;
+		that._insertBlockComponent(entityKey, type, props, 'IMMUTABLE');
+		
 		props.linkError = null;
 		//that._insertBlockComponent(null, 'LINK', props, 'MUTABLE');
 		let startKey = that.state.editorState.getSelection().getAnchorKey();
