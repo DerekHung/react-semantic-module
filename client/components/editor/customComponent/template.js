@@ -142,7 +142,7 @@ const YoutubeBlock = CSSModules(({parent, props}) => {
         <a href={props.url } target="_blank">{props.url}</a>
         <div>
         <iframe width="476" height="267.5"
-            src={"https://www.youtube.com/embed/" + props.file}>
+            src={location.protocol + "//www.youtube.com/embed/" + props.file}>
             </iframe>
         </div>
     </div>

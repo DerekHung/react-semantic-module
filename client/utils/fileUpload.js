@@ -60,7 +60,7 @@ export function getSignature (file, dataInfo){
 	return new Promise(function(resolve, reject){
 		$.ajax({
 			method: 'POST',
-			url: 'http://docapi-staging-api-1712535865.us-west-2.elb.amazonaws.com/docapi/v0/signature',
+			url: location.protocol + '//docapi-staging-api-1712535865.us-west-2.elb.amazonaws.com/docapi/v0/signature',
 			contentType: "application/json; charset=utf-8",
 			dataType: 'json',
 			data: JSON.stringify(jsonDataForSig)
@@ -84,7 +84,7 @@ export function uploadToS3(file, jsonDataForUpload){
 	return new Promise(function(resolve, reject){ 
 		$.ajax({
 			method: 'POST',
-			url: 'http://docapi-staging-originbucket-1s73tnifzf5z3.s3.amazonaws.com',
+			url: location.protocol + '//docapi-staging-originbucket-1s73tnifzf5z3.s3.amazonaws.com',
 			processData: false,
 			contentType: false,
 			data: formData
@@ -131,7 +131,7 @@ export function getFileUrl(fileId, type, tagArr) {
 	//console.log(params.getFileArr);
 	return	$.ajax({
 			method: 'POST',
-			url: 'http://docapi-staging-api-1712535865.us-west-2.elb.amazonaws.com/docapi/v0/getFileUrl',
+			url: location.protocol + '//docapi-staging-api-1712535865.us-west-2.elb.amazonaws.com/docapi/v0/getFileUrl',
 			contentType: "application/json; charset=utf-8",
 			dataType: 'json',
 			data: JSON.stringify(params)
@@ -171,7 +171,7 @@ export function getURLData(apnum, pid, url, tag){
 	} 
 	return $.ajax({
 		method: 'POST',
-		url: 'http://docapi-staging-api-1712535865.us-west-2.elb.amazonaws.com/docapi/v0/htmlConvert',
+		url: location.protocol + '//docapi-staging-api-1712535865.us-west-2.elb.amazonaws.com/docapi/v0/htmlConvert',
 		contentType: 'application/json; charset=utf-8',
 		dataType:'json',
 		data: JSON.stringify(jsonData),

@@ -21,7 +21,7 @@ import testData from './test.json';
 import { fromJS } from 'immutable';
 
 import mediaInfo from './mediaInfo.js'
-//import testDataString from './testData.js';
+import testDataString from './testData.js';
 
 let metion = [];
 if(typeof(window) !== 'undefined'){
@@ -51,15 +51,15 @@ let convertPattern = {
 			case 'IMAGE':
 			return `<img fileId="${entity.data.fileId}"/>`;
 			case 'DOCUMENT':
-			return `<div tagType="DOCUMENT" fileId="${entity.data.fileId}"></div>`;
+			return `<img tagType="DOCUMENT" fileId="${entity.data.fileId}"/>`;
 			case 'HYPERLINK':
-			return `<div tagType="HYPERLINK" fileId="${entity.data.fileId}" url="${entity.data.url}"></div>`;
+			return `<img tagType="HYPERLINK" fileId="${entity.data.fileId}" url="${entity.data.url}"></div>`;
 			case 'YOUTUBE':
-			return `<div tagType="YOUTUBE" file="${entity.data.file}" url="${entity.data.url}" src="${entity.data.src}"></div>`;
+			return `<img tagType="YOUTUBE" file="${entity.data.file}" url="${entity.data.url}" src="${entity.data.src}"/>`;
 			case 'VIDEO':
-			return `<video fileId="${entity.data.fileId}"/>`;
+			return `<img fileId="${entity.data.fileId}"/>`;
 			case 'AUDIO':
-			return `<audio fileId="${entity.data.fileId}"/>`;
+			return `<img fileId="${entity.data.fileId}"/>`;
 			case 'mention':
 			if( typeof( entity.data.mention.get ) === 'undefined' ) {
 				return `<div tagType="MEMBER" pid="${entity.data.mention.id}">${entity.data.mention.name}</div>`;
@@ -85,13 +85,10 @@ let convertPattern = {
 				data[name] = item.value;
 			})
 		}
+		
 		switch(nodeName){
 			case 'img':
-			return Entity.create('IMAGE','IMMUTABLE',data);
-			case 'video':
-			return Entity.create('VIDEO','IMMUTABLE',data);
-			case 'audio':
-			return Entity.create('AUDIO','IMMUTABLE',data);
+			return Entity.create(node.getAttribute('tagtype'),'IMMUTABLE',data);
 			case 'a':
 			return Entity.create('LINK','MUTABLE',data);
 			case 'div':
@@ -106,7 +103,9 @@ let convertPattern = {
 				}
 				return Entity.create('mention', 'SEGMENTED', transData);
 			}
-			else return Entity.create(node.getAttribute('tagtype'), 'IMMUTABLE', data);
+			else return false;
+			default:
+			return false;
 		}
 		
 	},
@@ -139,7 +138,7 @@ class EditorPage extends Component {
 			HTMLString: null,
 			rawState: null,
 			uploadingCount: 0,
-			//originState :convertToRaw(convertFromHTML(convertPattern)(testDataString))
+			originState :convertToRaw(convertFromHTML(convertPattern)(testDataString))
 		}
 		this.onChange = (rawState) => this._onChange(rawState);
 		this.toggle = () => this._toggle();
@@ -213,7 +212,7 @@ class EditorPage extends Component {
 					<LightBox option={option}
 						  onClose={this.toggle.bind(this,'close')}>
 						<div styleName="editorBlock">
-							<Editor 
+							<Editor content={this.state.originState}
 									apnum="10400"
 									pid="10400"
 									placeholder="welcome"

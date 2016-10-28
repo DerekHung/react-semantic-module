@@ -331,7 +331,6 @@ class RichEditor extends Component {
 		let getJSONLoop = function (id, callback) {
 			let time = 0;
 			getFileUrl(id, type).done(function (res) {
-				console.log(res);
 				if (res[0].convertStatus === 'pending' || res[0].convertStatus === 'uploading') {
 					setTimeout(() => {
 						time = time + 500;
