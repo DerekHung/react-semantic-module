@@ -49,7 +49,7 @@ let convertPattern = {
 		console.log(entity);
 		switch( entity.type ){
 			case 'IMAGE':
-			return `<img fileId="${entity.data.fileId}"/>`;
+			return `<img tagType="IMAGE" fileId="${entity.data.fileId}"/>`;
 			case 'DOCUMENT':
 			return `<img tagType="DOCUMENT" fileId="${entity.data.fileId}"/>`;
 			case 'HYPERLINK':
@@ -57,9 +57,9 @@ let convertPattern = {
 			case 'YOUTUBE':
 			return `<img tagType="YOUTUBE" file="${entity.data.file}" url="${entity.data.url}" src="${entity.data.src}"/>`;
 			case 'VIDEO':
-			return `<img fileId="${entity.data.fileId}"/>`;
+			return `<img tagType="VIDEO" fileId="${entity.data.fileId}"/>`;
 			case 'AUDIO':
-			return `<img fileId="${entity.data.fileId}"/>`;
+			return `<img tagType="AUDIO" fileId="${entity.data.fileId}"/>`;
 			case 'mention':
 			if( typeof( entity.data.mention.get ) === 'undefined' ) {
 				return `<div tagType="MEMBER" pid="${entity.data.mention.id}">${entity.data.mention.name}</div>`;
