@@ -23,6 +23,8 @@ import { fromJS } from 'immutable';
 import mediaInfo from './mediaInfo.js'
 import testDataString from './testdata.js';
 
+import ReactHtmlParser from './react-html-parser/src';
+
 let metion = [];
 if(typeof(window) !== 'undefined'){
 	$.each(testData.response, function(index,value){
@@ -53,7 +55,7 @@ let convertPattern = {
 			case 'DOCUMENT':
 			return `<img tagType="DOCUMENT" fileId="${entity.data.fileId}"/>`;
 			case 'HYPERLINK':
-			return `<img tagType="HYPERLINK" fileId="${entity.data.fileId}" url="${entity.data.url}"></div>`;
+			return `<img tagType="HYPERLINK" fileId="${entity.data.fileId}" url="${entity.data.url}"/>`;
 			case 'YOUTUBE':
 			return `<img tagType="YOUTUBE" file="${entity.data.file}" url="${entity.data.url}" src="${entity.data.src}"/>`;
 			case 'VIDEO':
@@ -179,7 +181,8 @@ class EditorPage extends Component {
 			});
 			//console.log(this.refs.editor.getFileUploadObject());
 
-		}	
+		}
+		this._toggle();	
 	}
 
 	componentDidMount() {
@@ -250,7 +253,10 @@ class EditorPage extends Component {
 						</div>
 					</div>
 				}
-
+				<h3> HTML SHOW</h3>
+				<div className="content">
+					{ ReactHtmlParser(testDataString) }
+				</div>
 				<div className="content" dangerouslySetInnerHTML={{__html: html}}>
 					
 				</div>

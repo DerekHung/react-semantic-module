@@ -1,0 +1,67 @@
+.player {
+  width: 730px;
+  height: 480px;
+  margin: 0 auto;
+}
+
+.playground {
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  height: 89.6%;
+  width: 100%;
+  overflow: hidden;
+  position: relative;
+  background-color: #000;
+  text-align: center;
+
+}
+.playground img {
+  max-height: 100%;
+  max-width: 100%;
+}
+.loading {
+  position: absolute;
+  top: 25%;
+   
+}
+.controls {
+  height: 50px;
+  background-color: #ddd;
+  color: #868686;
+  margin-top: -6px;
+  text-align: center;
+}
+.controls_item {
+
+}
+.direction {
+  font-size: 2.2em;
+}
+
+.count {
+  display: inline-block;
+  font-size: 1.3em;
+  margin: 10px;
+  letter-spacing: 3px;
+  vertical-align: top;
+  color: #000;
+}
+.count > input {
+  display: inline-block;
+  width: 40px;
+  height: 28px;
+  text-align: center;
+  margin-right: 6px;
+  border: 0px;
+  border-radius: 3px;
+}
+.count input{
+  display: inline-block;
+  width: 40px;
+  
+}
+.fullscreen {
+  float: right;
+  font-size: 2em;
+}

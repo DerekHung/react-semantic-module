@@ -96,6 +96,11 @@ export function getFileUrl(fileId, type, tagArr) {
 	params.timestamp = Math.floor(Date.now()/1000) + 1800;
 	params.getFileArr = [];
 	//console.log(type);
+	if( !tagArr || tagArr.length === 0 ){ 
+		params.getFileArr.push({
+			fileId: fileId,
+			protocol: "common"
+		})}
 	for( let i in tagArr ) {
 		if ( tagArr[i] ) {
 			if( type === 'DOCUMENT' && tagArr[i] === 'activityPlay' ) {

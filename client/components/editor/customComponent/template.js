@@ -154,6 +154,8 @@ const HyperLinkBlock = CSSModules(({parent, props}) => {
     const removeBlock = () => {
         parent.props.blockProps.onRequestRemove(parent.props.block.getKey(), parent.state.props.id);
     }
+    console.log(props);
+    if(!props.img) props.img={};
 
     return (
     <div styleName="block">

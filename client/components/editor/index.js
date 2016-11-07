@@ -46,7 +46,6 @@ const plugins = [mentionPlugin,LinkPlugin];
 class RichEditor extends Component {
 	constructor(props) {
 		super(props);
-
 		let editorState = null;
 
 		if (props.editorState) {
@@ -330,7 +329,7 @@ class RichEditor extends Component {
 
 		let getJSONLoop = function (id, callback) {
 			let time = 0;
-			getFileUrl(id, type).done(function (res) {
+			getFileUrl(id).done(function (res) {
 				if (res[0].convertStatus === 'pending' || res[0].convertStatus === 'uploading') {
 					setTimeout(() => {
 						time = time + 500;
@@ -341,6 +340,10 @@ class RichEditor extends Component {
 					
 					callback(res);
 				} else {
+					setTimeout(() => {
+						time = time + 500;
+						getJSONLoop(id, callback);
+					}, 500);
 					that._linkFail(props, entityKey, type, url);
 				}
 			})
