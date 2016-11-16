@@ -30,7 +30,7 @@ export default function TagElementType(node, key) {
   // create and return the element
   //return <Button/>;
 
-  //console.log(node);
+  console.log(node.attribs);
   if( node.name === 'img' ) return <MediaPlayer property={ node.attribs } />;
   else return React.createElement(tagName, props, children);
 }

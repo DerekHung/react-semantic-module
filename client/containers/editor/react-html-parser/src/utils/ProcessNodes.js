@@ -41,6 +41,7 @@ export default function ProcessNodes(nodes) {
 }
 
 function TransformTag( node ) {
+  console.log(node);
   if(node.type === 'tag' && node.attribs.tagtype) {
       var attr = JSON.parse(JSON.stringify( node.attribs ));
       switch( node.attribs.tagtype ) {
@@ -51,18 +52,8 @@ function TransformTag( node ) {
             target : '_blank',
           }
         break;
-        case 'IMAGE':
-          node.name = 'img';
-          node.attribs = {
-            src : attr.src
-          }
+        case 'HYPERLINK':
         break;
-        /*case 'VIDEO':
-          node.name = 'video';
-          node.attribs = {
-            src 
-          }
-        break;*/
         default:
         break;
       }

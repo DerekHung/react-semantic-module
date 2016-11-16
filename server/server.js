@@ -52,6 +52,11 @@ module.exports = function(app){
 
 	// page route
 	app.use((req, res, next) => {
+		/*if (__DEVELOPMENT__) {
+			// Do not cache webpack stats: the script file would change since
+			// hot module replacement is enabled in the development env
+			webpackIsomorphicTools.refresh();
+		}*/
 		let history = createMemoryHistory();
 		let routes = pageRoutes(history);
 		let location = createLocation(req.url);

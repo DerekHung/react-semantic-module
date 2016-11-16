@@ -34,6 +34,12 @@ if(paramMap['--env'] === 'dev'){
 }else{
 	require('../webpack.dev.config')();
 }
+/*var WebpackIsomorphicTools = require('webpack-isomorphic-tools');
+global.webpackIsomorphicTools = new WebpackIsomorphicTools(require('../webpack-isomorphic-tools-configuration'))
+	.development(__DEVELOPMENT__)
+	.server(rootDir, function() {
+		require('../server')(app);
+});*/
 require('../server')(app);
 
 var http = require('http');

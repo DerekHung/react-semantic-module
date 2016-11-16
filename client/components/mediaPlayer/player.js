@@ -8,7 +8,7 @@ class Player extends Component {
 	constructor( props ){
 		super( props );
         this.state = {}
-        this.state.images = ["http://fakeimg.pl/300x430/","http://fakeimg.pl/570x430/", "http://fakeimg.pl/730x430/","http://fakeimg.pl/730x200/"];
+        this.state.images = props.src;
         this.state.currentIndex = props.index||0;
         this.state.imagesCount = this.state.images.length; 
         this.state.loading = true;
