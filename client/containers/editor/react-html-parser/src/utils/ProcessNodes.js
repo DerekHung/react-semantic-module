@@ -41,7 +41,6 @@ export default function ProcessNodes(nodes) {
 }
 
 function TransformTag( node ) {
-  console.log(node);
   if(node.type === 'tag' && node.attribs.tagtype) {
       var attr = JSON.parse(JSON.stringify( node.attribs ));
       switch( node.attribs.tagtype ) {

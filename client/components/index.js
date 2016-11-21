@@ -15,6 +15,8 @@ import Editor from './editor';
 
 import FileUploader from './fileUploader';
 
+import MediaPlayer from './mediaPlayer';
+
 export { 
 	LightBox,
 	Button,
@@ -26,5 +28,6 @@ export {
 	TextField, 
 	Validators,
 	Editor,
-	FileUploader 
+	FileUploader,
+	MediaPlayer 
 };
