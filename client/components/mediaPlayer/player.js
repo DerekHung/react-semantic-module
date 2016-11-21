@@ -1,4 +1,3 @@
-import { connect } from 'react-redux';
 import React, { Component } from 'react';
 import CSSModules from 'react-css-modules';
 import css from './player.css';
