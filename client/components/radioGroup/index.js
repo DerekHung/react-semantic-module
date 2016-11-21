@@ -98,7 +98,6 @@ class RadioGroup extends Component {
 		
 		return (
 			<div className={this.props.className} ref="main" styleName="radioGroup">
-			<img src={file}/>
 				{group.map(function (data, index) {
 					return(
 					<div key={index} styleName="radioItem">
