@@ -16,6 +16,8 @@ import configureStore from 'client/store/configureStore';
 import pageRoutes from 'client/routes';
 import ajaxRoutes from 'server/routes';
 
+global.__DEVELOPMENT__ = process.env.NODE_ENV !== 'production';
+
 module.exports = function(app){
 
 	i18n.configure({
@@ -52,11 +54,11 @@ module.exports = function(app){
 
 	// page route
 	app.use((req, res, next) => {
-		/*if (__DEVELOPMENT__) {
+		if (__DEVELOPMENT__) {
 			// Do not cache webpack stats: the script file would change since
 			// hot module replacement is enabled in the development env
 			webpackIsomorphicTools.refresh();
-		}*/
+		}
 		let history = createMemoryHistory();
 		let routes = pageRoutes(history);
 		let location = createLocation(req.url);

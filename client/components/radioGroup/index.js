@@ -3,7 +3,7 @@ import { Link } from 'react-router';
 import CSSModules from 'react-css-modules';
 import style from './style.css';
 
-//import file from './icon_checkbox.png';
+import file from './icon_checkbox.png';
 
 function getSelectedChbox(frm) {
 	var selchbox = [];// array that will store the value of selected checkboxes
@@ -99,6 +99,7 @@ class RadioGroup extends Component {
 		
 		return (
 			<div className={this.props.className} ref="main" styleName="radioGroup">
+			<img src={file}/>
 				{group.map(function (data, index) {
 					return(
 					<div key={index} styleName="radioItem">

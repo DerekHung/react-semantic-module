@@ -14,6 +14,7 @@ require('babel-core/register')({
 })
 
 var path = require('path');
+var rootDir = path.resolve(__dirname, '..');
 process.env.NODE_PATH = path.join(__dirname, '../');
 require('module').Module._initPaths();
 
@@ -34,13 +35,13 @@ if(paramMap['--env'] === 'dev'){
 }else{
 	require('../webpack.dev.config')();
 }
-/*var WebpackIsomorphicTools = require('webpack-isomorphic-tools');
+var WebpackIsomorphicTools = require('webpack-isomorphic-tools');
+global.__DEVELOPMENT__ = process.env.NODE_ENV !== 'production';
 global.webpackIsomorphicTools = new WebpackIsomorphicTools(require('../webpack-isomorphic-tools-configuration'))
-	.development(__DEVELOPMENT__)
 	.server(rootDir, function() {
+		//require('../server')(app);
 		require('../server')(app);
-});*/
-require('../server')(app);
+
 
 var http = require('http');
 var port = app.get('port');
@@ -48,6 +49,7 @@ var server = http.createServer(app);
 server.listen(port);
 server.on('error', onError);
 server.on('listening', onListening);
+
 
 function onError(error) {
 	if (error.syscall !== 'listen') {
@@ -75,3 +77,5 @@ function onListening() {
 	var bind = (typeof addr === 'string') ? 'pipe ' + addr : 'port ' + addr.port;
 	debug('Listening on ' + bind);
 }
+
+});

@@ -1,7 +1,7 @@
 import Webpack_isomorphic_tools_plugin from 'webpack-isomorphic-tools/plugin'
 
-export default
-{
+
+module.exports = {
   assets:
   {
     images:
