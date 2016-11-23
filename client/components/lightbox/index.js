@@ -16,7 +16,6 @@ class Lightbox extends Component{
 	}
 
     handleClose(type){
-        console.log(type);
         if( type === 'overlay' && this.props.clickOverlayToClose === false ) {
 
         }else {
@@ -29,7 +28,10 @@ class Lightbox extends Component{
         if ( this.props.option.contentHeight ) {
             contentHeight = this.props.option.contentHeight;
         }
-				const {text, action, ...gtm} = this.props.option.submit;
+        if( this.props.option.submit ){
+	        var {text, action, ...gtm} = this.props.option.submit;
+        }
+        
         return(
             <div styleName="container">
                 <Overlay
