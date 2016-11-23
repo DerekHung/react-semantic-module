@@ -1,11 +1,8 @@
 {
 	"presets": ["es2015", "react"],
-	"env": {
-		"test": {
-			"plugins": [
-				"babel-plugin-rewire",
-				"transform-es2015-arrow-functions"
-			]
-		}
-	}
+	"plugins": [
+		"babel-plugin-rewire",
+		"transform-es2015-arrow-functions",
+		"transform-object-rest-spread"
+	]
 }
