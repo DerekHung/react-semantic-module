@@ -356,11 +356,11 @@ class RichEditor extends Component {
 				$.getJSON(urlResult[0].url[0], function (result) {
 
 					props.loading = false;
-					props.title = result.title;
-					props.description = result.description;
-					props.img = result.imgUrls[0];
+					props.linktitle = result.title;
+					props.linkcontent = result.description;
+					props.src = result.imgUrls[0].url;
 					props.fileId = res[0].fileId;
-					props.url = url;
+					props.linkurl = url;
 					//timeoutTest(result.imgUrls[0].fileId);
 
 					that._insertBlockComponent(entityKey, type, props, 'IMMUTABLE');

@@ -41,14 +41,12 @@ class MediaPlayer extends Component {
 			carrier: null,
 			data: {}
 		}
-		console.log(props);
 		this.handleClick = (e) => this._handleClick(e);
 	}
 	_handleClick(e) {
 		let that = this;
 		if( !this.state.transformed ) {
 			getFileUrl(this.props.property.fileid, this.state.tagType, getMappingData()[this.state.tagType].tag).done(function(res){
-				console.log(res);	
 				that.state.carrier = getMappingData(res[0].url)[that.state.tagType].template;
 				that.setState({ 
 					transformed: true,
@@ -60,7 +58,6 @@ class MediaPlayer extends Component {
 		
 	}
 	render() {
-		console.log(this.state.carrier);
 		if( this.state.tagType === 'HYPERLINK' ){
 			return (
 				<div styleName="block">

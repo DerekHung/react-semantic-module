@@ -69,14 +69,13 @@ const VideoBlock = CSSModules(({parent, props}) => {
     const removeBlock = () => {
         parent.props.blockProps.onRequestRemove(parent.props.block.getKey(), parent.state.props.id);
     }
-
     return (
     <div styleName="block">
     { props.loading? <div styleName="loading-preset"><div styleName="close" onClick={removeBlock}></div><div styleName="play-icon video"></div><div styleName="loader"></div></div> : 
         <div>
             <div styleName="close" onClick={removeBlock}></div>
-            { props.poster ?
-                <div styleName="loading-preset" style={{ background: 'url(' + props.poster + ') no-repeat center '}}>
+            { typeof(props.convertstatus) !== 'undefined' ?
+                <div styleName="loading-preset" style={{ background: 'url(' + props.src + ') no-repeat center '}}>
                     <div styleName="play-icon video"></div>
                     <img src={props.poster}/>
                 </div>
@@ -154,19 +153,18 @@ const HyperLinkBlock = CSSModules(({parent, props}) => {
     const removeBlock = () => {
         parent.props.blockProps.onRequestRemove(parent.props.block.getKey(), parent.state.props.id);
     }
-    console.log(props);
     if(!props.img) props.img={};
 
     return (
     <div styleName="block">
         <div styleName="close" onClick={removeBlock}></div>
-        <a href={props.url } target="_blank">
-        <span styleName="link">{props.url}</span>
+        <a href={props.linkurl } target="_blank">
+        <span styleName="link">{props.linkurl}</span>
             <div styleName="linkBlock">
-                <img src={props.img.url} />
+                <img src={props.src} />
                 <div styleName="info">
-                    <h3>{props.title}</h3>
-                    <p>{props.description}</p>
+                    <h3>{props.linktitle}</h3>
+                    <p>{props.linkcontent}</p>
                     <span styleName="tag104">plus.104.com.tw</span>
                 </div>
             </div>

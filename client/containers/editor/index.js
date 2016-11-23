@@ -48,7 +48,7 @@ let convertPattern = {
 		}
 	},
 	entityToHTML: (entity, originalText) => {
-		console.log(entity);
+		//console.log(entity);
 		switch( entity.type ){
 			case 'IMAGE':
 			return `<img tagType="IMAGE" fileId="${entity.data.fileId}"/>`;
@@ -140,6 +140,7 @@ class EditorPage extends Component {
 			HTMLString: null,
 			rawState: null,
 			uploadingCount: 0,
+			HTMLtoState:convertToRaw(convertFromHTML(convertPattern)(testDataString))
 			//originState :convertToRaw(convertFromHTML(convertPattern)(testDataString))
 		}
 		this.onChange = (rawState) => this._onChange(rawState);
@@ -147,6 +148,10 @@ class EditorPage extends Component {
 		this.submit = () => this._submit();
 		this.onRequestSearch = (value) => this._onRequestSearch(value);
 		this.open = () => this.setState({ open: true});
+		this.refresh = () => console.log(this.state.HTMLtoState.entityMap);
+		this.newonChange = (contentState) => {
+			console.log(convertToRaw(contentState).entityMap);
+		}
 	}
 	_onChange (contentState) {
 		this.contentState = contentState;
@@ -171,7 +176,7 @@ class EditorPage extends Component {
 		if( this.state.uploadingCount === 0 && uploadDone ){
 			if( this.contentState ) {
 				html = convertToHTML(convertPattern)(this.contentState);		
-				htmlState = convertFromHTML(convertPattern)(html);
+				htmlState = convertFromHTML(convertPattern)(testDataString);
 			}
 			this.setState({ 
 				rawStateString: JSON.stringify(this.rawState),
@@ -189,7 +194,6 @@ class EditorPage extends Component {
 		
 	}
 	onUploadStatusChange(object){
-		console.log(Object.keys(object).length);
 		this.setState({
 			uploadingCount: Object.keys(object).length
 		})
@@ -205,7 +209,8 @@ class EditorPage extends Component {
 			},
 			 closeIcon: true,
 		}
-		console.log(this.state.HTMLtoState);
+		//console.log(this.state.HTMLtoState);
+		console.log(this.state.HTMLtoState.entityMap);
 		return (
 			<div>
 				<h3>Rich Editor</h3>
@@ -239,20 +244,22 @@ class EditorPage extends Component {
 						<div className="content">
 							<p>{ this.state.HTMLString }</p>
 						</div>
-						<h3> Convert from HTML </h3>
-						<div className="content">
-							<Editor content={this.state.HTMLtoState}
-									apnum="10400"
-									pid="10400"
-									placeholder="welcome"
-									onChange={this.onChange} 
-									mentions={mentions}
-									onUploadStatusChange={this.onUploadStatusChange.bind(this)}
-									ref="editor"
-									mediaInfo={mediaInfo}/>
-						</div>
+						
 					</div>
 				}
+				<h3> Convert from HTML </h3>
+				<div className="content">
+					<Editor content={this.state.HTMLtoState}
+							apnum="10400"
+							pid="10400"
+							placeholder="welcome"
+							onChange={this.newonChange} 
+							mentions={mentions}
+							onUploadStatusChange={this.onUploadStatusChange.bind(this)}
+							ref="editor"
+							mediaInfo={mediaInfo}/>
+				</div>
+				<button onClick={this.refresh}>refresh</button>
 				<h3> HTML SHOW</h3>
 				<div className="content">
 					{ ReactHtmlParser(testDataString) }
