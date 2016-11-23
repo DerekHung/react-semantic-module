@@ -23,8 +23,6 @@ class DropdownMenu extends Component{
 		this.ArrowNode = null;
 		this.TrueHeight = null;
 		this.InitialProp = null;
-
-		console.log(props);
     }
 
 	componentWillMount() {
