@@ -11,7 +11,6 @@ import React from 'react';
  */
 export default function HtmlParser(html) {
   const nodes = htmlparser2.parseDOM(html);
-  console.log(nodes);
   return ProcessNodes(nodes);
   //return MediaPlayer;
 }

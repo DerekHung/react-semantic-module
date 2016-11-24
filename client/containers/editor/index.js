@@ -140,7 +140,7 @@ class EditorPage extends Component {
 			HTMLString: null,
 			rawState: null,
 			uploadingCount: 0,
-			HTMLtoState:convertToRaw(convertFromHTML(convertPattern)(testDataString))
+			HTMLtoState:null
 			//originState :convertToRaw(convertFromHTML(convertPattern)(testDataString))
 		}
 		this.onChange = (rawState) => this._onChange(rawState);
@@ -191,7 +191,10 @@ class EditorPage extends Component {
 	}
 
 	componentDidMount() {
-		
+		this.setState({
+			HTMLtoState:convertToRaw(convertFromHTML(convertPattern)(testDataString))
+		})
+		console.log(this.refs.editorhtml);
 	}
 	onUploadStatusChange(object){
 		this.setState({
@@ -210,7 +213,7 @@ class EditorPage extends Component {
 			 closeIcon: true,
 		}
 		//console.log(this.state.HTMLtoState);
-		console.log(this.state.HTMLtoState.entityMap);
+		
 		return (
 			<div>
 				<h3>Rich Editor</h3>
@@ -256,7 +259,7 @@ class EditorPage extends Component {
 							onChange={this.newonChange} 
 							mentions={mentions}
 							onUploadStatusChange={this.onUploadStatusChange.bind(this)}
-							ref="editor"
+							ref="editorhtml"
 							mediaInfo={mediaInfo}/>
 				</div>
 				<button onClick={this.refresh}>refresh</button>

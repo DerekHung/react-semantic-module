@@ -47,7 +47,6 @@ class RichEditor extends Component {
 	constructor(props) {
 		super(props);
 		let editorState = null;
-
 		if (props.editorState) {
 			editorState = props.editorState
 		} else if (props.content) {
