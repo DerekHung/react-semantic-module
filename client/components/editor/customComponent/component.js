@@ -51,6 +51,8 @@ class CustomComponent extends Component  {
 
 		//if( !props.fakeSrc ) props.fakeSrc = props.src;
 
+		console.log(props);
+
 		if( props.error ) {
 			/* 當error block出現之後隔5秒將其刪除 */ 
 			setTimeout(function(){
@@ -60,7 +62,7 @@ class CustomComponent extends Component  {
 			return <ErrorBlock parent={this} />
 		}
 
-		if( props.loading ) {
+		if( props.loading || props.convertstatus === '0') {
 			return <LoadingBlock parent={this} />
 		}
 

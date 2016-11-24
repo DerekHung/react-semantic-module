@@ -11,8 +11,8 @@ const LoadingBlock =  CSSModules((parent) => {
     return (
     <div styleName="loading-preset">
         <div styleName="close" onClick={removeBlock}></div>
-        <div styleName="play-icon video"></div>
-        <div styleName="loader"></div>
+        <div styleName="loading"></div>
+        <p styleName="handleText">檔案處理中</p>
     </div>
     )
 },style, { allowMultiple: true });
@@ -53,13 +53,10 @@ const ImgBlock = CSSModules(({parent, props}) => {
 
     return (
     <div styleName="block" style={{ 'textAlign': 'center'}}>
-        { props.loading ? 
-            <div styleName="mask-block loading"><div styleName="close" onClick={removeBlock}></div><img styleName="article-image" src={props.src} /><div styleName="loading"></div><div styleName="mask"></div></div> : 
-            <div >
-                <div styleName="close" onClick={removeBlock}></div>
-                <img styleName="article-image"src={props.src} />
-            </div>
-        }		
+        <div >
+            <div styleName="close" onClick={removeBlock}></div>
+            <img styleName="article-image"src={props.src} />
+        </div>	
     </div>
     )
 },style, { allowMultiple: true });
@@ -71,11 +68,10 @@ const VideoBlock = CSSModules(({parent, props}) => {
     }
     return (
     <div styleName="block">
-    { props.loading? <div styleName="loading-preset"><div styleName="close" onClick={removeBlock}></div><div styleName="play-icon video"></div><div styleName="loader"></div></div> : 
         <div>
             <div styleName="close" onClick={removeBlock}></div>
             { typeof(props.convertstatus) !== 'undefined' ?
-                <div styleName="loading-preset" style={{ background: 'url(' + props.src + ') no-repeat center '}}>
+                <div styleName="mediaBlcok" style={{ background: 'url(' + props.src + ') no-repeat center '}}>
                     <div styleName="play-icon video"></div>
                     <img src={props.poster}/>
                 </div>
@@ -84,7 +80,6 @@ const VideoBlock = CSSModules(({parent, props}) => {
             }
             
         </div>
-    }
     </div>
     )
 },style, { allowMultiple: true });
@@ -97,13 +92,11 @@ const AudioBlock = CSSModules(({parent, props}) => {
 
     return (
     <div styleName="block">
-    { props.loading? <div styleName="loading-preset audio"><div styleName="close" onClick={removeBlock}></div><div styleName="play-icon audio"></div><div styleName="loader"></div></div> : 
         <div styleName="mid-block">
             <div styleName="close" onClick={removeBlock}></div>
             <div styleName="title">{props.name}</div>
             <audio controls src={props.src} />
         </div>
-    }
     </div>
     )
 },style, { allowMultiple: true });
@@ -116,15 +109,13 @@ const DocumentBlock = CSSModules(({parent, props}) => {
 
     return (
     <div styleName="block">
-    { props.loading? <div styleName="loading-preset document"><div styleName="close" onClick={removeBlock}></div><div styleName="play-icon document"></div><div styleName="loader"></div></div> : 
         <div>
             <div styleName="close" onClick={removeBlock}></div> 
-            <div styleName="loading-preset"  style={{ background: 'url(' + props.src + ') no-repeat center'}}>
+            <div styleName="mediaBlcok"  style={{ background: 'url(' + props.src + ') no-repeat center'}}>
                 <div styleName="play-icon document"></div> 
                 <div styleName="mid-title">{props.name}</div>
             </div>
         </div>
-    }
     </div>
     )
 },style, { allowMultiple: true });
@@ -141,7 +132,7 @@ const YoutubeBlock = CSSModules(({parent, props}) => {
         <a href={props.url } target="_blank">{props.url}</a>
         <div>
         <iframe width="476" height="267.5"
-            src={location.protocol + "//www.youtube.com/embed/" + props.file}>
+            src={"http://www.youtube.com/embed/" + props.file}>
             </iframe>
         </div>
     </div>

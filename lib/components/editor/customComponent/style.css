@@ -25,12 +25,17 @@
     position: relative;
 }
 .loading-preset {
-    background: #E7E7E7;
     width: 100%;
-    height: 352px;
+    height: 350px;
+    position: relative;
+    border: 3px dashed #aaa;
+}
+.mediaBlcok {
+    width: 100%;
+    height: 350px;
     position: relative;
 }
-.loading-preset.audio {
+.mediaBlcok.audio {
     width: 300px;
     height: 150px;
     margin: 0 auto;
@@ -142,15 +147,15 @@
 .loading:before {
     content: '';
     display: inline-block;
-    width: 40px;
-    height: 40px;
+    width: 80px;
+    height: 80px;
     background: url(./spin_invert.svg);
     background-repeat: no-repeat;
     position: absolute;
     top: 50%;
     left: 50%;
-    margin-top: -20px;
-    margin-left: -20px;
+    margin-top: -40px;
+    margin-left: -40px;
 }
 .linkLoading {
     position: relative;
@@ -189,6 +194,13 @@
 }
 .errorText {
     color: #F17C57;
+    font-size: 20px;
+    text-align: center;
+    position: relative;
+    top: calc(50% + 50px);
+}
+.handleText {
+    color: #081b20;
     font-size: 20px;
     text-align: center;
     position: relative;
