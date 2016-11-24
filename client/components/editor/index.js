@@ -339,10 +339,6 @@ class RichEditor extends Component {
 					
 					callback(res);
 				} else {
-					setTimeout(() => {
-						time = time + 500;
-						getJSONLoop(id, callback);
-					}, 500);
 					that._linkFail(props, entityKey, type, url);
 				}
 			})
@@ -509,7 +505,7 @@ class RichEditor extends Component {
 
 		return (
 
-			<div styleName="editor" className={ editorStyles.editor } id="richEditor" >
+			<div styleName="editor" className={ editorStyles.editor } id="richEditor" onClick={this.focus}>
 				{selectedBlock
 					? <SideToolbar
 						apnum={this.props.apnum}
