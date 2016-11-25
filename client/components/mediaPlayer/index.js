@@ -58,7 +58,14 @@ class MediaPlayer extends Component {
 		
 	}
 	render() {
-		if( this.state.tagType === 'HYPERLINK' ){
+		if( typeof this.props.property.convertstatus !== 'undefined' && this.props.property.convertstatus !== '1')  {
+			return(
+				<div styleName="loading-preset">
+					<div styleName="loading"></div>
+					<p styleName="handleText">檔案處理中</p>
+				</div>
+			)
+		}else if( this.state.tagType === 'HYPERLINK' ){
 			return (
 				<div styleName="block">
 					<a href={this.props.property.linkurl } target="_blank">

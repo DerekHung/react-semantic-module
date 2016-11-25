@@ -98,3 +98,37 @@
     -ms-user-select:none; 
     user-select:none;-o-user-select:none;
 }
+.loading:before {
+    content: '';
+    display: inline-block;
+    width: 80px;
+    height: 80px;
+    background: url(../editor/customComponent/spin_invert.svg);
+    background-repeat: no-repeat;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    margin-top: -40px;
+    margin-left: -40px;
+}
+@keyframes loading {
+    from {left: -200px; width: 30%;}
+    50% {width: 30%;}
+    70% {width: 70%;}
+    80% { left: 50%;}
+    95% {left: 120%;}
+    to {left: 100%;}
+}
+.handleText {
+    color: #081b20;
+    font-size: 20px;
+    text-align: center;
+    position: relative;
+    top: calc(50% + 50px);
+}
+.loading-preset {
+    width: 100%;
+    height: 350px;
+    position: relative;
+    border: 3px dashed #aaa;
+}
