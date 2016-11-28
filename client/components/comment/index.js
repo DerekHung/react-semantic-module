@@ -9,7 +9,7 @@ const mentionPlugin = createMentionPlugin({theme: style});
 
 const plugins = [mentionPlugin];
 
-class SimpleMentionEditor extends Component {
+class CommentEditor extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -59,4 +59,4 @@ class SimpleMentionEditor extends Component {
         );
     }
 }
-export default CSSModule(SimpleMentionEditor, style, { allowMultiple: true });
+export default CSSModule(CommentEditor, style, { allowMultiple: true });
