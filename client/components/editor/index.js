@@ -504,7 +504,7 @@ class RichEditor extends Component {
 
 		return (
 
-			<div styleName="editor" onClick={this.focus}>
+			<div styleName="editor" onClick={this.focus} id="richEditor">
 				{selectedBlock
 					? <SideToolbar
 						apnum={this.props.apnum}
