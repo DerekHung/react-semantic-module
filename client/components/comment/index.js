@@ -5,10 +5,6 @@ import createMentionPlugin, { defaultSuggestionsFilter } from 'draft-js-mention-
 import style from './style.css';
 import CSSModule from 'react-css-modules';
 
-const mentionPlugin = createMentionPlugin({theme: style});
-
-const plugins = [mentionPlugin];
-
 class CommentEditor extends Component {
     constructor(props) {
         super(props);
@@ -16,6 +12,8 @@ class CommentEditor extends Component {
             editorState: EditorState.createEmpty(),
             suggestions: props.mentions
         }
+        this.mentionPlugin = createMentionPlugin({theme: style});
+        this.plugins = [this.mentionPlugin];
 
         this.onChange = (editorState) => {
             if (props.onChange) props.onChange(editorState.getCurrentContent());
@@ -42,13 +40,13 @@ class CommentEditor extends Component {
     
 
     render() {
-        const { MentionSuggestions } = mentionPlugin;
+        const { MentionSuggestions } = this.mentionPlugin;
         return (
             <div styleName="editor" onClick={this.focus}>
                 <Editor
                     editorState={this.state.editorState}
                     onChange={this.onChange}
-                    plugins={plugins}
+                    plugins={this.plugins}
                     ref={(element) => { this.editor = element; } }
                     />
                 <MentionSuggestions

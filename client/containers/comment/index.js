@@ -38,7 +38,8 @@ class CommentPage extends Component {
 		return (
 			<div>
                 <Comment mentions={mentions}
-                         ref="comment"
+                         onChange={this.onChange}/>
+                <Comment mentions={mentions}
                          onChange={this.onChange}/>
                 <button onClick={this.onClick}>123</button>
 			</div>

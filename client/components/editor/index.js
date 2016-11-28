@@ -37,9 +37,7 @@ import InsertUtils from './insertUtils.js';
 import $ from 'jquery';
 
 
-const mentionPlugin = createMentionPlugin({theme: style});
-const LinkPlugin = creatLinkPlugin();
-const plugins = [mentionPlugin,LinkPlugin];
+
 
 
 class RichEditor extends Component {
@@ -58,7 +56,9 @@ class RichEditor extends Component {
 			editorState = EditorState.createEmpty()
 		}
 
-
+		this.mentionPlugin = createMentionPlugin({theme: style});
+		this.LinkPlugin = creatLinkPlugin();
+		this.plugins = [this.mentionPlugin,this.LinkPlugin];
 
 		this.uploadingArr = {};
 		this.fileSystemObject = {};
@@ -481,7 +481,7 @@ class RichEditor extends Component {
 
 	render() {
 		const { editorState, selectedBlock, selectionRange } = this.state;
-		const { MentionSuggestions } = mentionPlugin;
+		const { MentionSuggestions } = this.mentionPlugin;
 		const fileUploadFunction = {
 			onTriggerUpload: this.onTriggerUpload,
 			getFileInfo: this.getFileInfo,
@@ -538,7 +538,7 @@ class RichEditor extends Component {
 					readOnly={this.props.readOnly}
 					ref="editor"
 					handlePastedText={this.handlePaste}
-					plugins={plugins}
+					plugins={this.plugins}
 					handleReturn={this.handleReturn}
 					/>
 				{ this.props.mentions &&
