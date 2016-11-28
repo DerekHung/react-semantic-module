@@ -12,6 +12,7 @@ import TextField from './textfeild';
 
 import Validators from '../utils/validator';
 import Editor from './editor';
+import Comment from './comment';
 
 import FileUploader from './fileUploader';
 
@@ -29,5 +30,6 @@ export {
 	Validators,
 	Editor,
 	FileUploader,
-	MediaPlayer 
+	MediaPlayer ,
+	Comment
 };

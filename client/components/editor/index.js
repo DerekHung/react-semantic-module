@@ -4,7 +4,6 @@ import style from './style.css';
 import Editor from 'draft-js-plugins-editor';
 import createMentionPlugin, { defaultSuggestionsFilter } from 'draft-js-mention-plugin';
 import creatLinkPlugin from './decorator/link.js';
-import editorStyles from 'draft-js-mention-plugin/lib/plugin.css';
 
 import {
 	EditorState,
@@ -505,7 +504,7 @@ class RichEditor extends Component {
 
 		return (
 
-			<div styleName="editor" className={ editorStyles.editor } id="richEditor" onClick={this.focus}>
+			<div styleName="editor" onClick={this.focus}>
 				{selectedBlock
 					? <SideToolbar
 						apnum={this.props.apnum}

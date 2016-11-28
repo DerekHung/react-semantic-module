@@ -13,6 +13,7 @@ class Navigation extends Component {
 				<Link className="navigation-link" to="/switches">Switches</Link>
 				<Link className="navigation-link" to="/editor">Editor</Link>
 				<Link className="navigation-link" to="/file">FileUploader</Link>
+				<Link className="navigation-link" to="/comment">Comment</Link>
 			</nav>
 		);
 	}
