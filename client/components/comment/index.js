@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { EditorState } from 'draft-js';
+import { EditorState,convertFromRaw } from 'draft-js';
 import Editor from 'draft-js-plugins-editor';
 import createMentionPlugin, { defaultSuggestionsFilter } from 'draft-js-mention-plugin';
 import style from './style.css';
@@ -8,8 +8,21 @@ import CSSModule from 'react-css-modules';
 class CommentEditor extends Component {
     constructor(props) {
         super(props);
+
+        let editorState;
+        if (props.editorState) {
+			editorState = props.editorState
+		} else if (props.content) {
+			const blocks = convertFromRaw(props.content);
+			editorState = EditorState.createWithContent(
+				blocks
+			)
+		} else {
+			editorState = EditorState.createEmpty()
+		}
+
         this.state = {
-            editorState: EditorState.createEmpty(),
+            editorState: editorState,
             suggestions: props.mentions
         }
         this.mentionPlugin = createMentionPlugin({theme: style});
@@ -37,7 +50,23 @@ class CommentEditor extends Component {
         }
     }
 
-    
+    componentWillReceiveProps(nextprops) {
+        if( this.props.editorState !== nextprops.editorState ) {
+            this.setState({ 
+                editorState: nextprops.editorState
+            })
+        }else if ( this.props.content !== nextprops.content ) {
+            var blocks = convertFromRaw(nextprops.content);
+			var editorState = EditorState.createWithContent(
+				blocks
+			)
+            this.setState({ 
+                editorState: editorState
+            })
+        }else {
+            return false;
+        }
+    }
 
     render() {
         const { MentionSuggestions } = this.mentionPlugin;

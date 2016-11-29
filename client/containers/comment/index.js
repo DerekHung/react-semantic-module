@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { Link } from 'react-router';
 import CSSModules from 'react-css-modules';
 import style from './style.css';
-import { convertToRaw } from 'draft-js';
+import { convertToRaw,EditorState } from 'draft-js';
 
 import Comment from 'client/components/comment';
 import testData from '../editor/test.json';
@@ -23,23 +23,29 @@ const mentions = fromJS(metion);
 class CommentPage extends Component {
 	constructor(props){
 		super(props);
+        this.state = {
+            contnet: EditorState.createEmpty()
+        }
         this.onClick = (e) => {
-            console.log(this.entityMap);
         }
         this.onChange = (contentState) => {
+            this.setState({
+                content: convertToRaw(contentState)
+            })
             this.entityMap = convertToRaw(contentState).entityMap;
         }
 	}
     componentDidMount(){
-        console.log(this.refs.comment);
+        console.log(this.refs.copy);
     }
 
 	render() {
 		return (
 			<div>
+                <Comment content={this.state.content}
+                         mentions={mentions}/>
                 <Comment mentions={mentions}
-                         onChange={this.onChange}/>
-                <Comment mentions={mentions}
+                         ref="copy"
                          onChange={this.onChange}/>
                 <button onClick={this.onClick}>123</button>
 			</div>
