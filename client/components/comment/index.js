@@ -48,6 +48,12 @@ class CommentEditor extends Component {
         this.focus = () => {
             this.editor.focus();
         }
+
+        this.cleanData = () => {
+            this.setState({
+                editorState : EditorState.createEmpty()
+            })
+        }
     }
 
     componentWillReceiveProps(nextprops) {

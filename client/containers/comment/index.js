@@ -27,6 +27,7 @@ class CommentPage extends Component {
             contnet: EditorState.createEmpty()
         }
         this.onClick = (e) => {
+            this.refs.copy.cleanData();
         }
         this.onChange = (contentState) => {
             this.setState({
