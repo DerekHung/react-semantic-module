@@ -349,10 +349,12 @@ class RichEditor extends Component {
 
 				$.getJSON(urlResult[0].url[0], function (result) {
 
+					if( result.imgUrls && result.imgUrls.length > 0 ) {
+						props.src = result.imgUrls[0].url;
+					}
 					props.loading = false;
 					props.linktitle = result.title;
 					props.linkcontent = result.description;
-					props.src = result.imgUrls[0].url;
 					props.fileId = res[0].fileId;
 					props.linkurl = url;
 					//timeoutTest(result.imgUrls[0].fileId);
