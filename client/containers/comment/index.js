@@ -24,12 +24,12 @@ class CommentPage extends Component {
 	constructor(props){
 		super(props);
         this.state = {
-            contnet: EditorState.createEmpty()
         }
         this.onClick = (e) => {
             this.refs.copy.cleanData();
         }
         this.onChange = (contentState) => {
+            console.log(convertToRaw(contentState))
             this.setState({
                 content: convertToRaw(contentState)
             })
@@ -43,9 +43,8 @@ class CommentPage extends Component {
 	render() {
 		return (
 			<div>
-                <Comment content={this.state.content}
-                         mentions={mentions}/>
-                <Comment mentions={mentions}
+                <Comment 
+                         mentions={mentions}
                          ref="copy"
                          onChange={this.onChange}/>
                 <button onClick={this.onClick}>123</button>

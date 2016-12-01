@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { EditorState,convertFromRaw } from 'draft-js';
+import { EditorState,convertFromRaw, ContentState } from 'draft-js';
 import Editor from 'draft-js-plugins-editor';
 import createMentionPlugin, { defaultSuggestionsFilter } from 'draft-js-mention-plugin';
 import style from './style.css';
@@ -12,7 +12,8 @@ class CommentEditor extends Component {
         let editorState;
         if (props.editorState) {
 			editorState = props.editorState
-		} else if (props.content) {
+		} else if (props.content && props.content.length > 0) {
+
 			const blocks = convertFromRaw(props.content);
 			editorState = EditorState.createWithContent(
 				blocks
@@ -50,18 +51,20 @@ class CommentEditor extends Component {
         }
 
         this.cleanData = () => {
+
             this.setState({
-                editorState : EditorState.createEmpty()
+                editorState : EditorState.push(this.state.editorState, ContentState.createFromText(''))
             })
         }
     }
 
     componentWillReceiveProps(nextprops) {
+
         if( this.props.editorState !== nextprops.editorState ) {
             this.setState({ 
                 editorState: nextprops.editorState
             })
-        }else if ( this.props.content !== nextprops.content ) {
+        }else if ( nextprops.content && this.props.content !== nextprops.content ) {
             var blocks = convertFromRaw(nextprops.content);
 			var editorState = EditorState.createWithContent(
 				blocks
