@@ -24,7 +24,7 @@ class CommentEditor extends Component {
 
         this.state = {
             editorState: editorState,
-            suggestions: props.mentions
+            suggestions: props.mentions || fromJS([])
         }
         this.mentionPlugin = createMentionPlugin({theme: style});
         this.plugins = [this.mentionPlugin];
@@ -72,6 +72,8 @@ class CommentEditor extends Component {
             this.setState({ 
                 editorState: editorState
             })
+        }else if( this.state.suggestions !== nextprops.mentions) {
+            this.setState({ suggestions: nextprops.mentions })
         }else {
             return false;
         }
