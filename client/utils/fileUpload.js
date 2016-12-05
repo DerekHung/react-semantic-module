@@ -46,21 +46,27 @@ export function getAtomicType(MIMEType) {
 		console.log('this type is not support');
 	}
 }
+
 export function getSignature (file, dataInfo){
+	
+
+	let ajaxConfig = {
+		"IMAGE": '/getSignature/activityImage',
+		"VIDEO": '/getSignature/activityVideo',
+		"AUDIO": '/getSignature/activityAudio',
+		"DOCUMENT":'/getSignature/activityDocument',
+		"HYPERLINK": '/htmlConvert'
+	}
+
 	let jsonDataForSig = {
-		apnum: dataInfo.apnum,
-		pid: dataInfo.pid,
 		contentType: file.type,
-		contentDisposition: file.name,
-		isP: 1,
-		extra: dataInfo.extra,
-		title:'fileUploader',
-		description: 'fileUploader'
+		filename: file.name,
 	};
+
 	return new Promise(function(resolve, reject){
 		$.ajax({
 			method: 'POST',
-			url: location.protocol + '//docapi-staging-api-1712535865.us-west-2.elb.amazonaws.com/docapi/v0/signature',
+			url: '/ajax'+ ajaxConfig[MIMEMap[file.type]],
 			contentType: "application/json; charset=utf-8",
 			dataType: 'json',
 			data: JSON.stringify(jsonDataForSig)
@@ -136,7 +142,7 @@ export function getFileUrl(fileId, type, tagArr) {
 	//console.log(params.getFileArr);
 	return	$.ajax({
 			method: 'POST',
-			url: location.protocol + '//docapi-staging-api-1712535865.us-west-2.elb.amazonaws.com/docapi/v0/getFileUrl',
+			url: '/ajax/getFileUrl',
 			contentType: "application/json; charset=utf-8",
 			dataType: 'json',
 			data: JSON.stringify(params)
@@ -176,7 +182,7 @@ export function getURLData(apnum, pid, url, tag){
 	} 
 	return $.ajax({
 		method: 'POST',
-		url: location.protocol + '//docapi-staging-api-1712535865.us-west-2.elb.amazonaws.com/docapi/v0/htmlConvert',
+		url: '/ajax/htmlConvert',
 		contentType: 'application/json; charset=utf-8',
 		dataType:'json',
 		data: JSON.stringify(jsonData),
