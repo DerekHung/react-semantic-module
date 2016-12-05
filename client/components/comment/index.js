@@ -5,6 +5,8 @@ import createMentionPlugin, { defaultSuggestionsFilter } from 'draft-js-mention-
 import style from './style.css';
 import CSSModule from 'react-css-modules';
 
+import { fromJS } from 'immutable';
+
 class CommentEditor extends Component {
     constructor(props) {
         super(props);
