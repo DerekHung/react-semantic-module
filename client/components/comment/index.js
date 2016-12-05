@@ -14,8 +14,7 @@ class CommentEditor extends Component {
         let editorState;
         if (props.editorState) {
 			editorState = props.editorState
-		} else if (props.content && props.content.length > 0) {
-
+		} else if (props.content) {
 			const blocks = convertFromRaw(props.content);
 			editorState = EditorState.createWithContent(
 				blocks

@@ -48,7 +48,8 @@ let convertPattern = {
 		}
 	},
 	entityToHTML: (entity, originalText) => {
-		//console.log(entity);
+		console.log(entity);
+		console.log(originalText);
 		switch( entity.type ){
 			case 'IMAGE':
 			return `<img tagType="IMAGE" fileId="${entity.data.fileId}"/>`;
@@ -69,7 +70,7 @@ let convertPattern = {
 				return `<div tagType="MEMBER" pid="${entity.data.mention.get('id')}">${entity.data.mention.get('name')}</div>`;	
 			}
 			case 'LINK':
-			return `<a href="${entity.data.url}" target="_blank">${entity.data.url}</a>`;
+			return `<a href="${entity.data.url}" target="_blank">${originalText}</a>`;
 			default:
 			return originalText;
 		}
