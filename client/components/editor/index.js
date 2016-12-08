@@ -477,7 +477,9 @@ class RichEditor extends Component {
 			)
 			this.setState({ editorState });
 			this.propsContent = nextProps.content;
-		}
+		}else if( this.state.suggestions !== nextprops.mentions && nextprops.mentions) {
+            this.setState({ suggestions: nextprops.mentions })
+        }
 	}
 
 
