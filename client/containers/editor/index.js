@@ -70,7 +70,7 @@ let convertPattern = {
 				return `<div tagType="MEMBER" pid="${entity.data.mention.get('id')}">${entity.data.mention.get('name')}</div>`;	
 			}
 			case 'LINK':
-			return `<a href="${entity.data.url}" target="_blank">${originalText}</a>`;
+			return `<a href="${entity.data.href}" target="_blank">${originalText}</a>`;
 			default:
 			return originalText;
 		}

@@ -16,13 +16,13 @@ function findLinkEntities(contentBlock, callback) {
 
 const Link = (props) => {
 	
-	const {url} = Entity.get(props.entityKey).getData();
+	const {href} = Entity.get(props.entityKey).getData();
 	const styleLink = {
 		color: '#3b5998',
 		textDecoration: 'underline',
 	}
 	return (
-		<a href={url} style={styleLink} target="_blank">
+		<a href={href} style={styleLink} target="_blank">
 			{props.children}
 		</a>
 	);

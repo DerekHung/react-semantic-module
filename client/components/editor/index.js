@@ -274,7 +274,7 @@ class RichEditor extends Component {
 
 	_onLinkKeyDown(value) {
 
-		const entityKey = Entity.create('LINK', 'MUTABLE', { url: value });
+		const entityKey = Entity.create('LINK', 'MUTABLE', { href: value });
 		let that = this;
 
 		this.onChange(RichUtils.toggleLink(
