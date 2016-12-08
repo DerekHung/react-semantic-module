@@ -15,6 +15,7 @@ function findLinkEntities(contentBlock, callback) {
 }
 
 const Link = (props) => {
+	
 	const {url} = Entity.get(props.entityKey).getData();
 	const styleLink = {
 		color: '#3b5998',
