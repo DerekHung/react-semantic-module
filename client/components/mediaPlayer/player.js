@@ -100,7 +100,7 @@ class Player extends Component {
         } else {
             this.state.fullscreen = false;
             this.setState({fullscreen: false});
-            $(ele).width("730px");
+            $(ele).width("100%");
             $(ele).height("480px");
             $(this.refs.playground).height("89.6%");
         }

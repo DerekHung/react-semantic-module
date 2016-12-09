@@ -7,10 +7,6 @@ const MIMEMap = {
 	'image/bmp': 'IMAGE',
 	'image/vnd.wap.wbmp': 'IMAGE',
 	'application/pdf': 'DOCUMENT',
-	/*
-	'application/vnd.oasis.opendocument.presentation': 'DOCUMENT',
-	'application/vnd.oasis.opendocument.text': 'DOCUMENT',
-	*/
 	'application/msword': 'DOCUMENT',
 	'application/rtf': 'DOCUMENT',
 	'application/vnd.ms-powerpoint': 'DOCUMENT',
@@ -35,6 +31,7 @@ const MIMEMap = {
 	'video/mp4':'VIDEO',
 	'video/x-flv': 'VIDEO',
 	'video/webm': 'VIDEO',
+	'video/mov': 'VIDEO'
 };
 export { MIMEMap };
 
@@ -43,7 +40,7 @@ export function getAtomicType(MIMEType) {
 
 		return MIMEMap[MIMEType];
 	}else {
-		console.log('this type is not support');
+		alert('不支援的檔案格式');
 	}
 }
 
