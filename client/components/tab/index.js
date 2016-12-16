@@ -25,14 +25,12 @@ class Tabs extends Component {
         })
     }
     _tabClick(e) {
-        console.log(e.target);
         this.setState({
             currentTab: e.target.getAttribute('name')
         })
         
     }
     render(){
-        console.log(this.state.currentTab);
         let that = this;
 
         return (
@@ -52,7 +50,7 @@ class Tabs extends Component {
                     }) 
                 }
                 </div>
-                <div styleName="container">
+                <div styleName="container" className={this.props.className}>
                 { React.Children.map(this.props.children, function (child) {
                     return React.cloneElement(child, {
                         currentTab: that.state.currentTab
@@ -63,7 +61,5 @@ class Tabs extends Component {
         )
     }
 }
-Tabs.defaultProps = {
 
-}
 export default CSSModules(Tabs,style,{allowMultiple:true});

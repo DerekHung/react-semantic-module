@@ -8,11 +8,7 @@ class Tab extends Component {
         super(props);
         this.flag = false;
     }
-    componentWillUnMount(){
-        console.log(this.props.name + 'unmount');
-    }
     render(){
-        console.log(this.props);
         if( this.props.name === this.props.currentTab ) this.flag = true;
         let componentShouldMount = this.props.name === this.props.currentTab || this.flag;
         let componentStyle = this.props.name === this.props.currentTab ? 
@@ -23,8 +19,5 @@ class Tab extends Component {
             </div>
         )
     }
-}
-Tab.defaultProps = {
-
 }
 export default CSSModules(Tab,style,{allowMultiple:true});
