@@ -12,7 +12,7 @@ import Switches from 'client/containers/switches';
 import EditorPage from 'client/containers/editor';
 import FileUploaderPage from 'client/containers/fileUploader';
 import CommentPage from 'client/containers/comment';
-
+import TabPage from 'client/containers/tab';
 export default function(history) {
 	return (
 		<Router history={history}>
@@ -26,6 +26,7 @@ export default function(history) {
 				<Route path="/editor" component={EditorPage} />
 				<Route path="/file" component={FileUploaderPage} />
 				<Route path="/comment" component={CommentPage} />
+				<Route path="/tab" component={TabPage} />
 			</Route>
 		</Router>
 	);
