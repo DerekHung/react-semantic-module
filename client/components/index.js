@@ -33,5 +33,7 @@ export {
 	Editor,
 	FileUploader,
 	MediaPlayer ,
-	CommentEditor
+	CommentEditor,
+	Tabs,
+	Tab
 };
