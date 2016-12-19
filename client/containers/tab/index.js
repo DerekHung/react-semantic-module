@@ -8,13 +8,17 @@ import Tab from 'client/components/tab/tab';
 class TabPage extends Component {
 	constructor(props){
 		super(props);
+        this.tabChange = (prevTab, nextTab) => {
+            console.log(prevTab);
+            console.log(nextTab);
+        }
 	}
 
 	render() {
 		return (
             <div>
 				<h3>Tabs</h3>
-                <Tabs>
+                <Tabs onChange={this.tabChange}>
                     <Tab name="動態">123</Tab>
                     <Tab name="個人檔案">456</Tab>
                     <Tab name="我的愛人">789</Tab>

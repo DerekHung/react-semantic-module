@@ -28,7 +28,7 @@ class Tabs extends Component {
         this.setState({
             currentTab: e.target.getAttribute('name')
         })
-        
+        if( this.props.onChange ) this.props.onChange(this.state.currentTab, e.target.getAttribute('name'));
     }
     render(){
         let that = this;
