@@ -18,7 +18,7 @@ class TabPage extends Component {
 		return (
             <div>
 				<h3>Tabs</h3>
-                <Tabs onChange={this.tabChange}>
+                <Tabs onChange={this.tabChange} styleName="test">
                     <Tab name="動態">123</Tab>
                     <Tab name="個人檔案">456</Tab>
                     <Tab name="我的愛人">789</Tab>

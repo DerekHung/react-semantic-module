@@ -32,10 +32,9 @@ class Tabs extends Component {
     }
     render(){
         let that = this;
-
         return (
-            <div>
-                <div styleName="head-body">
+            <div className={this.props.className}>
+                <div styleName="head-body" id="tab-component-head">
                 { this.state.tabStack && this.state.tabStack.map(function(value, index){
                         let active = that.state.currentTab === value ? 'active' : '';
                         return(
@@ -50,7 +49,7 @@ class Tabs extends Component {
                     }) 
                 }
                 </div>
-                <div styleName="container" className={this.props.className}>
+                <div styleName="container" className={this.props.className} id="tab-component-body">
                 { React.Children.map(this.props.children, function (child) {
                     return React.cloneElement(child, {
                         currentTab: that.state.currentTab

@@ -3,6 +3,7 @@
     cursor: pointer;
     text-align: center;
     line-height: 35px;
+    background: #fff;
 }
 .tab-head.active {
     border-bottom: 3px solid #FE7E17;
