@@ -33,7 +33,8 @@ export {
 	Validators,
 	Editor,
 	FileUploader,
-	MediaPlayer ,
+	MediaPlayer,
+	MobileMediaPlayer,
 	CommentEditor,
 	Tabs,
 	Tab
