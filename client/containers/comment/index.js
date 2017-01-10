@@ -159,7 +159,19 @@ class CommentPage extends Component {
                     <button onClick={this.submit}>送出</button>
                 </div>
              }
-                
+			 <div style={{ height: '600px'}}/>
+             <Comment content={this.state.comment}
+                            mentions={mentions}
+                            ref="copy"
+                            onChange={this.onChange}/>
+			<Comment content={this.state.comment}
+                            mentions={mentions}
+                            ref="copy"
+                            onChange={this.onChange}/>
+			<Comment content={this.state.comment}
+                            mentions={mentions}
+                            ref="copy"
+                            onChange={this.onChange}/>   
                 
 			</div>
 		);
