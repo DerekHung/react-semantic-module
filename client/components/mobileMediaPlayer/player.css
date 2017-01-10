@@ -2,6 +2,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
+  flex-direction: column;
   max-height: 480px;
 }
 
@@ -15,30 +16,27 @@
   position: relative;
   background-color: #000;
   text-align: center;
-
 }
 .playground img {
   max-height: 100%;
   max-width: 100%;
 }
-.loading {
+.playground .loading {
   position: absolute;
-  top: 25%;
+  bottom: 10px;
+  right: 10px;
 }
 .controls {
-  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   background-color: #ddd;
+  width: 100%;
   color: #868686;
-  margin-top: -6px;
-  text-align: center;
-}
-.controls_item {
-
 }
 .direction {
   font-size: 2.2em;
 }
-
 .count {
   display: inline-block;
   font-size: 1.3em;
