@@ -7,10 +7,6 @@ const MIMEMap = {
 	'image/bmp': 'IMAGE',
 	'image/vnd.wap.wbmp': 'IMAGE',
 	'application/pdf': 'DOCUMENT',
-	/*
-	'application/vnd.oasis.opendocument.presentation': 'DOCUMENT',
-	'application/vnd.oasis.opendocument.text': 'DOCUMENT',
-	*/
 	'application/msword': 'DOCUMENT',
 	'application/rtf': 'DOCUMENT',
 	'application/vnd.ms-powerpoint': 'DOCUMENT',
@@ -35,6 +31,7 @@ const MIMEMap = {
 	'video/mp4':'VIDEO',
 	'video/x-flv': 'VIDEO',
 	'video/webm': 'VIDEO',
+	'video/mov': 'VIDEO'
 };
 export { MIMEMap };
 
@@ -43,24 +40,30 @@ export function getAtomicType(MIMEType) {
 
 		return MIMEMap[MIMEType];
 	}else {
-		console.log('this type is not support');
+		alert('不支援的檔案格式');
 	}
 }
+
 export function getSignature (file, dataInfo){
+	
+
+	let ajaxConfig = {
+		"IMAGE": '/getSignature/activityImage',
+		"VIDEO": '/getSignature/activityVideo',
+		"AUDIO": '/getSignature/activityAudio',
+		"DOCUMENT":'/getSignature/activityDocument',
+		"HYPERLINK": '/htmlConvert'
+	}
+
 	let jsonDataForSig = {
-		apnum: dataInfo.apnum,
-		pid: dataInfo.pid,
 		contentType: file.type,
-		contentDisposition: file.name,
-		isP: 1,
-		extra: dataInfo.extra,
-		title:'fileUploader',
-		description: 'fileUploader'
+		filename: file.name,
 	};
+
 	return new Promise(function(resolve, reject){
 		$.ajax({
 			method: 'POST',
-			url: 'http://docapi-staging-api-1712535865.us-west-2.elb.amazonaws.com/docapi/v0/signature',
+			url: '/ajax'+ ajaxConfig[MIMEMap[file.type]],
 			contentType: "application/json; charset=utf-8",
 			dataType: 'json',
 			data: JSON.stringify(jsonDataForSig)
@@ -84,50 +87,79 @@ export function uploadToS3(file, jsonDataForUpload){
 	return new Promise(function(resolve, reject){ 
 		$.ajax({
 			method: 'POST',
-			url: 'http://docapi-staging-originbucket-1s73tnifzf5z3.s3.amazonaws.com',
+			url: location.protocol + '//docapi-staging-originbucket-1s73tnifzf5z3.s3.amazonaws.com',
 			processData: false,
 			contentType: false,
 			data: formData
 		}).done(() => resolve());
 	});
 }
-export function getFileUrl(fileId, snapTag) {
+export function getFileUrl(fileId, type, tagArr) {
 	var params = {};
 	params.timestamp = Math.floor(Date.now()/1000) + 1800;
-	params.getFileArr = [
-		{
+	params.getFileArr = [];
+	//console.log(type);
+	if( !tagArr || tagArr.length === 0 ){ 
+		params.getFileArr.push({
 			fileId: fileId,
 			protocol: "common"
+		})}
+	for( let i in tagArr ) {
+		if ( tagArr[i] ) {
+			if( type === 'DOCUMENT' && tagArr[i] === 'activityPlay' ) {
+				params.getFileArr.push({
+					fileId: fileId,
+					protocol: "common",
+					fileTag: tagArr[i],
+					page: '-1'
+				})
+			}else {
+				params.getFileArr.push({
+					fileId: fileId,
+					protocol: "common",
+					fileTag: tagArr[i]
+				})
+			}
+			
+		}else {
+			params.getFileArr.push({
+				fileId: fileId,
+				protocol: "common"
+			})
 		}
-	];
-	if( snapTag !== '') params.getFileArr.push({
-		fileId: fileId,
-		protocol: "common",
-		fileTag: snapTag
-	})
+		
+	}
+	if( params.getFileArr.length === 0 && type === 'HYPERLINK') {
+		params.getFileArr.push({
+			fileId: fileId,
+			protocol: "common",
+			fileTag: "hyperlink"
+		})
+	}
+	//console.log(params.getFileArr);
 	return	$.ajax({
 			method: 'POST',
-			url: 'http://docapi-staging-api-1712535865.us-west-2.elb.amazonaws.com/docapi/v0/getFileUrl',
+			url: '/ajax/getFileUrl',
 			contentType: "application/json; charset=utf-8",
 			dataType: 'json',
 			data: JSON.stringify(params)
 		})
 }
 
-export function waitUrlSuccess(id, snapTag) {
+export function waitUrlSuccess(id, type, tagArr) {
 	return new Promise(function(resolve, reject){
 		let time = 0;
-		let loop = () => getFileUrl(id, snapTag).done(function(res){
-			if(res[0].convertStatus === 'pending' || res[0].convertStatus === 'uploading') {
+		let loop = () => getFileUrl(id, type, tagArr).done(function(res){
+			if( res[0].convertStatus === 'success'){
+				resolve(res);
+			}else if( res[0].convertStatus === 'noResponse' ) {
+				reject();
+			}else{
 				setTimeout(() => {
 					time = time + 500;
 					loop();
 				},500);
 				
-			}else if( res[0].convertStatus === 'success'){
-				resolve(res);
-			}else if( res[0].convertStatus === 'noResponse' ) {
-				reject();
 			}
 		});
 		loop(); 
@@ -147,7 +179,7 @@ export function getURLData(apnum, pid, url, tag){
 	} 
 	return $.ajax({
 		method: 'POST',
-		url: 'http://docapi-staging-api-1712535865.us-west-2.elb.amazonaws.com/docapi/v0/htmlConvert',
+		url: '/ajax/htmlConvert',
 		contentType: 'application/json; charset=utf-8',
 		dataType:'json',
 		data: JSON.stringify(jsonData),

@@ -6,141 +6,7 @@ import { connect } from 'react-redux';
 import FileUploader from '../../components/fileUploader';
 import html from 'doc/fileUploader.md';
 
-const mediaInfo = {
-	IMAGE: {
-        uploadInfo: {
-            "multiAction":[
-                {
-                    "param": {
-                        "basis": "9",
-                        "width" : "200",
-                        "reduceOnly" : "1"
-                    },
-                    "isSave": "1",
-                    "method": "resize",
-                    "tag": "activityList"
-                },
-                {
-                    "param": {
-                        "basis": "9",
-                        "width" : "800",
-                        "reduceOnly" : "1"
-                    },
-                    "isSave": "1",
-                    "method": "resize",
-                    "tag": "activityGrid"
-                },
-                {
-                    "param": {
-                        "basis": "9",
-                        "width" : "1600",
-                        "reduceOnly" : "1"
-                    },
-                    "isSave": "1",
-                    "method": "resize",
-                    "tag": "activityPlay"
-                }
-            ]
-        },
-		snapTag: ''
-	},
-
-	VIDEO: {
-        uploadInfo: {
-            "multiAction": [
-                {
-                    "param": {
-                        "sec": "5"
-                    },
-                    "isSave": "1",
-                    "method": "videoSnap",
-                    "tag": "activityProcess"
-                },
-                {
-                    "param": {
-                        "basis": "9",
-                        "width": "200",
-                        "reduceOnly" : "1"
-                    },
-                    "isSave": "1",
-                    "method": "resize",
-                    "refTag": "activityProcess",
-                    "tag": "activityList"
-                },
-                {
-                    "param": {
-                        "basis": "9",
-                        "width": "800",
-                        "reduceOnly" : "1"
-                    },
-                    "isSave": "1",
-                    "method": "resize",
-                    "refTag": "activityProcess",
-                    "tag": "activityGrid",
-                },
-                {
-                    "param":{
-                        "videoQuality":["720p"]
-                    },
-                    "isSave": "1",
-                    "method": "videoConvert"
-                }
-            ],
-            "convert": "true"
-        },
-        snapTag: 'activityProcess'
-	},
-
-	DOCUMENT: {
-        uploadInfo: {
-            "multiAction": [
-                {
-                    "param": {
-                        "width": "1600",
-                        "isBaseByWidth": "true"
-                    },
-                    "isSave": "1",
-                    "method": "docConvert",
-                    "tag": "activityPlay"
-                },
-                {
-                    "param": {
-                        "basis": "9",
-                        "width": "200",
-                        "page": "0"
-                    },
-                    "isSave": "1",
-                    "method": "docSnap",
-                    "tag": "activityList"
-                },
-                {
-                    "param": {
-                        "basis": "9",
-                        "width": "800",
-                        "page": "0"
-                    },
-                    "isSave": "1",
-                    "method": "docSnap",
-                    "tag": "activityGrid"
-                }
-            ],
-            "convert": "true"
-        },
-        snapTag: 'activityList'
-	},
-
-	AUDIO: {
-        uploadInfo: {
-            "multiAction": [
-                {
-                    "isSave": "1",
-                    "method": "audioConvert"
-                }
-            ]
-        },
-        snapTag: ''
-	}
-}
+import mediaInfo from '../editor/mediaInfo.js';
 
 class FileUploaderPage extends Component {
     constructor(props){
@@ -148,13 +14,15 @@ class FileUploaderPage extends Component {
         this.state = {
             fileId: null,
             uploaded: 'none',
-            fileType: null
+            fileType: null,
+            fileUrl: []
+
         }
         this.onTriggerUpload = (e) => {
             this.setState({
                 fileId: null,
                 uploaded: 'none',
-                fileUrl: ''
+                fileUrl: []
             })
         }
         this.getFileInfo = (file) => {
@@ -172,19 +40,19 @@ class FileUploaderPage extends Component {
         }
         this.urlTransformDone = (file) => {
             console.log(file);
-            this.setState({ fileUrl: file.transformedFile[0].url[0]});
+            this.setState({ fileUrl: file.transformedFile });
         }
     }
 	render() {
         let result;
-        if( this.state.fileUrl ) {
+        /*if( this.state.fileUrl ) {
             if( this.state.fileType === 'IMAGE') { result = <img src={this.state.fileUrl} />}
             else if( this.state.fileType === 'VIDEO') { result = <video src={this.state.fileUrl} /> }
             else if( this.state.fileType === 'AUDIO') { result = <audio controls src={this.state.fileUrl} /> }
             else if( this.state.fileType === 'DOCUMENT') { }
             else { result = null; }
-        }
-        
+        }*/
+        let that = this;
 		return (
             <div>
                 <h3>File Uploader</h3>
@@ -207,7 +75,16 @@ class FileUploaderPage extends Component {
                 </div>
                 <h3>result</h3>
                 <div className="content">
-					{ result }
+					{
+                        this.state.fileUrl.map(function(value, key){
+                            return <div>
+                                <p>{ that.state.fileUrl[key].tag }</p>
+                                <p>{ that.state.fileUrl[key].fileId }</p>
+                                <p>{ that.state.fileUrl[key].url[0] }</p>
+                                <img src={ that.state.fileUrl[key].url[0] }/>
+                            </div>
+                        })
+                    }
                 </div>
                 <div className="content" dangerouslySetInnerHTML={{__html: html}}>
 					

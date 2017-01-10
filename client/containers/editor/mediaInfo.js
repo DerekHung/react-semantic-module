@@ -1,110 +1,124 @@
 const mediaInfo = {
-    IMAGE: {
-        multiAction:[
-                    {
-                        "param": {
-                            "basis": "9",
-                            "width" : "625",
-                            "height" : "0"
-                        },
-                        "isSave": "1",
-                        "method": "resize",
-                        "tag": "activityM"
-                    },
-                    
-                    {
-                        "param": {
-                            "basis": "4",
-                            "width" : "200",
-                            "height" : "150"
-                        },
-                        "isSave": "1",
-                        "method": "resize",
-                        "tag": "activityS"
-                    }
+	IMAGE: {
+        "multiAction":[
+            {
+                "param": {
+                    "basis": "9",
+                    "width" : "200",
+                    "reduceOnly" : "1"
+                },
+                "isSave": "1",
+                "method": "resize",
+                "tag": "activityList"
+            },
+            {
+                "param": {
+                    "basis": "9",
+                    "width" : "800",
+                    "reduceOnly" : "1"
+                },
+                "isSave": "1",
+                "method": "resize",
+                "tag": "activityGrid"
+            },
+            {
+                "param": {
+                    "basis": "9",
+                    "width" : "1600",
+                    "reduceOnly" : "1"
+                },
+                "isSave": "1",
+                "method": "resize",
+                "tag": "activityPlay"
+            }
+        ]
+	},
 
-                ]
-    },
-    VIDEO: {
+	VIDEO: {
         "multiAction": [
-                       {
-                            "method": "videoSnap",
-                            "param": {
-                                "sec": "1"
-                            },
-                            "tag": "activityProcess"
-                        },
-                        {
-                            "method": "resize",
-                            "tag": "activityList",
-                            "isSave": "1",
-                            "refTag": "activityProcess",
-                            "param": {
-                                "width": "200",
-                                "basis": "9"
-                            }
-                        },
-                        {
-                            "method": "resize",
-                            "tag": "activityGrid",
-                            "isSave": "1",
-                            "refTag": "activityProcess",
-                            "param": {
-                                "width": "800",
-                                "basis": "9"
-                            }
-                        },
-                        {
-                            "method": "videoConvert",
-                            "isSave": "1",
-                            "param":{
-                                "videoQuality":["720p"]
-                            }
-                        }
-                    ],
-                    "convert": "true"
-    },
-    DOCUMENT: {
+            {
+                "param": {
+                    "sec": "5"
+                },
+                "isSave": "1",
+                "method": "videoSnap",
+                "tag": "activityProcess"
+            },
+            {
+                "param": {
+                    "basis": "9",
+                    "width": "200",
+                    "reduceOnly" : "1"
+                },
+                "isSave": "1",
+                "method": "resize",
+                "refTag": "activityProcess",
+                "tag": "activityList"
+            },
+            {
+                "param": {
+                    "basis": "9",
+                    "width": "800",
+                    "reduceOnly" : "1"
+                },
+                "isSave": "1",
+                "method": "resize",
+                "refTag": "activityProcess",
+                "tag": "activityGrid",
+            },
+            {
+                "param":{
+                    "videoQuality":["720p"]
+                },
+                "isSave": "1",
+                "method": "videoConvert"
+            }
+        ],
+        "convert": "true"
+	},
+
+	DOCUMENT: {
         "multiAction": [
-                       {
-                            "method": "docConvert",
-                            "param": {
-                                "width": "1600",
-                                "isBaseByWidth": "true"
-                            },
-                            "tag": "activityPlay"
-                        },
-                        {
-                            "method": "docSnap",
-                            "tag": "activityList",
-                            "isSave": "1",
-                            "param": {
-                                "width": "200",
-                                "basis": "9",
-                                "page": "0"
-                            }
-                        },
-                        {
-                            "method": "docSnap",
-                            "tag": "activityGrid",
-                            "isSave": "1",
-                            "param": {
-                                "width": "800",
-                                "basis": "9",
-                                "page": "0"
-                            }
-                        }
-                    ],
-                    "convert": "true"
-    },
-    AUDIO: {
-         "multiAction": [
-                        {
-                            "method": "audioConvert",
-                            "isSave": "1"
-                        }
-                    ]
-    }
+            {
+                "param": {
+                    "width": "1600",
+                    "isBaseByWidth": "true"
+                },
+                "isSave": "1",
+                "method": "docConvert",
+                "tag": "activityPlay"
+            },
+            {
+                "param": {
+                    "basis": "9",
+                    "width": "200",
+                    "page": "0"
+                },
+                "isSave": "1",
+                "method": "docSnap",
+                "tag": "activityList"
+            },
+            {
+                "param": {
+                    "basis": "9",
+                    "width": "800",
+                    "page": "0"
+                },
+                "isSave": "1",
+                "method": "docSnap",
+                "tag": "activityGrid"
+            }
+        ],
+        "convert": "true"
+	},
+
+	AUDIO: {
+        "multiAction": [
+            {
+                "isSave": "1",
+                "method": "audioConvert"
+            }
+        ]
+	}
 }
-
 export default mediaInfo;

@@ -6,6 +6,9 @@ import IDMaker from '../../utils/IDMaker.js';
 
 if ( typeof(regeneratorRuntime) === 'undefined' ) require('babel-polyfill');
 
+
+
+
 class FileUploader extends Component {
     constructor(props) {
         super(props);
@@ -13,6 +16,13 @@ class FileUploader extends Component {
         this.counter = 0;
         this.fileList={};
 
+        let tagArrMap = {};
+        for ( let key in props.mediaInfo ) {
+            if( typeof(tagArrMap[key]) === 'undefined' ) tagArrMap[key] = [];
+            for ( let i in props.mediaInfo[key].multiAction) {
+                tagArrMap[key].push(props.mediaInfo[key].multiAction[i].tag);
+            }
+        }
         this.handleClick = (e) => { 
             if( this.props.onTriggerUpload ) this.props.onTriggerUpload(e);
             this.refs.fileInput.click()
@@ -23,14 +33,14 @@ class FileUploader extends Component {
         
         this.logObject = (object) => { return Object.assign({}, object); }
 
-        this.generatorProcess = function* (ID, signatureData, snap){
+        this.generatorProcess = function* (ID, signatureData){
 
             if( this.fileList[ID] ) {
 
                 let signature = yield getSignature(this.fileList[ID].originFile, signatureData);
                 this.fileList[ID].signature = signature;
                 this.fileList[ID].status = 'uploading';
-                this.fileList[ID].snapTag = snap;
+                //this.fileList[ID].snapTag = snap;
                 if( this.props.getSignatureDone ) this.props.getSignatureDone(this.logObject(this.fileList[ID]));
 
                 let uploadS3 = yield uploadToS3(this.fileList[ID].originFile, signature);
@@ -39,7 +49,7 @@ class FileUploader extends Component {
 
                 if ( !this.props.dontWaitSuccess ) {
                     this.fileList[ID].status = 'transforming';
-                    this.fileList[ID].transformedFile = yield waitUrlSuccess(signature.fileId, this.fileList[ID].snapTag);
+                    this.fileList[ID].transformedFile = yield waitUrlSuccess(signature.fileId, this.fileList[ID].type, tagArrMap[this.fileList[ID].type]);
                     this.fileList[ID].status = 'transformDone';
                     if( this.props.urlTransformDone ) this.props.urlTransformDone(this.logObject(this.fileList[ID]));
                 }
@@ -65,7 +75,7 @@ class FileUploader extends Component {
             apnum: this.props.apnum,
             pid: this.props.pid
         }
-        let snap ='';
+        //let snap ='';
         let that = this;
 
         files.forEach(f => {
@@ -83,9 +93,8 @@ class FileUploader extends Component {
                 }
 
                 if ( that.props.getFileInfo ) that.props.getFileInfo( that.fileList[ID] );
-                signatureData.extra = that.props.mediaInfo[MIMEMap[f.type]].uploadInfo;
-                snap = that.props.mediaInfo[MIMEMap[f.type]].snapTag;
-                let gen = that.generatorProcess(ID, signatureData, snap);
+                signatureData.extra = that.props.mediaInfo[MIMEMap[f.type]];
+                let gen = that.generatorProcess(ID, signatureData);
                 that.runGenerator(gen);
             }
         });

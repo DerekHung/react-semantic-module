@@ -12,8 +12,13 @@ import TextField from './textfeild';
 
 import Validators from '../utils/validator';
 import Editor from './editor';
+import CommentEditor from './comment';
 
 import FileUploader from './fileUploader';
+
+import MediaPlayer from './mediaPlayer';
+import Tabs from './tab/index.js';
+import Tab from './tab/tab.js';
 
 export { 
 	LightBox,
@@ -26,5 +31,9 @@ export {
 	TextField, 
 	Validators,
 	Editor,
-	FileUploader 
+	FileUploader,
+	MediaPlayer ,
+	CommentEditor,
+	Tabs,
+	Tab
 };

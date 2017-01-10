@@ -4,7 +4,6 @@ import style from './style.css';
 import Editor from 'draft-js-plugins-editor';
 import createMentionPlugin, { defaultSuggestionsFilter } from 'draft-js-mention-plugin';
 import creatLinkPlugin from './decorator/link.js';
-import editorStyles from 'draft-js-mention-plugin/lib/plugin.css';
 
 import {
 	EditorState,
@@ -38,17 +37,13 @@ import InsertUtils from './insertUtils.js';
 import $ from 'jquery';
 
 
-const mentionPlugin = createMentionPlugin({theme: style});
-const LinkPlugin = creatLinkPlugin();
-const plugins = [mentionPlugin,LinkPlugin];
+
 
 
 class RichEditor extends Component {
 	constructor(props) {
 		super(props);
-
 		let editorState = null;
-
 		if (props.editorState) {
 			editorState = props.editorState
 		} else if (props.content) {
@@ -61,7 +56,9 @@ class RichEditor extends Component {
 			editorState = EditorState.createEmpty()
 		}
 
-
+		this.mentionPlugin = createMentionPlugin({theme: style});
+		this.LinkPlugin = creatLinkPlugin();
+		this.plugins = [this.mentionPlugin,this.LinkPlugin];
 
 		this.uploadingArr = {};
 		this.fileSystemObject = {};
@@ -113,7 +110,7 @@ class RichEditor extends Component {
 
 			let props = {
 				loading: true,
-				fakeSrc: URL.createObjectURL(file.originFile),
+				src: URL.createObjectURL(file.originFile),
 				id: file.id
 			}
 
@@ -156,7 +153,6 @@ class RichEditor extends Component {
 			yield "uploadDone";
 
 			fileProps.loading = false;
-			fileProps.src = fileProps.fakeSrc;
 			fileProps.fileId = this.fileSystemObject[id].fileId;
 
 			this._insertBlockComponent(entityKey, fileData.type, fileProps);
@@ -278,7 +274,7 @@ class RichEditor extends Component {
 
 	_onLinkKeyDown(value) {
 
-		const entityKey = Entity.create('LINK', 'MUTABLE', { url: value });
+		const entityKey = Entity.create('LINK', 'MUTABLE', { href: value });
 		let that = this;
 
 		this.onChange(RichUtils.toggleLink(
@@ -339,6 +335,7 @@ class RichEditor extends Component {
 					}, 500);
 
 				} else if (res[0].convertStatus === 'success') {
+					
 					callback(res);
 				} else {
 					that._linkFail(props, entityKey, type, url);
@@ -352,12 +349,14 @@ class RichEditor extends Component {
 
 				$.getJSON(urlResult[0].url[0], function (result) {
 
+					if( result.imgUrls && result.imgUrls.length > 0 ) {
+						props.src = result.imgUrls[0].url;
+					}
 					props.loading = false;
-					props.title = result.title;
-					props.description = result.description;
-					props.img = result.imgUrls[0];
+					props.linktitle = result.title;
+					props.linkcontent = result.description;
 					props.fileId = res[0].fileId;
-					props.url = url;
+					props.linkurl = url;
 					//timeoutTest(result.imgUrls[0].fileId);
 
 					that._insertBlockComponent(entityKey, type, props, 'IMMUTABLE');
@@ -375,8 +374,9 @@ class RichEditor extends Component {
 		let that = this;
 
 		props.linkError = true;
-		that._insertBlockComponent(entityKey, type, props, 'IMMUTABLE');
 		props.loading = false;
+		that._insertBlockComponent(entityKey, type, props, 'IMMUTABLE');
+		
 		props.linkError = null;
 		//that._insertBlockComponent(null, 'LINK', props, 'MUTABLE');
 		let startKey = that.state.editorState.getSelection().getAnchorKey();
@@ -477,13 +477,15 @@ class RichEditor extends Component {
 			)
 			this.setState({ editorState });
 			this.propsContent = nextProps.content;
-		}
+		}else if( this.state.suggestions !== nextProps.mentions && nextProps.mentions) {
+            this.setState({ suggestions: nextProps.mentions })
+        }
 	}
 
 
 	render() {
 		const { editorState, selectedBlock, selectionRange } = this.state;
-		const { MentionSuggestions } = mentionPlugin;
+		const { MentionSuggestions } = this.mentionPlugin;
 		const fileUploadFunction = {
 			onTriggerUpload: this.onTriggerUpload,
 			getFileInfo: this.getFileInfo,
@@ -506,7 +508,7 @@ class RichEditor extends Component {
 
 		return (
 
-			<div styleName="editor" className={ editorStyles.editor } id="richEditor" >
+			<div styleName="editor" id="richEditor">
 				{selectedBlock
 					? <SideToolbar
 						apnum={this.props.apnum}
@@ -540,7 +542,7 @@ class RichEditor extends Component {
 					readOnly={this.props.readOnly}
 					ref="editor"
 					handlePastedText={this.handlePaste}
-					plugins={plugins}
+					plugins={this.plugins}
 					handleReturn={this.handleReturn}
 					/>
 				{ this.props.mentions &&

@@ -60,7 +60,6 @@ class TextFeild extends Component {
 			},
 
 			Enter(event) {
-				console.log(event);
 				if (this.state.ACData.length === 0) {
 					// menu is closed so there is no selection to accept -> do nothing
 					return
@@ -226,7 +225,7 @@ class TextFeild extends Component {
 					<div styleName="errorMessage">{ this.state.errorMessage }</div>
 				</div>
 				{ this.state.ACData && this.state.ACData.length > 0  &&
-					<div style={this.ACStyle} styleName="AClist">
+					<ul style={this.ACStyle} styleName="AClist">
 						{ this.state.ACData.map(function(item,index){
 							let style = index === this.state.highlightedIndex ? { background: '#def6ff' }: null;
 							let transformString = highlightString(this.state.data ,item.value);
@@ -238,7 +237,7 @@ class TextFeild extends Component {
 									dangerouslySetInnerHTML={{ __html: transformString }} ></li>
 							);
 						},this) }
-					</div>
+					</ul>
 				}
 			</div>
 		);

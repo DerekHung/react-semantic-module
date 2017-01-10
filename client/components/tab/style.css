@@ -1,0 +1,17 @@
+.tab-head {
+    float: left;
+    cursor: pointer;
+    text-align: center;
+    line-height: 35px;
+    background: #fff;
+}
+.tab-head.active {
+    border-bottom: 3px solid #FE7E17;
+    font-weight: bold;
+}
+.head-body {
+    overflow: hidden;
+}
+.container {
+    width: 100%;
+}

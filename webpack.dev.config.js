@@ -1,5 +1,13 @@
 var hook = require('css-modules-require-hook');
 var hljs = require('highlight.js'); 
+var Webpack_isomorphic_tools_plugin = require('webpack-isomorphic-tools/plugin');
+var webpack_isomorphic_tools_plugin = 
+  // webpack-isomorphic-tools settings reside in a separate .js file 
+  // (because they will be used in the web server code too).
+  new Webpack_isomorphic_tools_plugin(require('./webpack-isomorphic-tools-configuration'))
+  // also enter development mode since it's a development webpack configuration
+  // (see below for explanation)
+  .development()
 
 module.exports = function checkMode(app){
 	
@@ -29,7 +37,7 @@ module.exports = function checkMode(app){
 			},
 			output: {
 				path: path.join(__dirname, '/public/build'),
-				publicPath: '/build',
+				publicPath: '/build/',
 				filename: 'bundle.js'
 			},
 			plugins: [
@@ -41,6 +49,7 @@ module.exports = function checkMode(app){
 					context: __dirname,
 					manifest: require('./manifest.json'),
 				}),
+				webpack_isomorphic_tools_plugin
 			],
 			module: {
 				loaders: [
@@ -71,9 +80,13 @@ module.exports = function checkMode(app){
 				},
 				{ test: /\.md$/, loader: "html!markdownattrs?config=markdownattrsLoaderCustomConfig" },
 				{
-					test: /\.(png|svg|ttf|woff)$/,
-					loader: 'file'
+					test: webpack_isomorphic_tools_plugin.regular_expression('images'),
+					loader: 'file', // any image below or equal to 10K will be converted to inline base64 instead
 				},
+				/*{
+					test: /\.(png|svg|ttf|woff)$/,
+					loader: 'file?emitFile=false'
+				},*/
 				{
 					test: /\.json$/,
 					loader: 'json'

@@ -22,8 +22,8 @@ let listContent2 = [
 	{ label: '博士', value: '333'},
 ]
 class DropListPage extends Component {
-	constructor(){
-		super();
+	constructor(props){
+		super(props);
 	}
 
 	onSelected(value) {
@@ -31,6 +31,7 @@ class DropListPage extends Component {
 	}
 	render() {
 		return (
+			
 			<div>
 				<h3>Drop List</h3>
 				<table>

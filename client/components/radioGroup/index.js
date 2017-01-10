@@ -3,6 +3,7 @@ import { Link } from 'react-router';
 import CSSModules from 'react-css-modules';
 import style from './style.css';
 
+
 function getSelectedChbox(frm) {
 	var selchbox = [];// array that will store the value of selected checkboxes
 	// gets all the input tags in frm, and their number

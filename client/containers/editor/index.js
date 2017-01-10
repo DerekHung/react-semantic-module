@@ -21,6 +21,9 @@ import testData from './test.json';
 import { fromJS } from 'immutable';
 
 import mediaInfo from './mediaInfo.js'
+import testDataString from './testdata.js';
+
+import ReactHtmlParser from './react-html-parser/src';
 
 let metion = [];
 if(typeof(window) !== 'undefined'){
@@ -45,24 +48,29 @@ let convertPattern = {
 		}
 	},
 	entityToHTML: (entity, originalText) => {
-		//console.log(entity);
+		console.log(entity);
+		console.log(originalText);
 		switch( entity.type ){
 			case 'IMAGE':
-			return `<img fileId="${entity.data.fileId}"/>`;
+			return `<img tagType="IMAGE" fileId="${entity.data.fileId}"/>`;
 			case 'DOCUMENT':
-			return `<div tagType="DOCUMENT" fileId="${entity.data.fileId}"></div>`;
+			return `<img tagType="DOCUMENT" fileId="${entity.data.fileId}"/>`;
 			case 'HYPERLINK':
-			return `<div tagType="HYPERLINK" fileId="${entity.data.fileId}" url="${entity.data.url}"></div>`;
+			return `<img tagType="HYPERLINK" fileId="${entity.data.fileId}" url="${entity.data.url}"/>`;
 			case 'YOUTUBE':
-			return `<div tagType="YOUTUBE" file="${entity.data.file}" url="${entity.data.url}" src="${entity.data.src}"></div>`;
+			return `<img tagType="YOUTUBE" file="${entity.data.file}" url="${entity.data.url}" src="${entity.data.src}"/>`;
 			case 'VIDEO':
-			return `<video fileId="${entity.data.fileId}"/>`;
+			return `<img tagType="VIDEO" fileId="${entity.data.fileId}"/>`;
 			case 'AUDIO':
-			return `<audio fileId="${entity.data.fileId}"/>`;
+			return `<img tagType="AUDIO" fileId="${entity.data.fileId}"/>`;
 			case 'mention':
-			return `<div tagType="MEMBER" pid="${entity.data.mention.get('id')}">${entity.data.mention.get('name')}</div>`;
+			if( typeof( entity.data.mention.get ) === 'undefined' ) {
+				return `<div tagType="MEMBER" pid="${entity.data.mention.id}">${entity.data.mention.name}</div>`;
+			}else {
+				return `<div tagType="MEMBER" pid="${entity.data.mention.get('id')}">${entity.data.mention.get('name')}</div>`;	
+			}
 			case 'LINK':
-			return `<a href="${entity.data.url}" target="_blank"></a>`;
+			return `<a href="${entity.data.href}" target="_blank">${originalText}</a>`;
 			default:
 			return originalText;
 		}
@@ -70,7 +78,6 @@ let convertPattern = {
 	/* convert from HTML pattern (如果沒用到就不必加)*/ 
 	htmlToStyle: (nodeName, node, currentStyle) => {return currentStyle;},
 	htmlToEntity: (nodeName, node) => {
-		console.log(node);
 		let data = {};
 		if( typeof (node.attributes) !== 'undefined') {
 			Array.prototype.slice.call(node.attributes).forEach(function(item){
@@ -84,16 +91,24 @@ let convertPattern = {
 		
 		switch(nodeName){
 			case 'img':
-			return Entity.create('IMAGE','IMMUTABLE',data);
-			case 'video':
-			return Entity.create('VIDEO','IMMUTABLE',data);
-			case 'audio':
-			return Entity.create('AUDIO','IMMUTABLE',data);
+			return Entity.create(node.getAttribute('tagtype'),'IMMUTABLE',data);
 			case 'a':
 			return Entity.create('LINK','MUTABLE',data);
 			case 'div':
-			if ( node.getAttribute('tagtype') === 'MEMBER' ) return Entity.create(node.getAttribute('tagType'), 'SEGMENTED', data);
-			else return Entity.create(node.getAttribute('tagtype'), 'IMMUTABLE', data);
+			if ( node.getAttribute('tagtype') === 'MEMBER' ){
+				let transData = {
+					mention: {
+						id: data.pid,
+						link: data.pid,
+						name: data.username,
+						avatar: ''
+					}
+				}
+				return Entity.create('mention', 'SEGMENTED', transData);
+			}
+			else return false;
+			default:
+			return false;
 		}
 		
 	},
@@ -125,12 +140,19 @@ class EditorPage extends Component {
 			rawStateString: null,
 			HTMLString: null,
 			rawState: null,
-			uploadingCount: 0
+			uploadingCount: 0,
+			HTMLtoState:null
+			//originState :convertToRaw(convertFromHTML(convertPattern)(testDataString))
 		}
 		this.onChange = (rawState) => this._onChange(rawState);
 		this.toggle = () => this._toggle();
+		this.submit = () => this._submit();
 		this.onRequestSearch = (value) => this._onRequestSearch(value);
 		this.open = () => this.setState({ open: true});
+		this.refresh = () => console.log(this.state.HTMLtoState.entityMap);
+		this.newonChange = (contentState) => {
+			console.log(convertToRaw(contentState).entityMap);
+		}
 	}
 	_onChange (contentState) {
 		this.contentState = contentState;
@@ -139,21 +161,25 @@ class EditorPage extends Component {
 		//console.log(this.rawState);
 	}
 	_toggle(){
+		this.setState({ open: !this.state.open });
+	}
+	_submit(){
 		let html, htmlState;
 		let fileStatus = this.refs.editor.getFileUploadObject();
 		let uploadDone = true;
+
 		for( var key in fileStatus ) {
 			if( fileStatus[key].fileData.status !== 'uploadDone') {
 				uploadDone = false;
 			}
 		}
+
 		if( this.state.uploadingCount === 0 && uploadDone ){
 			if( this.contentState ) {
-				html = convertToHTML(convertPattern)(this.contentState);
-				htmlState = convertFromHTML(convertPattern)(html);
+				html = convertToHTML(convertPattern)(this.contentState);		
+				htmlState = convertFromHTML(convertPattern)(testDataString);
 			}
 			this.setState({ 
-				open: !this.state.open,
 				rawStateString: JSON.stringify(this.rawState),
 				rawState: this.rawState,
 				HTMLString: html,
@@ -162,15 +188,16 @@ class EditorPage extends Component {
 			//console.log(this.refs.editor.getFileUploadObject());
 
 		}
-		
-		
+		this._toggle();	
 	}
-	
+
 	componentDidMount() {
-		
+		this.setState({
+			HTMLtoState:convertToRaw(convertFromHTML(convertPattern)(testDataString))
+		})
+		console.log(this.refs.editorhtml);
 	}
 	onUploadStatusChange(object){
-		console.log(Object.keys(object).length);
 		this.setState({
 			uploadingCount: Object.keys(object).length
 		})
@@ -182,11 +209,12 @@ class EditorPage extends Component {
 		let option = {
 			submit: {
 				text: '完成',
-				action: this.toggle
+				action: this.submit
 			},
 			 closeIcon: true,
 		}
-		console.log(this.state.HTMLtoState);
+		//console.log(this.state.HTMLtoState);
+		
 		return (
 			<div>
 				<h3>Rich Editor</h3>
@@ -196,7 +224,8 @@ class EditorPage extends Component {
 					<LightBox option={option}
 						  onClose={this.toggle.bind(this,'close')}>
 						<div styleName="editorBlock">
-							<Editor apnum="10400"
+							<Editor content={this.state.originState}
+									apnum="10400"
 									pid="10400"
 									placeholder="welcome"
 									onChange={this.onChange} 
@@ -219,14 +248,26 @@ class EditorPage extends Component {
 						<div className="content">
 							<p>{ this.state.HTMLString }</p>
 						</div>
-						<h3> Convert from HTML </h3>
-						<div className="content">
-							<Editor content={this.state.HTMLtoState}
-									mentions={mentions}
-									readOnly={true}/>
-						</div>
+						
 					</div>
 				}
+				<h3> Convert from HTML </h3>
+				<div className="content">
+					<Editor content={this.state.HTMLtoState}
+							apnum="10400"
+							pid="10400"
+							placeholder="welcome"
+							onChange={this.newonChange} 
+							mentions={mentions}
+							onUploadStatusChange={this.onUploadStatusChange.bind(this)}
+							ref="editorhtml"
+							mediaInfo={mediaInfo}/>
+				</div>
+				<button onClick={this.refresh}>refresh</button>
+				<h3> HTML SHOW</h3>
+				<div className="content">
+					{ ReactHtmlParser(testDataString) }
+				</div>
 				<div className="content" dangerouslySetInnerHTML={{__html: html}}>
 					
 				</div>
