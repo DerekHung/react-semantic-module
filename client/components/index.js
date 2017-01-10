@@ -17,18 +17,19 @@ import CommentEditor from './comment';
 import FileUploader from './fileUploader';
 
 import MediaPlayer from './mediaPlayer';
+import MobileMediaPlayer from './mobileMediaPlayer'
 import Tabs from './tab/index.js';
 import Tab from './tab/tab.js';
 
-export { 
+export {
 	LightBox,
 	Button,
 	DropdownMenu,
 	DropdownTarget,
 	DropdownList,
-	DropList, 
-	RadioGroup, 
-	TextField, 
+	DropList,
+	RadioGroup,
+	TextField,
 	Validators,
 	Editor,
 	FileUploader,
