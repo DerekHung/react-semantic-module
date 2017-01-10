@@ -32,7 +32,7 @@ const getMappingData = ( fileFromDocApiSrc ) => {
 
 
 
-class MediaPlayer extends Component {
+class MobileMediaPlayer extends Component {
 	constructor(props){
 		super(props);
 		this.state = {
@@ -48,14 +48,14 @@ class MediaPlayer extends Component {
 		if( !this.state.transformed ) {
 			getFileUrl(this.props.property.fileid, this.state.tagType, getMappingData()[this.state.tagType].tag).done(function(res){
 				that.state.carrier = getMappingData(res[0].url)[that.state.tagType].template;
-				that.setState({ 
+				that.setState({
 					transformed: true,
 					carrier: that.state.carrier
-				});	
+				});
 			});
 		}
-		
-		
+
+
 	}
 	render() {
 		if( typeof this.props.property.convertstatus !== 'undefined' && this.props.property.convertstatus !== '1')  {
@@ -99,8 +99,8 @@ class MediaPlayer extends Component {
 				</div>
 			);
 		}
-		
+
 	}
 }
 
-export default CSSModules(MediaPlayer,style,{allowMultiple:true});
+export default CSSModules(MobileMediaPlayer,style,{allowMultiple:true});
