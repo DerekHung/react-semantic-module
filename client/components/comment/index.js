@@ -83,7 +83,7 @@ class CommentEditor extends Component {
     render() {
         const { MentionSuggestions } = this.mentionPlugin;
         return (
-            <div styleName="editor" onClick={this.focus}>
+            <div styleName="editor">
                 <Editor
                     editorState={this.state.editorState}
                     onChange={this.onChange}
