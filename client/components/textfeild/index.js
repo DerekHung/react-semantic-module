@@ -219,7 +219,7 @@ class TextFeild extends Component {
 						<textarea {...option}
 							ref="textarea"/>
 						:
-						<input {...option} onKeyDown={this.handleKeyDown.bind(this)}/>
+						<input {...option} onKeyDown={this.handleKeyDown.bind(this)} ref="textComponentInput"/>
 					}
 					{ this.props.maxWords && <span styleName="maxWord"><span styleName="front">{this.state.data.length}</span>/{this.props.maxWords}</span>}
 					<div styleName="errorMessage">{ this.state.errorMessage }</div>
