@@ -250,7 +250,7 @@ TextFeild.propTypes = {
 TextFeild.defaultProps = {
 	errorMessage: '',
 	data: '',
-	onRequestOpenAC: {},
+	onRequestOpenAC: ()=>{},
 	filterArray: [],
 	onBlur: function(){}
 }
