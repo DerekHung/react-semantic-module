@@ -135,6 +135,7 @@ class TextFeild extends Component {
 				highlightedIndex: null
 			},function(){
 				this.handleError();
+				this.props.onChange(this.props.name, this.state.data);
 			})
 		}else {
 			this.setState({
