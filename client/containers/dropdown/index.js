@@ -31,8 +31,8 @@ class DropdownPage extends Component {
 					targetStyle: null,
 					defaultSelect: 1,
 				}
-			}
-			
+			},
+			viewpoint: ['公開', '朋友']
 		}
 	}
 	

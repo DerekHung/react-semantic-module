@@ -43,44 +43,50 @@ import $ from 'jquery';
 class RichEditor extends Component {
 	constructor(props) {
 		super(props);
-		let editorState = null;
+
 		if (props.editorState) {
-			editorState = props.editorState
+			// 有提供editorState 就直接使用 
+			var editorState = props.editorState
 		} else if (props.content) {
+			// contentState (rawState) 則需要轉換後使用 
 			const blocks = convertFromRaw(props.content);
 			this.propsContent = props.content;
-			editorState = EditorState.createWithContent(
+			var editorState = EditorState.createWithContent(
 				blocks
 			)
 		} else {
-			editorState = EditorState.createEmpty()
+			// 建立一個空的editorState
+			var editorState = EditorState.createEmpty()
 		}
 
+		// ctrate plugin
 		this.mentionPlugin = createMentionPlugin({theme: style});
 		this.LinkPlugin = creatLinkPlugin();
 		this.plugins = [this.mentionPlugin,this.LinkPlugin];
 
-		this.uploadingArr = {};
+		// handle file upload info object
 		this.fileSystemObject = {};
 
+		// initial state
 		this.state = {
 			editorState: editorState,
 			inlineToolbar: { show: false },
 			suggestions: this.props.mentions
 		};
+
 		/* Editor onChange event (core render method) */
 		this.onChange = (editorState, callback) => {
-			this.setState({ editorState });
-			if (props.onChange) props.onChange(editorState.getCurrentContent());
-			setTimeout(this.updateSelection, 0);
-			if (typeof (callback) === 'function') callback();
+			this.setState({ editorState },() => {
+				if (props.onChange) props.onChange(editorState.getCurrentContent());
+				setTimeout(this.updateSelection, 0);
+				if (typeof (callback) === 'function') callback();
+			});
 		}
 		/* Editor component public method */
 		this.focus = () => this.refs.editor.focus();
 		this.blur = () => this.refs.editor.blur();
-		this.log = () => {
-			const content = this.state.editorState.getCurrentContent();
-		}
+
+		// log info
 		this.getFileUploadObject = () => { return Object.assign({}, this.fileSystemObject); }
 
 		this.updateSelection = () => this._updateSelection();
@@ -458,15 +464,9 @@ class RichEditor extends Component {
 	}
 
 	_onSearchChange({value}) {
-		//this.props.onRequestSearch(value);
-		//console.log(value.length);
-
-			this.setState({
-				suggestions: defaultSuggestionsFilter(value, this.props.mentions),
-			});
-		
-
-
+		this.setState({
+			suggestions: defaultSuggestionsFilter(value, this.props.mentions),
+		});
 	}
 
 	componentWillReceiveProps(nextProps) {

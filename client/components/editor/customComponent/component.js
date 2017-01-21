@@ -7,11 +7,6 @@ import { getFileUrl } from '../../../utils/fileUpload.js';
 
 import { ErrorBlock, ImgBlock, VideoBlock, AudioBlock, DocumentBlock, HyperLinkBlock, LinkBlock, YoutubeBlock, LoadingBlock } from './template.js';
 
-/*
-上層傳來的props有幾個主要的key : fakeSrc / src  / snap
-1. 有 fakeSrc => 
-
-*/ 
 class CustomComponent extends Component  {
 	
 	constructor(props){
@@ -30,26 +25,11 @@ class CustomComponent extends Component  {
 	handleClick(e){
 		this.props.blockProps.onRequestRemove(this.props.block.getKey(), this.state.props.id);
 	}
-
-	componentDidMount() {
-		
-		let that = this;
-		/*if( !this.state.props.src && this.state.props.fileId ) {
-			getFileUrl(this.state.props.fileId).done(function(res){
-				that.state.props.src = res[0].url[0];
-				that.setState({
-					props: that.state.props
-				});
-			})
-		}*/
-	}
 	
 	render(){
 		const props = this.state.props;
 		const type = this.state.type;
 		let that = this;
-
-		//if( !props.fakeSrc ) props.fakeSrc = props.src;
 
 		if( props.error ) {
 			/* 當error block出現之後隔5秒將其刪除 */ 
