@@ -1,7 +1,7 @@
 import React, { Component, PropTypes } from 'react';
 import CSSModules from 'react-css-modules';
 import css from './style.css';
-import { MIMEMap, getSignature, uploadToS3, getFileUrl, waitUrlSuccess } from '../../utils/fileUpload.js';
+import { getAtomicType, getSignature, uploadToS3, getFileUrl, waitUrlSuccess } from '../../utils/fileUpload.js';
 import IDMaker from '../../utils/IDMaker.js';
 
 if ( typeof(regeneratorRuntime) === 'undefined' ) require('babel-polyfill');
@@ -79,21 +79,22 @@ class FileUploader extends Component {
         let that = this;
 
         files.forEach(f => {
-            if( typeof(MIMEMap[f.type]) !== 'undefined' ) {
+            let AtomicType = getAtomicType(f.type);
+            if( AtomicType) {
 
                 let ID = IDMaker(3, this.counter);
                 this.counter++;
 
                 that.fileList[ID] = {
                     id: ID,
-                    type: MIMEMap[f.type],
+                    type: AtomicType,
                     originFile: f,
                     status: 'initial',
                     transformedFile: null
                 }
 
                 if ( that.props.getFileInfo ) that.props.getFileInfo( that.fileList[ID] );
-                signatureData.extra = that.props.mediaInfo[MIMEMap[f.type]];
+                signatureData.extra = that.props.mediaInfo[AtomicType];
                 let gen = that.generatorProcess(ID, signatureData);
                 that.runGenerator(gen);
             }

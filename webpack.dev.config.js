@@ -75,7 +75,7 @@ module.exports = function checkMode(app){
 				},
 				{
 					test: /\.css$/,
-					loader: "style-loader!css-loader?modules&localIdentName=[name]__[local]___[hash:base64:5]",
+					loader: "style-loader!css-loader?modules&localIdentName=[path][name]__[local]",
 					include: __dirname
 				},
 				{ test: /\.md$/, loader: "html!markdownattrs?config=markdownattrsLoaderCustomConfig" },

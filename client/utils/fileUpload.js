@@ -36,11 +36,11 @@ const MIMEMap = {
 export { MIMEMap };
 
 export function getAtomicType(MIMEType) {
-	if( typeof(MIMEMap[MIMEType])!=='undefined' ) {
-
+	if( MIMEMap[MIMEType] ) {
 		return MIMEMap[MIMEType];
 	}else {
 		alert('不支援的檔案格式');
+		return false;
 	}
 }
 
