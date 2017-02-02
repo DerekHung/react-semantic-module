@@ -8,8 +8,14 @@ import ReactDOM from 'react-dom';
 class Target extends Component{
 	componentDidMount() {
 		this.context.getThisDOM(this.refs.target);
+		console.log(this.refs.target);
 	}
 	
+	componentDidUpdate() {
+		this.context.getThisDOM(this.refs.target);
+		console.log(this.refs.target);
+	}
+
     render(){
 		//console.log(this.props.children);
 		const children = React.Children.map(this.props.children, (child) => {

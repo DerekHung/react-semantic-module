@@ -112,10 +112,6 @@ class DropdownMenu extends Component{
 		
 	}
 	
-	componentWillUpdate(nextProps, nextState) {
-		
-	}
-	
 	componentWillUnmount(){
 		this.ListNode = null;
 		this.ArrowNode = null;
@@ -130,6 +126,7 @@ class DropdownMenu extends Component{
             <div className={this.props.className} styleName="root"> 
 				{this.target}
 				{this.list}
+				
             </div>
         );
     }

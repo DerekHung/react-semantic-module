@@ -32,7 +32,13 @@ class DropdownPage extends Component {
 					defaultSelect: 1,
 				}
 			},
-			viewpoint: ['公開', '朋友']
+			viewpoint: ['公開', '朋友'],
+			DynamicTitle: '編輯'
+		}
+		this.testDynamic = (e) => {
+			this.setState({
+				DynamicTitle: '編輯編輯編輯編輯編輯編輯編輯編輯編輯編輯編輯編輯編輯'
+			})
 		}
 	}
 	
@@ -93,10 +99,12 @@ class DropdownPage extends Component {
 								</div>
 							</td>
 							<td>
+							<button onClick={this.testDynamic}>換title</button>
 								<div>編輯&nbsp;&nbsp;
 									<DropdownMenu
 										toggleOpen={this.toggleOpen.bind(this,'editor')}>
 										<DropdownTarget>
+											{this.state.DynamicTitle}
 											<i className={"fa "+this.state.ui.editor.targetIcon} aria-hidden="true" style={this.state.ui.editor.targetStyle}></i>
 										</DropdownTarget>
 										<DropdownList>
