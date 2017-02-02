@@ -8,12 +8,10 @@ import ReactDOM from 'react-dom';
 class Target extends Component{
 	componentDidMount() {
 		this.context.getThisDOM(this.refs.target);
-		console.log(this.refs.target);
 	}
 	
 	componentDidUpdate() {
 		this.context.getThisDOM(this.refs.target);
-		console.log(this.refs.target);
 	}
 
     render(){
