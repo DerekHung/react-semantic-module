@@ -86,6 +86,7 @@ class CommentEditor extends Component {
             <div styleName="editor">
                 <Editor
                     editorState={this.state.editorState}
+                    placeholder={this.props.placeholder}
                     onChange={this.onChange}
                     plugins={this.plugins}
                     ref={(element) => { this.editor = element; } }
