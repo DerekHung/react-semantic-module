@@ -1,5 +1,4 @@
 import LightBox from './lightbox';
-import Button from './button';
 
 import DropdownMenu from './dropdownMenu';
 import DropdownTarget from './dropdownMenu/target.js';
@@ -23,7 +22,6 @@ import Tab from './tab/tab.js';
 
 export {
 	LightBox,
-	Button,
 	DropdownMenu,
 	DropdownTarget,
 	DropdownList,
