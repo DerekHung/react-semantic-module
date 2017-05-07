@@ -183,7 +183,7 @@ class TextFeild extends Component {
 	}
 
 	componentWillReceiveProps(nextProps) {
-		if( this.state.data !== nextProps.value && this.props.value !== nextProps.value) {
+		if( this.state.data !== nextProps.value || this.props.value !== nextProps.value) {
 			this.setState({ data: nextProps.value });
 		}
 		if( this.state.ACData !== nextProps.ACData && this.props.ACData !== nextProps.ACData) {
