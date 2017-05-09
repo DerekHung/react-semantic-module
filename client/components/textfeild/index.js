@@ -178,8 +178,8 @@ class TextFeild extends Component {
 			data: value,
 			errorMessage: '',
 			ACData: []
-		})
-		this.props.onSelected(value,index+1);
+		}, ()=> this.props.onSelected(value,index+1));
+		
 	}
 
 	componentWillReceiveProps(nextProps) {
