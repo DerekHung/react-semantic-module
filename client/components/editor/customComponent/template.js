@@ -139,7 +139,7 @@ const YoutubeBlock = CSSModules(({parent, props}) => {
     )
 },style, { allowMultiple: true });
 
-const HyperLinkBlock = CSSModules(({parent, props}) => {
+const HyperLinkBlock = CSSModules(({parent, props, onError, hyperImgError}) => {
 
     const removeBlock = () => {
         parent.props.blockProps.onRequestRemove(parent.props.block.getKey(), parent.state.props.id);
@@ -152,7 +152,7 @@ const HyperLinkBlock = CSSModules(({parent, props}) => {
         <a href={props.linkurl } target="_blank">
         <span styleName="link">{props.linkurl}</span>
             <div styleName="linkBlock">
-                <img src={props.src} />
+                { !hyperImgError && <img src={props.src} />}
                 <div styleName="info">
                     <h3>{props.linktitle}</h3>
                     <p>{props.linkcontent}</p>

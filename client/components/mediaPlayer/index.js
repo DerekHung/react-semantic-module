@@ -39,9 +39,11 @@ class MediaPlayer extends Component {
 			transformed: false,
 			tagType: props.property.tagtype,
 			carrier: null,
+			hyperImgError: false,
 			data: {}
 		}
 		this.handleClick = (e) => this._handleClick(e);
+		this.hyperImgError = (e) => this._hyperImgError(e);
 	}
 	_handleClick(e) {
 		let that = this;
@@ -57,6 +59,11 @@ class MediaPlayer extends Component {
 		
 		
 	}
+	_hyperImgError(e) {
+		this.setState({
+			hyperImgError: true
+		})
+	}
 	render() {
 		if( typeof this.props.property.convertstatus !== 'undefined' && this.props.property.convertstatus !== '1')  {
 			return(
@@ -71,7 +78,7 @@ class MediaPlayer extends Component {
 					<a href={this.props.property.linkurl } target="_blank">
 					<span styleName="link">{this.props.property.linkurl}</span>
 						<div styleName="linkBlock">
-							<img src={this.props.property.src} />
+							{ !this.state.hyperImgError && <img src={this.props.property.src} onError={this.hyperImgError}/> }
 							<div styleName="info">
 								<h3>{this.props.property.linktitle}</h3>
 								<p>{this.props.property.linkcontent}</p>

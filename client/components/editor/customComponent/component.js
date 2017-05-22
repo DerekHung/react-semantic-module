@@ -18,7 +18,8 @@ class CustomComponent extends Component  {
 
 		this.state = {
 			props: entityProps,
-			type: type
+			type: type,
+			hyperImgError: false
 		}
 	}
 
@@ -26,6 +27,12 @@ class CustomComponent extends Component  {
 		this.props.blockProps.onRequestRemove(this.props.block.getKey(), this.state.props.id);
 	}
 	
+	hyperImgError(e){
+		this.setState({
+			hyperImgError: true
+		})
+	}
+
 	render(){
 		const props = this.state.props;
 		const type = this.state.type;
@@ -59,7 +66,7 @@ class CustomComponent extends Component  {
 			case 'DOCUMENT':
 				return <DocumentBlock parent={this} props={props}/>;
 			case 'HYPERLINK':
-				return <HyperLinkBlock parent={this} props={props}/>;		
+				return <HyperLinkBlock parent={this} props={props} onError={this.hyperImgError.bind(this)} hyperImgError={this.state.hyperImgError}/>;		
 			case 'YOUTUBE':
 				return <YoutubeBlock parent={this} props={props}/>;
 			case 'LINK': 
