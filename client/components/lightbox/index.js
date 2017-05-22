@@ -15,11 +15,11 @@ class Lightbox extends Component{
 		enableDocScroll();
 	}
 
-    handleClose(type){
+    handleClose(type, e){
         if( type === 'overlay' && this.props.clickOverlayToClose === false ) {
 
         }else {
-            if( this.props.onClose ) this.props.onClose();
+            if( this.props.onClose ) this.props.onClose(e);
         }
     }
 
