@@ -1,6 +1,7 @@
 import $ from 'jquery';
 
-const ENV = window.env || process.env.NODE_ENV;
+const canUseDOM = !!(typeof window !== 'undefined' && window.document && window.document.createElement);
+const ENV = (canUseDOM && window.env) || process.env.NODE_ENV;
 const S3url = ENV === 'production' ? '//ori.docapi.104.com.tw' : '//ori.staging.docapi.104.com.tw';
 const MIMEMap = {
 	'image/jpeg': 'IMAGE',
