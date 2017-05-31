@@ -1,5 +1,7 @@
 import $ from 'jquery';
 
+const ENV = window.env || process.env.NODE_ENV;
+const S3url = ENV === 'production' ? '//ori.docapi.104.com.tw' : '//ori.staging.docapi.104.com.tw';
 const MIMEMap = {
 	'image/jpeg': 'IMAGE',
 	'image/png': 'IMAGE',
@@ -67,9 +69,12 @@ export function getSignature (file, dataInfo){
 			contentType: "application/json; charset=utf-8",
 			dataType: 'json',
 			data: JSON.stringify(jsonDataForSig)
-		}).done((result) => {
-			resolve(result);
-		});
+		// }).done((result) => {
+		// 	resolve(result);
+		// });
+		}).done(function(res){
+			
+		})
 	})
 	
 	
@@ -87,7 +92,7 @@ export function uploadToS3(file, jsonDataForUpload){
 	return new Promise(function(resolve, reject){ 
 		$.ajax({
 			method: 'POST',
-			url: location.protocol + '//docapi-staging-originbucket-1s73tnifzf5z3.s3.amazonaws.com',
+			url: location.protocol + S3url,
 			processData: false,
 			contentType: false,
 			data: formData
