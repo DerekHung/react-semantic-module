@@ -70,12 +70,9 @@ export function getSignature (file, dataInfo){
 			contentType: "application/json; charset=utf-8",
 			dataType: 'json',
 			data: JSON.stringify(jsonDataForSig)
-		// }).done((result) => {
-		// 	resolve(result);
-		// });
-		}).done(function(res){
-			
-		})
+		}).done((result) => {
+			resolve(result);
+		});
 	})
 	
 	
