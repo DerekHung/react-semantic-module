@@ -1,4 +1,4 @@
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react';
 import CSSModules from 'react-css-modules';
 import style from './style.css';
 import ReactDOM from 'react-dom';
@@ -12,16 +12,24 @@ class Tabs extends Component {
             currentTab: ''
         }
         this.tabClick = (e) => this._tabClick(e);
+        this.mountTabs = this.mountTabs.bind(this);
     }
     componentDidMount(){
-        let that = this;
+        this.mountTabs(this.props.children);
+    }
+    componentWillReceiveProps(nextProps) {
+        if (this.props.children !== nextProps.children) {
+            this.mountTabs(nextProps.children, 'same')
+        }   
+    }
+    mountTabs(childData, same) {
         let tabStack=[];
-        React.Children.map(this.props.children, function (child) {
-            tabStack.push(child.props.name);
+        React.Children.map(childData, function (child) {
+            tabStack.push(child.props);
         });
         this.setState({
             tabStack: tabStack,
-            currentTab: tabStack[0]
+            currentTab: same ? this.state.currentTab : tabStack[0].name
         })
     }
     _tabClick(e) {
@@ -35,15 +43,15 @@ class Tabs extends Component {
         return (
             <div className={this.props.className}>
                 <div styleName="head-body" id="tab-component-head">
-                { this.state.tabStack && this.state.tabStack.map(function(value, index){
-                        let active = that.state.currentTab === value ? 'active' : '';
+                { this.state.tabStack && this.state.tabStack.map(function(item, index){
+                        let active = that.state.currentTab === item.name ? 'active' : '';
                         return(
                             <div styleName={"tab-head "+active}
                                  style={{ width: 100/that.state.tabStack.length + '%'}}
                                  key={index} 
                                  onClick={that.tabClick} 
-                                 name={value}>
-                                 {value}
+                                 name={item.name}>
+                                 {item.text || item.name}
                             </div>
                         )
                     }) 
