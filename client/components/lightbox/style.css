@@ -43,7 +43,6 @@
 .content {
     overflow: visible;
     margin-top: 28px;
-    display: inline-block;
 }
 .container {
 	display: flex;
