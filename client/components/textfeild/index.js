@@ -5,7 +5,12 @@ import ReactDOM from 'react-dom';
 
 
 function highlightString( keyword, targetString ){
-	let pattern = new RegExp(keyword,'gi'),
+
+	function escapeRegExp(str) {
+		return str.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
+	}
+
+	let pattern = new RegExp(escapeRegExp(keyword),'gi'),
 		replace = '<span>' + keyword + '</span>';
 
 		return targetString.replace(pattern,replace);
