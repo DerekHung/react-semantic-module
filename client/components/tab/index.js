@@ -19,7 +19,7 @@ class Tabs extends Component {
     }
     componentWillReceiveProps(nextProps) {
         if (this.props.children !== nextProps.children) {
-            this.mountTabs(nextProps.children, 'same')
+            this.mountTabs(nextProps.children, true)
         }   
     }
     mountTabs(childData, same) {
