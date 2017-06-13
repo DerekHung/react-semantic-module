@@ -71,35 +71,74 @@ class FileUploader extends Component {
     }
     _handleFileInput(e) {
         let files = Array.prototype.slice.call(e.target.files, 0);
-        let signatureData = {
-            apnum: this.props.apnum,
-            pid: this.props.pid
-        }
+        
         //let snap ='';
         let that = this;
 
         files.forEach(f => {
+
+            console.log(f);
+            
+
             let AtomicType = getAtomicType(f.type);
             if( AtomicType) {
 
-                let ID = IDMaker(3, this.counter);
-                this.counter++;
+                this._checkImageClientSize(AtomicType, f, this._uploadProcess.bind(this));
 
-                that.fileList[ID] = {
-                    id: ID,
-                    type: AtomicType,
-                    originFile: f,
-                    status: 'initial',
-                    transformedFile: null
-                }
-
-                if ( that.props.getFileInfo ) that.props.getFileInfo( that.fileList[ID] );
-                signatureData.extra = that.props.mediaInfo[AtomicType];
-                let gen = that.generatorProcess(ID, signatureData);
-                that.runGenerator(gen);
             }
         });
     }
+    
+    _checkImageClientSize(AtomicType, f, _callback) {
+
+        console.log(AtomicType);
+
+        if(f.size > 9000000) {
+            if(this.props.onBlockingUpload) this.props.onBlockingUpload('請選擇容量小於 10 MB的圖片');
+            return false;
+        }
+
+        var reader = new FileReader();
+        var img = new Image();
+
+        reader.onload = function(e) {
+            img.src = e.target.result;
+        }
+
+        img.onload = function() {
+            console.log(this.width);
+            console.log(this.height);
+            if( this.width > 9999 || this.height > 9999){
+                if(this.props.onBlockingUpload) this.props.onBlockingUpload('請選擇寬小於 9999 像素和高小於 9999 像素的圖片');
+                return false;
+            }
+            _callback(AtomicType, f);
+        }
+
+        reader.readAsDataURL(f);
+    }
+
+    _uploadProcess(AtomicType, f){
+        const ID = IDMaker(3, this.counter);
+        let signatureData = {
+            apnum: this.props.apnum,
+            pid: this.props.pid
+        }
+        this.counter++;
+
+        this.fileList[ID] = {
+            id: ID,
+            type: AtomicType,
+            originFile: f,
+            status: 'initial',
+            transformedFile: null
+        }
+
+        if ( this.props.getFileInfo ) this.props.getFileInfo( this.fileList[ID] );
+        signatureData.extra = this.props.mediaInfo[AtomicType];
+        let gen = this.generatorProcess(ID, signatureData);
+        this.runGenerator(gen);
+    }   
 	render() {
 		return (
             <span styleName="fileUpload" onClick={this.handleClick} className={this.props.className}>
