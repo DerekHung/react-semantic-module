@@ -19,17 +19,17 @@ class Tabs extends Component {
     }
     componentWillReceiveProps(nextProps) {
         if (this.props.children !== nextProps.children) {
-            this.mountTabs(nextProps.children, true)
+            this.mountTabs(nextProps.children, 'staySameTab')
         }   
     }
-    mountTabs(childData, same) {
+    mountTabs(childData, staySameTab) {
         let tabStack=[];
         React.Children.map(childData, function (child) {
             tabStack.push(child.props);
         });
         this.setState({
             tabStack: tabStack,
-            currentTab: same ? this.state.currentTab : tabStack[0].name
+            currentTab: staySameTab ? this.state.currentTab : tabStack[0].name
         })
     }
     _tabClick(e) {
