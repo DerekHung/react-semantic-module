@@ -35,22 +35,21 @@ class Lightbox extends Component{
         return(
             <div styleName="container">
                 <Overlay
-                         onRequestClose={this.handleClose.bind(this,'overlay')}
-                         styleName="overlay">
-
-                </Overlay>
-                <div styleName="lightbox" className={this.props.className}>
-                    {
-                        this.props.option.title &&
-                        <div styleName="title">{ this.props.option.title }</div>
-                    }
-                    <div styleName="content" style={{padding: contentPadding, maxHeight : contentHeight}}>
-                        { this.props.children }
-                        { this.props.option.submit && <button onClick={this.props.option.submit.action} {...gtm} styleName="submit">{this.props.option.submit.text}</button>}
-                        { this.props.option.cancel && <button onClick={this.handleClose.bind(this,'cancel')}>{this.props.option.cancel.text}</button>}
+                    onRequestClose={this.handleClose.bind(this,'overlay')}
+                    styleName="overlay">
+                    <div styleName="lightbox" className={this.props.className}>
+                        {
+                            this.props.option.title &&
+                            <div styleName="title">{ this.props.option.title }</div>
+                        }
+                        <div styleName="content" style={{padding: contentPadding, maxHeight : contentHeight}}>
+                            { this.props.children }
+                            { this.props.option.submit && <button onClick={this.props.option.submit.action} {...gtm} styleName="submit">{this.props.option.submit.text}</button>}
+                            { this.props.option.cancel && <button onClick={this.handleClose.bind(this,'cancel')}>{this.props.option.cancel.text}</button>}
+                        </div>
+                        { this.props.option.closeIcon && <div styleName="close" onClick={this.handleClose.bind(this,'closeIcon')}></div>}
                     </div>
-                    { this.props.option.closeIcon && <div styleName="close" onClick={this.handleClose.bind(this,'closeIcon')}></div>}
-                </div>
+                </Overlay>
             </div>
         );
     }
