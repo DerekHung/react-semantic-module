@@ -34,6 +34,7 @@
 	transform: scaleY(0);
 	margin: -16px;
 	margin-top: 30px;
+	z-index: 1;
 }
 
 .mentionSuggestionsEntry {
