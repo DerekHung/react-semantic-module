@@ -77,46 +77,43 @@ class FileUploader extends Component {
 
         files.forEach(f => {
 
-            console.log(f);
-            
-
             let AtomicType = getAtomicType(f.type);
             if( AtomicType) {
 
-                this._checkImageClientSize(AtomicType, f, this._uploadProcess.bind(this));
+                this._uploadProcess(AtomicType, f);
 
             }
         });
     }
     
-    _checkImageClientSize(AtomicType, f, _callback) {
+    // _checkImageClientSize(AtomicType, f, _callback) {
 
-        console.log(AtomicType);
+    //     console.log(AtomicType);
 
-        if(f.size > 9000000) {
-            if(this.props.onBlockingUpload) this.props.onBlockingUpload('請選擇容量小於 10 MB的圖片');
-            return false;
-        }
+    //     if(f.size > 9000000) {
+    //         if(this.props.onBlockingUpload) this.props.onBlockingUpload('請選擇容量小於 10 MB的圖片');
+    //         return false;
+    //     }
 
-        var reader = new FileReader();
-        var img = new Image();
+    //     var reader = new FileReader();
+    //     var img = new Image();
 
-        reader.onload = function(e) {
-            img.src = e.target.result;
-        }
+    //     reader.onload = function(e) {
+    //         img.src = e.target.result;
+    //     }
 
-        img.onload = function() {
-            console.log(this.width);
-            console.log(this.height);
-            if( this.width > 9999 || this.height > 9999){
-                if(this.props.onBlockingUpload) this.props.onBlockingUpload('請選擇寬小於 9999 像素和高小於 9999 像素的圖片');
-                return false;
-            }
-            _callback(AtomicType, f);
-        }
+    //     img.onload = function() {
+    //         console.log(this.width);
+    //         console.log(this.height);
+    //         if( this.width > 9999 || this.height > 9999){
+    //             if(this.props.onBlockingUpload) this.props.onBlockingUpload('請選擇寬小於 9999 像素和高小於 9999 像素的圖片');
+    //             return false;
+    //         }
+    //         _callback(AtomicType, f);
+    //     }
 
-        reader.readAsDataURL(f);
-    }
+    //     reader.readAsDataURL(f);
+    // }
 
     _uploadProcess(AtomicType, f){
         const ID = IDMaker(3, this.counter);
