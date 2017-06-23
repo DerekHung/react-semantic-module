@@ -1,6 +1,5 @@
 .overlay {
     background: rgba(0, 0, 0, .5);
-    opacity: 1;
 }
 
 .lightbox {
@@ -62,11 +61,6 @@
     z-index: 3000;
     overflow: auto;
     padding: 30px 0;
-}
-
-.overlay {
-    background: #000;
-    opacity: 0.5;
 }
 
 .close {
