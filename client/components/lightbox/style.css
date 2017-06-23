@@ -1,6 +1,5 @@
 .overlay {
-    background: #333;
-    opacity: 0.5;
+    background: rgba(0, 0, 0, .5);
 }
 
 .lightbox {

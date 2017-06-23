@@ -3,6 +3,7 @@ import CSSModules from 'react-css-modules';
 import style from './style.css';
 import ReactDOM from 'react-dom';
 import { Link } from 'react-router';
+import { isEqual } from 'lodash/lang';
 
 class Tabs extends Component {
     constructor(props){
@@ -18,9 +19,11 @@ class Tabs extends Component {
         this.mountTabs(this.props.children);
     }
     componentWillReceiveProps(nextProps) {
-        if (this.props.children !== nextProps.children) {
+        const oldKeys = this.props.children.map( child => child.props.text);
+        const newKeys = nextProps.children.map( child => child.props.text);
+        if (!isEqual(oldKeys, newKeys)) {
             this.mountTabs(nextProps.children, 'staySameTab')
-        }   
+        }
     }
     mountTabs(childData, staySameTab) {
         let tabStack=[];
