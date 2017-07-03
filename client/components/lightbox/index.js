@@ -35,9 +35,8 @@ class Lightbox extends Component{
         return(
             <div styleName="container">
                 <Overlay
-                         onRequestClose={this.handleClose.bind(this,'overlay')}
-                         styleName="overlay">
-
+                    onRequestClose={this.handleClose.bind(this,'overlay')}
+                    styleName="overlay">
                 </Overlay>
                 <div styleName="lightbox" className={this.props.className}>
                     {
