@@ -73,8 +73,6 @@ class CommentEditor extends Component {
             this.setState({ 
                 editorState: editorState
             })
-        }else if( this.state.suggestions !== nextprops.mentions && nextprops.mentions) {
-            this.setState({ suggestions: nextprops.mentions })
         }else {
             return false;
         }
