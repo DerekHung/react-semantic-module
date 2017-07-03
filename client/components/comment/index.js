@@ -39,7 +39,7 @@ class CommentEditor extends Component {
 
         this.onSearchChange = ({ value }) => {
             this.setState({
-                suggestions: defaultSuggestionsFilter(value, this.state.suggestions),
+                suggestions: defaultSuggestionsFilter(value, this.props.mentions),
             });
         }
 
