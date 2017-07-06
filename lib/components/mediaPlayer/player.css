@@ -2,13 +2,15 @@
   width: 100%;
   height: 480px;
   margin: 0 auto;
+  display: flex;
+  flex-direction: column;
 }
 
 .playground {
   display:flex;
   align-items:center;
   justify-content:center;
-  height: 89.6%;
+  height: 100%;
   width: 100%;
   overflow: hidden;
   position: relative;
@@ -23,17 +25,21 @@
 .loading {
   position: absolute;
   top: 25%;
-   
 }
 .controls {
   height: 50px;
   background-color: #ddd;
   color: #868686;
-  margin-top: -6px;
   text-align: center;
+  display: flex;
+  justify-content: center;
+  align-content: center;
 }
 .controls_item {
-
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-left: auto;
 }
 .direction {
   font-size: 2.2em;
@@ -62,6 +68,9 @@
   
 }
 .fullscreen {
-  float: right;
+  margin-left: auto;
   font-size: 2em;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
