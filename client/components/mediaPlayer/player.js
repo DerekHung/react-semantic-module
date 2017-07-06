@@ -102,7 +102,7 @@ class Player extends Component {
             this.setState({fullscreen: false});
             $(ele).width("100%");
             $(ele).height("480px");
-            $(this.refs.playground).height("89.6%");
+            $(this.refs.playground).height("100%");
         }
     }
     fullscreen() {
