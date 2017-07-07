@@ -27,7 +27,7 @@
   top: 25%;
 }
 .controls {
-  height: 50px;
+  min-height: 50px;
   background-color: #ddd;
   color: #868686;
   text-align: center;
