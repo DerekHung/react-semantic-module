@@ -93,16 +93,15 @@ class Player extends Component {
             document.mozFullScreenElement || document.msFullscreenElement) {
             this.state.fullscreen = true;
             this.setState({fullscreen: true});
-            $(ele).width($(window).width());
             $(ele).height($(window).height());
-            $(this.refs.playground).height($(window).height()-50);
+            $(this.refs.playground).height($(window).height());
             
         } else {
             this.state.fullscreen = false;
             this.setState({fullscreen: false});
             $(ele).width("100%");
             $(ele).height("480px");
-            $(this.refs.playground).height("89.6%");
+            $(this.refs.playground).height("100%");
         }
     }
     fullscreen() {
@@ -161,7 +160,7 @@ class Player extends Component {
                         }
                         {
                             this.state.fullscreen &&
-                            <i onClick={()=>this.fullscreen()} className="zoom icon"></i>
+                            <i onClick={()=>this.fullscreen()} className="icon maximize"></i>
                         }
                     </span>
                 </div>
