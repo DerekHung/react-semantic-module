@@ -152,7 +152,12 @@ const HyperLinkBlock = CSSModules(({parent, props, onError, hyperImgError}) => {
         <a href={props.linkurl } target="_blank">
         <span styleName="link">{props.linkurl}</span>
             <div styleName="linkBlock">
-                { !hyperImgError && <img src={props.src} />}
+                { !hyperImgError && 
+                    <span 
+                        styleName="hyper-image"
+                        style={{ 
+                            background: `url(${props.src}) 100% center`,
+                            backgroundSize: 'cover'}} />}
                 <div styleName="info">
                     <h3>{props.linktitle}</h3>
                     <p>{props.linkcontent}</p>

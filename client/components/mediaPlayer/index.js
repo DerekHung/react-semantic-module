@@ -78,13 +78,20 @@ class MediaPlayer extends Component {
 					<a href={this.props.property.linkurl } target="_blank">
 					<span styleName="link">{this.props.property.linkurl}</span>
 						<div styleName="linkBlock">
-							{ !this.state.hyperImgError && <img src={this.props.property.src} onError={this.hyperImgError}/> }
+							{ !this.state.hyperImgError && 
+								 <span 
+									styleName="hyper-image"
+									style={{ 
+										background: `url(${this.props.property.src}) 100% center`,
+										backgroundSize: 'cover'}} />}
 							<div styleName="info">
 								<h3>{this.props.property.linktitle}</h3>
 								<p>{this.props.property.linkcontent}</p>
 							</div>
+							<img styleName="loadImage" src={this.props.property.src} onError={this.hyperImgError}/>
 						</div>
 					</a>
+					
 				</div>
 			);
 		}else if( this.state.tagType === 'YOUTUBE' ) {
