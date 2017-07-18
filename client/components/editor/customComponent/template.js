@@ -150,7 +150,7 @@ const HyperLinkBlock = CSSModules(({parent, props, onError, hyperImgError}) => {
     <div styleName="block">
         <div styleName="close" onClick={removeBlock}></div>
         <a href={props.linkurl } target="_blank">
-        <span styleName="link">{props.linkurl}</span>
+        <span styleName="link">{props.linkurl || ''}</span>
             <div styleName="linkBlock">
                 { !hyperImgError && 
                     <span 
@@ -159,8 +159,8 @@ const HyperLinkBlock = CSSModules(({parent, props, onError, hyperImgError}) => {
                             background: `url(${props.src}) 100% center`,
                             backgroundSize: 'cover'}} />}
                 <div styleName="info">
-                    <h3>{props.linktitle}</h3>
-                    <p>{props.linkcontent}</p>
+                    <h3>{props.linktitle || ''}</h3>
+                    <p>{props.linkcontent || ''}</p>
                     <span styleName="tag104">plus.104.com.tw</span>
                 </div>
             </div>
