@@ -14,7 +14,7 @@ const getMappingData = ( fileFromDocApiSrc ) => {
 			template: <video src={fileFromDocApiSrc[0]} controls autoPlay="autoplay"/>
 		},
 		'AUDIO': {
-			tag: [],
+			tag: ['activityPlay'],
 			template: <audio src={fileFromDocApiSrc[0]} controls/>
 		},
 		'IMAGE': {
