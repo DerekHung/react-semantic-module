@@ -100,7 +100,7 @@ class MediaPlayer extends Component {
 					<a href={this.props.property.url } target="_blank">{this.props.property.url}</a>
 					<div>
 					<iframe width="476" height="267.5"
-						src={'http' + "://www.youtube.com/embed/" + this.props.property.file}>
+						src={'https' + "://www.youtube.com/embed/" + this.props.property.file}>
 						</iframe>
 					</div>
 				</div>
