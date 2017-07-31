@@ -17,7 +17,7 @@
     content: '';
     display: inline-block;
     width: 60px;
-    height: 60px;
+    height: 0px;
     position: absolute;
     top: 50%;
     left: 50%;
@@ -26,6 +26,7 @@
     cursor: pointer;
 }
 .block.video:before {
+    height: 60px;
     background: url(../editor/customComponent/icon_play.png);
     background-repeat: no-repeat;
 }
@@ -41,6 +42,7 @@
     background: #eee;
 }
 .block.audio:before {
+    height: 60px;
     background: url(../editor/customComponent/icon_trumpet.png);
     background-repeat: no-repeat;
 }
@@ -51,6 +53,7 @@
     height: 480px;
 }
 .block.document:before {
+    height: 60px;
     background: url(../editor/customComponent/icon_file.png);
     background-repeat: no-repeat;
     background-size: 100%;
