@@ -58,6 +58,9 @@ class MobileMediaPlayer extends Component {
 
 	}
 	render() {
+
+		if( !this.state.tagType || this.state.tagType.length <= 0 ) return null;
+
 		if( typeof this.props.property.convertstatus !== 'undefined' && this.props.property.convertstatus !== '1')  {
 			return(
 				<div styleName="loading-preset">
