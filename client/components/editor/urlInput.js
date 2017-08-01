@@ -9,7 +9,7 @@ class urlInput extends Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			data: null
+			data: ''
 		}
 	}
 	onChange(e) {
@@ -17,6 +17,8 @@ class urlInput extends Component {
 	}
 	_onKeyDown (e){
 		
+		if(this.state.data.length <= 0 ) return false;
+
 		if (e.which === 13) {
 			e.preventDefault();
 			this.props.onKeyDown(this.state.data);

@@ -278,9 +278,15 @@ class RichEditor extends Component {
 		);
 	}
 
-	_onLinkKeyDown(value) {
+	_checkLinkValue(value) {
+		const splitString = value.split('//');
+		if( splitString[0].indexOf('http') < 0 ) return 'http://' + value;
+		else return value;
+	}
 
-		const entityKey = Entity.create('LINK', 'MUTABLE', { href: value });
+	_onLinkKeyDown(value) {
+		const link = this._checkLinkValue(value);
+		const entityKey = Entity.create('LINK', 'MUTABLE', { href: link });
 		let that = this;
 
 		this.onChange(RichUtils.toggleLink(
