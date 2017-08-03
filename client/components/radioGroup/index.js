@@ -109,6 +109,7 @@ class RadioGroup extends Component {
 							value={data.value} 
 							label={data.label}
 							onChange={that.handleChange.bind(that,index)}
+							checked={ data.checked }
 							defaultChecked={ data.checked ? 'checked' : null } />
 						
 						<label htmlFor={name + 'radio' + index} onClick={that.handleClick.bind(that)}><div styleName="check"></div>{data.label}</label>
@@ -125,6 +126,7 @@ class RadioGroup extends Component {
 							name={name}
 							label="自訂"
 							onChange={this.customChoose.bind(this)}
+							checked={ data.checked }
 							defaultChecked={ customValue? group.length + 1 : null} />
 						<label htmlFor={name + 'custom'} onClick={that.handleClick.bind(that)}><div styleName="check"></div>自訂</label>
 						{ that.props.disabled ? 
