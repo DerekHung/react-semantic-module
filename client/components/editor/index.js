@@ -279,6 +279,9 @@ class RichEditor extends Component {
 	}
 
 	_checkLinkValue(value) {
+
+		if(!value) return '';
+
 		const splitString = value.split('//');
 		if( splitString[0].indexOf('http') < 0 ) return 'http://' + value;
 		else return value;
