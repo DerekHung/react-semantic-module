@@ -89,6 +89,37 @@ class RadioGroup extends Component {
 	handleClick(e){
 		if( this.props.disabled ) e.preventDefault();
 	}
+	typeComponent(that, type, data, index) {
+		const { name } = this.props;
+		switch (type) {
+			case 'checkbox':
+				return (
+					<input
+						type={type}
+						id={name + 'radio' + index}
+						name={name}
+						value={data.value} 
+						label={data.label}
+						onChange={that.handleChange.bind(that,index)}
+						defaultChecked={ data.checked ? 'checked' : null }
+					/>
+				)
+			case 'radio':
+				return (
+					<input
+						type={type}
+						id={name + 'radio' + index}
+						name={name}
+						value={data.value} 
+						label={data.label}
+						onChange={that.handleChange.bind(that,index)}
+						checked={ data.checked }
+					/>
+				)
+			default:
+				break;
+		}
+	}
 
 	render() {
 		
@@ -101,18 +132,8 @@ class RadioGroup extends Component {
 				{group.map(function (data, index) {
 					return(
 					<div key={index} styleName="radioItem">
-						
-						<input
-							type={type}
-							id={name + 'radio' + index}
-							name={name}
-							value={data.value} 
-							label={data.label}
-							onChange={that.handleChange.bind(that,index)}
-							defaultChecked={ data.checked ? 'checked' : null } />
-						
+						{ that.typeComponent(that, type, data, index) }
 						<label htmlFor={name + 'radio' + index} onClick={that.handleClick.bind(that)}><div styleName="check"></div>{data.label}</label>
-						
 					</div>
 					);
 				})}
@@ -125,6 +146,7 @@ class RadioGroup extends Component {
 							name={name}
 							label="自訂"
 							onChange={this.customChoose.bind(this)}
+							checked={ customValue }
 							defaultChecked={ customValue? group.length + 1 : null} />
 						<label htmlFor={name + 'custom'} onClick={that.handleClick.bind(that)}><div styleName="check"></div>自訂</label>
 						{ that.props.disabled ? 
