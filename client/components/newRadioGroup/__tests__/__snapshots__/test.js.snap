@@ -1,0 +1,96 @@
+exports[`Radio initial 1`] = `
+<div
+  className="radioGroup">
+  <div
+    className="radioItem">
+    <input
+      defaultChecked={null}
+      id="undefinedradio0"
+      label="項目1"
+      name={undefined}
+      onChange={[Function bound handleChange]}
+      type="radio"
+      value="111" />
+    <label
+      htmlFor="undefinedradio0"
+      onClick={[Function bound handleClick]}>
+      <div
+        className="check" />
+      項目1
+    </label>
+  </div>
+  <div
+    className="radioItem">
+    <input
+      defaultChecked={null}
+      id="undefinedradio1"
+      label="項目2"
+      name={undefined}
+      onChange={[Function bound handleChange]}
+      type="radio"
+      value="222" />
+    <label
+      htmlFor="undefinedradio1"
+      onClick={[Function bound handleClick]}>
+      <div
+        className="check" />
+      項目2
+    </label>
+  </div>
+  <div
+    className="radioItem">
+    <input
+      defaultChecked={null}
+      id="undefinedradio2"
+      label="項目3"
+      name={undefined}
+      onChange={[Function bound handleChange]}
+      type="radio"
+      value="333" />
+    <label
+      htmlFor="undefinedradio2"
+      onClick={[Function bound handleClick]}>
+      <div
+        className="check" />
+      項目3
+    </label>
+  </div>
+  <div
+    className="radioItem">
+    <input
+      defaultChecked={null}
+      id="undefinedradio3"
+      label="項目4"
+      name={undefined}
+      onChange={[Function bound handleChange]}
+      type="radio"
+      value="444" />
+    <label
+      htmlFor="undefinedradio3"
+      onClick={[Function bound handleClick]}>
+      <div
+        className="check" />
+      項目4
+    </label>
+  </div>
+  <div
+    className="radioItem">
+    <input
+      defaultChecked={null}
+      id="undefinedradio4"
+      label="項目5"
+      name={undefined}
+      onChange={[Function bound handleChange]}
+      type="radio"
+      value="555" />
+    <label
+      htmlFor="undefinedradio4"
+      onClick={[Function bound handleClick]}>
+      <div
+        className="check" />
+      項目5
+    </label>
+  </div>
+  
+</div>
+`;

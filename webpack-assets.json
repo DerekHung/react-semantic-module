@@ -9,6 +9,7 @@
     "./client/components/editor/customComponent/icon_trumpet.png": "/build/2a21d7ef33a6b56bb079141cd6730322.png",
     "./client/components/editor/customComponent/spin_invert.svg": "/build/32dc2b3d2ae1a3bfb68901988ec41d49.svg",
     "./client/components/editor/customComponent/icon_error.png": "/build/5ab3b18bd02af714d8756302763f28b2.png",
+    "./client/components/newRadioGroup/icon_checkbox.png": "/build/58fa23c3f3d2da29af2bbb949e54b1be.png",
     "./client/components/radioGroup/icon_checkbox.png": "/build/58fa23c3f3d2da29af2bbb949e54b1be.png"
   }
 }

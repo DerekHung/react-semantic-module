@@ -6,8 +6,11 @@ import style from './style.css';
 
 import html from 'doc/switches.md';
 
-//import { RadioGroup } from 'c_wap_module';
+
+// import { RadioGroup } from 'c_wap_module';
 import RadioGroup from 'client/components/radioGroup';
+import NewRadioGroup from 'client/components/newRadioGroup';
+
 class Switches extends Component {
 	constructor(){
 		super();
@@ -39,16 +42,15 @@ class Switches extends Component {
 					styleName="radioGroup"
 					>
 				</RadioGroup>
-				<RadioGroup
+				<NewRadioGroup
 					group={group}
 					name="radio"
-					checkedIndex={2}
 					onSelected={this.radioSelect.bind(this)}
 					custom={true}
 					styleName="radioGroup"
 					customValue={this.state.customValue}
 					disabled={true}>
-				</RadioGroup>
+				</NewRadioGroup>
 				<div className="content">
 				<p>表單送出沒有選擇的時候</p>
 				</div>

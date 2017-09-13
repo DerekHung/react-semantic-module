@@ -7,6 +7,7 @@ import DropdownList from './dropdownMenu/list.js';
 import DropList from './dropList';
 
 import RadioGroup from './radioGroup';
+import NewRadioGroup from './newRadioGroup';
 import TextField from './textfeild';
 
 import Validators from '../utils/validator';
@@ -27,6 +28,7 @@ export {
 	DropdownList,
 	DropList,
 	RadioGroup,
+	NewRadioGroup,
 	TextField,
 	Validators,
 	Editor,

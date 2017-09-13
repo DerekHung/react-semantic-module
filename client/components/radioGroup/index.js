@@ -113,7 +113,7 @@ class RadioGroup extends Component {
 						value={data.value} 
 						label={data.label}
 						onChange={that.handleChange.bind(that,index)}
-						checked={ data.checked }
+						defaultChecked={ data.checked }
 					/>
 				)
 			default:
