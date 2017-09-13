@@ -43,11 +43,6 @@ class NewRadioGroup extends Component {
 	handleBlur() {
 		this.props.onSelected(this.state.customValue, this.state.group.length + 1);
 	}
-	componentWillReceiveProps(nextProps) {
-		if (this.state.customValue !== this.props.customValue || this.props.customValue !== nextProps.customValue) {
-			this.setState({ customValue: nextProps.customValue });
-		}
-	}
 	handleClick(index, e) {
 		if (this.props.disabled && e) e.preventDefault();
 		if (this.selected && this.selected < this.state.group.length) this.state.group[this.selected].checked = false;
