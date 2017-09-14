@@ -8,7 +8,7 @@ class NewRadioGroup extends Component {
 		this.state = {
 			customValue: props.customValue,
 			customDisable: !(props.customValue),
-			checkedIndex: props.customValue ? props.group.length : props.defaultChecked || null
+			checkedIndex: props.customValue ? props.group.length : props.defaultChecked
 		};
 		this.mainRefs = null;
 		this.customInputRefs = null;
