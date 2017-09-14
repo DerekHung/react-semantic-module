@@ -23,7 +23,7 @@ class Switches extends Component {
 	}
 	render() {
 		let group = [
-			{label:'項目1',value: '111'},
+			{label:'項目1',value: '111',checked: true},
 			{label:'項目2',value: '222'},
 			{label:'項目3',value: '333'},
 			{label:'項目4',value: '444'},
@@ -48,8 +48,9 @@ class Switches extends Component {
 					onSelected={this.radioSelect.bind(this)}
 					custom={true}
 					styleName="radioGroup"
-					customValue={this.state.customValue}
-					disabled={true}>
+					customValue={''}
+					disabled={true}
+					defaultChecked={2}>
 				</NewRadioGroup>
 				<div className="content">
 				<p>表單送出沒有選擇的時候</p>

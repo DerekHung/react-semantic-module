@@ -6,15 +6,12 @@ class NewRadioGroup extends Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			group: props.group,
 			customValue: props.customValue,
-			customDisable: !(props.customValue)
+			customDisable: !(props.customValue),
+			checkedIndex: props.customValue ? props.group.length : props.defaultChecked || null
 		};
 		this.mainRefs = null;
 		this.customInputRefs = null;
-		if (props.defaultChecked) this.state.group[props.defaultChecked].checked = true;
-		this.selected = props.defaultChecked;
-		if (props.customValue) this.selected = this.state.group.length;
 	}
 	// handleChange(index) {
 	// 	this.setState({
@@ -29,11 +26,8 @@ class NewRadioGroup extends Component {
 	}
 	customChoose(e) {
 		const that = this;
-		// this.handleChange(this.props.group.length, e);
-		if (this.selected < this.state.group.length) this.state.group[this.selected].checked = false;
-		this.selected = this.state.group.length;
 		this.setState({
-			group: this.state.group,
+			checkedIndex: this.props.group.length,
 			customDisable: false,
 		});
 		setTimeout(function(){
@@ -41,18 +35,15 @@ class NewRadioGroup extends Component {
 		}, 100);
 	}
 	handleBlur() {
-		this.props.onSelected(this.state.customValue, this.state.group.length + 1);
+		this.props.onSelected(this.state.customValue, this.props.group.length);
 	}
 	handleClick(index, e) {
 		if (this.props.disabled && e) e.preventDefault();
-		if (this.selected && this.selected < this.state.group.length) this.state.group[this.selected].checked = false;
-		this.state.group[index].checked = true;
-		this.selected = index;
 		this.setState({
-			group: this.state.group,
+			checkedIndex: index,
 			customDisable: true
 		});
-		this.props.onSelected(this.state.group[index].value, index + 1);
+		this.props.onSelected(this.props.group[index].value, index);
 	}
 	typeComponent(that, data, index) {
 		const { name } = this.props;
@@ -63,17 +54,15 @@ class NewRadioGroup extends Component {
 				name={ name }
 				value={ data.value }
 				label={ data.label }
-				checked={ data.checked }
+				checked={ index === this.state.checkedIndex }
 				defaultChecked={ data.checked }
 			/>
 		);
 	}
 
 	render() {
-		const { checkBox, name, custom, customValue } = this.props;
-		const group = this.state.group;
+		const { checkBox, name, custom, customValue, group, type } = this.props;
 		const that = this;
-		const type = checkBox ? 'checkbox' : 'radio';
 		return (
 			<div className={ this.props.className } ref={ (refs) => { this.mainRefs = refs; } } styleName="radioGroup">
 				{
@@ -93,7 +82,7 @@ class NewRadioGroup extends Component {
 					<div styleName="radioItem">
 						<input
 							id={ name + 'custom' }
-							type={ type }
+							type={ 'radio' }
 							value={ this.state.customValue }
 							name={ name }
 							label="自訂"
