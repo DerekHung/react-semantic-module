@@ -2,7 +2,15 @@ import $ from 'jquery';
 
 const canUseDOM = !!(typeof window !== 'undefined' && window.document && window.document.createElement);
 const ENV = (canUseDOM && window.env) || process.env.NODE_ENV;
-const S3url = ENV === 'production' ? '//ori.docapi.104.com.tw' : '//ori.staging.docapi.104.com.tw';
+let S3url;
+if(ENV === 'staging') {
+	S3url = 'ori.doc.104-staging.com.tw';
+}else if(ENV === 'production') {
+	S3url = 'ori.doc.104.com.tw';
+}else {
+	S3url = 'ori.doc.104-dev.com.tw';
+}
+
 const MIMEMap = {
 	'image/jpeg': 'IMAGE',
 	'image/png': 'IMAGE',
