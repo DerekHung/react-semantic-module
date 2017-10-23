@@ -4,11 +4,11 @@ const canUseDOM = !!(typeof window !== 'undefined' && window.document && window.
 const ENV = (canUseDOM && window.env) || process.env.NODE_ENV;
 let S3url;
 if(ENV === 'staging') {
-	S3url = 'ori.doc.104-staging.com.tw';
+	S3url = '//ori.doc.104-staging.com.tw';
 }else if(ENV === 'production') {
-	S3url = 'ori.doc.104.com.tw';
+	S3url = '//ori.doc.104.com.tw';
 }else {
-	S3url = 'ori.doc.104-dev.com.tw';
+	S3url = '//ori.doc.104-dev.com.tw';
 }
 
 const MIMEMap = {
