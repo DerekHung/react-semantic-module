@@ -338,7 +338,7 @@ class RichEditor extends Component {
 			loading: true,
 			url: url
 		}
-		let entityKey = this._insertBlockComponent(null, type, props, 'IMMUTABLE');
+		let entityKey;
 
 		let getJSONLoop = function (id, callback) {
 			let time = 0;
@@ -359,6 +359,8 @@ class RichEditor extends Component {
 		};
 
 		getURLData(this.props.apnum, this.props.pid, props.url, 'HYPERLINK').done(function (res) {
+			props.fileId = res[0].fileId;
+			entityKey = that._insertBlockComponent(null, type, props, 'IMMUTABLE');
 			//console.log(res);
 			getJSONLoop(res[0].fileId, function (urlResult) {
 
