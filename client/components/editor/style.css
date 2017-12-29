@@ -156,12 +156,12 @@
 .editor blockquote {
 	font-size: 24px;
 	line-height: 28px;
-	font-style: italic;
 	color: #8a8a8a;
 	width: 100%;
-	padding: 40px 60px 40px 60px;
+	padding: 20px;
 	margin: 0 auto;
-	border: 0;
+	border-left: 10px solid #c8c8c8;
+	background-color: #f6f6f6;
 }
 .editor img, .editor video {
 	max-width: 100%;
